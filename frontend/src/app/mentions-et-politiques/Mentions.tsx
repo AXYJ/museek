@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useGame } from "@/context/GameContext";
+import Link from "next/link";
 import { useTranslation } from "@/context/LanguageContext";
 
 import ChangeLanguage from "@/components/button/ChangeLanguage";
@@ -10,7 +10,6 @@ import EmailLink from "@/components/EmailLink";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
 
 export default function Mentions() {
-  const { setView } = useGame();
   const { t } = useTranslation();
   // Les dangerouslySetInnerHTML ci-dessous n'affichent que des traductions, jamais une saisie utilisateur.
   return (
@@ -301,12 +300,12 @@ export default function Mentions() {
         </div>
       </div>
 
-      <button
+      <Link
+        href="/"
         className="rounded-lg bg-(--accent) px-4 py-2 text-(--white) transition-all duration-300 hover:bg-(--accent)/60 active:scale-95"
-        onClick={() => setView("home")}
       >
         {t("mentions.back")}
-      </button>
+      </Link>
     </div>
   );
 }

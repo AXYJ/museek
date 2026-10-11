@@ -301,8 +301,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         quitGame();
       } else if (previousView === "result" && targetView === "lobby") {
         restart();
-      } else if (previousView === "mentions" && targetView === "home") {
-        setView("home");
       } else {
         setView(targetView);
       }
@@ -328,18 +326,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
 
     if (view === "home") {
-      if (
-        prevView === "lobby" ||
-        prevView === "game" ||
-        prevView === "mentions"
-      ) {
+      if (prevView === "lobby" || prevView === "game") {
         isPopStateRef.current = true;
         window.history.back();
       } else {
         window.history.replaceState({ view: "home" }, "");
       }
-    } else if (view === "mentions") {
-      window.history.pushState({ view: "mentions" }, "");
     } else if (view === "lobby") {
       if (prevView === "result") {
         // Pas de history.back() : après un rechargement l'entrée précédente peut

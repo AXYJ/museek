@@ -4,6 +4,7 @@
 import { useState } from "react";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Import du contexte
 import { useGame } from "@/context/GameContext";
@@ -19,7 +20,6 @@ import InstallPrompt from "@/components/pwa/InstallPrompt";
 
 export default function Home() {
   const {
-    setView,
     isConnected,
     error,
     setError,
@@ -282,12 +282,12 @@ export default function Home() {
 
       <footer className="mt-4 flex w-full flex-col items-center gap-4 text-center">
         <p className="text-(--white)/50">{t("home.message")}</p>
-        <button
+        <Link
+          href="/mentions-et-politiques"
           className="rounded-lg bg-(--accent) px-4 py-2 text-(--white) transition-all duration-300 hover:bg-(--accent)/60 active:scale-95"
-          onClick={() => setView("mentions")}
         >
           {t("home.mentions")}
-        </button>
+        </Link>
         <p className="mt-2 text-(--white)/50">{t("home.copyright")}</p>
       </footer>
 

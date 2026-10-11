@@ -45,7 +45,7 @@ music-blender/
 │   └── package.json
 ├── frontend/           # Application Next.js
 │   ├── src/
-│   │   ├── app/        # Configuration Next.js (App Router)
+│   │   ├── app/        # Configuration Next.js (App Router) : accueil `/`, page `/mentions-et-politiques`, sitemap, robots
 │   │   ├── components/ # Composants d'interface (stepper, autocomplete, PWA, etc.)
 │   │   ├── context/    # Contextes : jeu (GameContext) et langue (LanguageContext)
 │   │   ├── locales/    # Fichiers de traduction (FR/EN)
@@ -143,7 +143,7 @@ Le projet fonctionne selon le principe du respect de la vie privée par défaut 
 - Les données de jeu, pseudonymes, et liens de playlists sont conservés uniquement en mémoire volatile sur le serveur backend.
 - Dès que tous les joueurs quittent un salon, la mémoire associée est entièrement purgée.
 - Les journaux du serveur ne contiennent ni pseudonyme ni adresse IP (uniquement l'identifiant de socket et le code de salon).
-- Seuls tiers destinataires : Groq (titres et artistes, romanisation) et, pour la lecture des extraits, Spotify / Deezer / Apple, que le navigateur du joueur contacte directement. Le détail est dans la page « Mentions légales & Politique de confidentialité » de l'application.
+- Seuls tiers destinataires : Groq (titres et artistes, romanisation) et, pour la lecture des extraits, Spotify / Deezer / Apple, que le navigateur du joueur contacte directement. Le détail est dans la page « Mentions et politiques » de l'application (`/mentions-et-politiques`).
 - Les autres joueurs ne reçoivent jamais votre identifiant de reconnexion ni votre lien de playlist : ils ne voient qu'un identifiant public tiré au hasard à votre arrivée dans le salon, ce qui empêche de prendre la place d'un autre joueur.
 
 ---

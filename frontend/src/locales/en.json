@@ -16,7 +16,7 @@
         "step2": "Add the link to your favorite playlist",
         "step3": "Guess the song title and artist and win points",
         "message": "This game is an independent project and is not affiliated, sponsored, or endorsed by Spotify / Deezer / Apple Music. The associated titles, artists, and visuals remain the exclusive property of their respective owners.",
-        "mentions": "Legal notice & Privacy policy",
+        "mentions": "Legal notice and policies",
         "copyright": "© 2026 Museek",
         "room-placeholder": "Room code",
         "how-to-play": "How to play?",
@@ -40,7 +40,7 @@
         "error-no-room": "Please enter a room code."
     },
     "mentions": {
-        "title": "Legal Notice & Privacy Policy",
+        "title": "Legal notice and policies",
         "last-updated": "Last updated: October 10, 2026",
         "legal-title": "Legal Notice",
         "publisher-label": "Publisher:",

@@ -16,7 +16,7 @@
         "step2": "Ajouter le lien de votre playlist préférée",
         "step3": "Devinez le titre et l'artiste du morceau et gagnez des points",
         "message": "Ce jeu est un projet indépendant et n'est ni affilié, ni sponsorisé, ni approuvé par Spotify / Deezer / Apple Music. Les titres, artistes et visuels associés restent la propriété exclusive de leurs ayants droit respectifs.",
-        "mentions": "Mentions légales & Politique de confidentialité",
+        "mentions": "Mentions et politiques",
         "copyright": "© 2026 Museek",
         "room-placeholder": "Code de la room",
         "how-to-play": "Comment jouer ?",
@@ -40,7 +40,7 @@
         "error-no-room": "Veuillez entrer un code de room."
     },
     "mentions": {
-        "title": "Mentions légales & Politique de confidentialité",
+        "title": "Mentions et politiques",
         "last-updated": "Dernière mise à jour : 10 octobre 2026",
         "legal-title": "Mentions légales",
         "publisher-label": "Éditeur :",

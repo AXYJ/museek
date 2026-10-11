@@ -2,7 +2,7 @@ import React from "react";
 import { Socket } from "socket.io-client";
 
 // Définition des vues et phases
-export type View = "home" | "lobby" | "game" | "result" | "mentions";
+export type View = "home" | "lobby" | "game" | "result";
 export type GamePhase = "guessing" | "answer" | "transition";
 
 // Horloge de partie reçue du serveur (heures serveur en ms epoch)
