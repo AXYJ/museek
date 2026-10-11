@@ -127,7 +127,7 @@ export default function Home() {
         </div>
       </Section>
       <Section>
-        <h3 className="text-2xl text-(--white)">{t("home.about")}</h3>
+        <h1 className="text-2xl text-(--white)">{t("home.about")}</h1>
         <p>{t("home.about-text")}</p>
         <ul className="mt-4 flex list-outside list-disc flex-col gap-1 pl-4">
           {[1, 2, 3].map((n) => (

@@ -1,6 +1,7 @@
 # 🎵 Museek
 
-**Museek** est un jeu de blindtest multijoueur en temps réel où chaque joueur apporte sa propre playlist. Le serveur fusionne les différentes playlists (Spotify, Deezer, Apple Music) pour créer une expérience de jeu unique et collaborative.
+**Museek** est un blindtest multijoueur en ligne, gratuit et sans compte, jouable jusqu'à 12 avec vos propres playlists **Spotify**, **Deezer** ou **Apple Music**.
+Chacun apporte sa playlist, Museek mélange les morceaux, et le premier à deviner l'artiste et le titre marque les points.
 
 🌐 **Jouer en ligne :** [https://museek.xiao-web.com/](https://museek.xiao-web.com/)
 
