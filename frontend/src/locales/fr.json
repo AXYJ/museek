@@ -127,7 +127,13 @@
         "quit": "Quitter",
         "launch": "Lancer",
         "cancel": "Annuler",
-        "ready": "Prêt"
+        "ready": "Prêt",
+        "playlist-failure-title": "Playlist introuvable",
+        "playlist-failure-one": "La playlist de {{names}} n'a pas pu être chargée.",
+        "playlist-failure-many": "Les playlists de {{names}} n'ont pas pu être chargées.",
+        "playlist-failure-yours": "C'est la tienne : vérifie le lien (la playlist doit être publique), puis remets-toi prêt.",
+        "playlist-failure-host": "Les joueurs ont été remis en « pas prêt » : relance quand tout le monde est prêt. Les playlists déjà chargées ne seront pas rechargées.",
+        "playlist-failure-guest": "Remets-toi prêt une fois le problème réglé : les playlists déjà chargées ne seront pas rechargées."
     },
     "game": {
         "loading": "Chargement de la partie...",
@@ -171,7 +177,6 @@
     "errors": {
         "room_not_found": "Salon introuvable.",
         "room_full": "Le salon est plein.",
-        "playlist_load_error": "La playlist de {{name}} n'a pas pu être chargée.",
         "internal_error": "Une erreur interne est survenue lors de la préparation de la partie.",
         "connection_error": "Erreur de connexion serveur.",
         "disconnected": "Vous avez été déconnecté du serveur.",

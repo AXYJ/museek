@@ -127,7 +127,13 @@
         "quit": "Quit",
         "launch": "Start",
         "cancel": "Cancel",
-        "ready": "Ready"
+        "ready": "Ready",
+        "playlist-failure-title": "Playlist not found",
+        "playlist-failure-one": "{{names}}'s playlist could not be loaded.",
+        "playlist-failure-many": "The playlists of {{names}} could not be loaded.",
+        "playlist-failure-yours": "That's yours: check the link (the playlist must be public), then get ready again.",
+        "playlist-failure-host": "Players were set back to not ready: launch again once everyone is ready. Playlists already loaded won't be reloaded.",
+        "playlist-failure-guest": "Get ready again once the problem is fixed: playlists already loaded won't be reloaded."
     },
     "game": {
         "loading": "Loading game...",
@@ -171,7 +177,6 @@
     "errors": {
         "room_not_found": "Room not found.",
         "room_full": "The room is full.",
-        "playlist_load_error": "{{name}}'s playlist could not be loaded.",
         "internal_error": "An internal error occurred while preparing the game.",
         "connection_error": "Server connection error.",
         "disconnected": "You have been disconnected from the server.",

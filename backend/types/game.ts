@@ -101,6 +101,16 @@ export interface Room {
   database_tracks: DatabaseTrack[];
   gameStartTime?: number | null;
   isLoadingTracks?: boolean;
+  // Playlists déjà chargées pendant un lancement échoué (par id de joueur), pour ne pas
+  // les recharger au relancement. Vidé dès que la partie démarre.
+  loadedPlaylists?: Map<
+    string,
+    {
+      url: string;
+      amount: number;
+      result: { tracks: Track[]; selectedTracks: Track[] };
+    }
+  >;
   isGameOver?: boolean;
   cleanupTimeout?: NodeJS.Timeout;
 }
@@ -137,6 +147,7 @@ export interface ServerToClientEvents {
   ) => void;
   final_scores: (players: PublicPlayer[]) => void;
   no_playlist: (reason?: string) => void;
+  playlist_failed: (names: string[]) => void;
   game_reset: (
     rules: { musicAmount: number; time: number },
     players: PublicPlayer[],

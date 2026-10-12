@@ -402,7 +402,11 @@ io.on(
 
     // Chargement trop fréquent depuis cette adresse : le joueur joue sans playlist plutôt
     // que de bloquer le lancement de la partie pour les autres
-    if (playlistUrl && !playlistLoads.tryHit(ip)) {
+    // Une playlist déjà chargée (relancement après un échec) ne consomme pas de jeton
+    const cached = room.loadedPlaylists?.get(player.id);
+    const isCached =
+      cached?.url === playlistUrl && cached.amount === room.musicAmount;
+    if (playlistUrl && !isCached && !playlistLoads.tryHit(ip)) {
       playlistUrl = "";
       socket.emit("error", "rate_limited");
     }
@@ -417,35 +421,27 @@ io.on(
     room.toPlay = [];
 
     try {
-      const { allTracks, selected, hasError } = await loadPlayersTracks(
-        room,
-        roomCode,
-      );
-      room.toPlay = selected;
+      const { allTracks, selected, failed } = await loadPlayersTracks(room);
 
-      if (hasError || allTracks.length < 1) {
+      if (failed.length) {
+        // Les joueurs doivent se remettre prêts (et celui en échec corriger sa playlist) :
+        // l'hôte ne peut pas relancer sans les consulter. Les playlists déjà chargées
+        // sont gardées dans room.loadedPlaylists pour le relancement.
         room.isLoadingTracks = false;
-        if (allTracks.length < 1 && !hasError) {
-          io.to(roomCode).emit("no_playlist", "no_playlist_tracks");
-        }
+        room.players.forEach((p) => {
+          p.isReady = p.isHost;
+        });
+        emitRoomUpdated(roomCode, room);
+        io.to(roomCode).emit("playlist_failed", failed);
+        return;
+      }
+      if (allTracks.length < 1) {
+        room.isLoadingTracks = false;
+        io.to(roomCode).emit("no_playlist", "no_playlist_tracks");
         return;
       }
 
-      const { databaseTracks, artistNames } = collectDatabases(allTracks);
-      room.database_tracks = databaseTracks;
-      room.database_artists = await buildArtistDatabase(artistNames);
-
-      // Ordre aléatoire global, avec les normalisations précalculées
-      room.toPlay = shuffle(room.toPlay).map(prepareTrack);
-      room.gameStartTime = Date.now();
-      room.isLoadingTracks = false;
-      io.to(roomCode).emit(
-        "data_loaded",
-        toPublicTracks(room.toPlay),
-        room.database_artists,
-        room.database_tracks,
-        getGameTiming(room.time, room.gameStartTime),
-      );
+      await startWithTracks(room, roomCode, allTracks, selected);
     } catch (processingErr) {
       room.isLoadingTracks = false;
       socket.emit("error", "internal_error");
@@ -648,17 +644,16 @@ io.on(
 
 // Charge en parallèle la playlist de chaque joueur. `selected` : morceaux retenus
 // pour la partie ; `allTracks` : tous les morceaux chargés (base d'autocomplétion).
-// Une playlist en échec prévient la room (playlist_load_error) et lève hasError.
+// `failed` : pseudos des joueurs dont la playlist n'a pas pu être chargée.
 async function loadPlayersTracks(
   room: Room,
-  roomCode: string,
-): Promise<{ allTracks: Track[]; selected: Track[]; hasError: boolean }> {
-  let hasError = false;
+): Promise<{ allTracks: Track[]; selected: Track[]; failed: string[] }> {
+  const failed: string[] = [];
+  const loaded = (room.loadedPlaylists ??= new Map());
   const fail = (p: Player, err?: unknown) => {
     if (err) console.error(`Error processing tracks for a player:`, err);
     p.tracks = [];
-    io.to(roomCode).emit("error", `playlist_load_error:${p.name}`);
-    hasError = true;
+    failed.push(p.name);
   };
 
   const results = await Promise.all(
@@ -668,11 +663,21 @@ async function loadPlayersTracks(
         return null;
       }
       try {
-        const result = await selectTracks(p.playlistUrl, room.musicAmount, p);
+        // Playlist déjà chargée lors d'un lancement échoué : on ne la recharge pas
+        const hit = loaded.get(p.id);
+        const result =
+          hit && hit.url === p.playlistUrl && hit.amount === room.musicAmount
+            ? hit.result
+            : await selectTracks(p.playlistUrl, room.musicAmount, p);
         if (!result?.selectedTracks?.length) {
           fail(p);
           return null;
         }
+        loaded.set(p.id, {
+          url: p.playlistUrl,
+          amount: room.musicAmount,
+          result,
+        });
         p.tracks = result.selectedTracks;
         return result;
       } catch (err) {
@@ -685,8 +690,33 @@ async function loadPlayersTracks(
   return {
     allTracks: results.flatMap((r) => r?.tracks ?? []),
     selected: results.flatMap((r) => r?.selectedTracks ?? []),
-    hasError,
+    failed,
   };
+}
+
+// Construit les bases d'autocomplétion, mélange les morceaux et démarre la partie.
+async function startWithTracks(
+  room: Room,
+  roomCode: string,
+  allTracks: Track[],
+  selected: Track[],
+): Promise<void> {
+  room.loadedPlaylists = undefined;
+  const { databaseTracks, artistNames } = collectDatabases(allTracks);
+  room.database_tracks = databaseTracks;
+  room.database_artists = await buildArtistDatabase(artistNames);
+
+  // Ordre aléatoire global, avec les normalisations précalculées
+  room.toPlay = shuffle(selected).map(prepareTrack);
+  room.gameStartTime = Date.now();
+  room.isLoadingTracks = false;
+  io.to(roomCode).emit(
+    "data_loaded",
+    toPublicTracks(room.toPlay),
+    room.database_artists,
+    room.database_tracks,
+    getGameTiming(room.time, room.gameStartTime),
+  );
 }
 
 // Bases uniques pour l'autocomplétion : morceaux, et noms d'artistes séparés

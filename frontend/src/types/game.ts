@@ -63,6 +63,12 @@ export interface GameContextType {
   joinGame: (code: string) => void;
   beReady: () => void;
   launchGame: () => void;
+  // Lancement en cours (bouton « Lancer » de l'hôte)
+  isLaunching: boolean;
+  setIsLaunching: (launching: boolean) => void;
+  // Pseudos des joueurs dont la playlist a échoué au lancement (pop-up d'information)
+  failedPlaylists: string[] | null;
+  setFailedPlaylists: (names: string[] | null) => void;
 
   // Volume
   volume: number;

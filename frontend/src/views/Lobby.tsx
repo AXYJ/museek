@@ -1,7 +1,7 @@
 "use client";
 
 // Import de react
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Import du contexte
 import { useGame } from "@/context/GameContext";
@@ -11,6 +11,7 @@ import { useTranslation } from "@/context/LanguageContext";
 import Section from "@/components/Section";
 import Error from "@/components/alert/Error";
 import Message from "@/components/alert/Message";
+import PlaylistFailureModal from "@/components/alert/PlaylistFailureModal";
 import Stepper from "@/components/stepper/Stepper";
 import Logo from "@/components/Logo";
 import Info from "@/components/Info/Info";
@@ -31,6 +32,10 @@ export default function Lobby() {
     playlistUrl,
     setPlaylistUrl,
     launchGame,
+    isLaunching: isLoading,
+    setIsLaunching,
+    failedPlaylists,
+    setFailedPlaylists,
     message,
     setMessage,
     error,
@@ -46,7 +51,11 @@ export default function Lobby() {
   const isHost = me?.isHost || false;
   const isReady = me?.isReady || false;
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // Un lancement interrompu (déconnexion, retour au lobby) ne doit pas bloquer le bouton
+  useEffect(() => {
+    setIsLaunching(false);
+  }, [setIsLaunching]);
+
   const [infoType, setInfoType] = useState<
     "number-music" | "time" | "url" | null
   >(null);
@@ -87,13 +96,6 @@ export default function Lobby() {
     navigator.clipboard.writeText(roomCode);
     setMessage(t("lobby.code-copied"));
   };
-
-  // Reset de l'état isLoading dès qu'une erreur arrive (remise à zéro pendant le rendu)
-  const [prevError, setPrevError] = useState<string | null>(error);
-  if (error !== prevError) {
-    setPrevError(error);
-    if (error) setIsLoading(false);
-  }
 
   return (
     <div className="my-16 flex w-full flex-col items-center gap-8">
@@ -291,10 +293,7 @@ export default function Lobby() {
         {isHost && (
           <button
             className={`flex-1 rounded-full bg-(--accent) px-8 py-2 text-sm text-(--white) transition-all duration-300 ease-out hover:bg-(--accent)/60 hover:text-(--white) active:scale-95 md:text-base ${players.filter((p) => p.isReady).length !== players.length ? "cursor-not-allowed opacity-50" : ""} ${isLoading ? "cursor-not-allowed opacity-50" : ""}`}
-            onClick={() => {
-              setIsLoading(true);
-              launchGame();
-            }}
+            onClick={launchGame}
             disabled={
               players.filter((p) => p.isReady).length !== players.length ||
               isLoading
@@ -334,6 +333,12 @@ export default function Lobby() {
         )}
       </div>
 
+      <PlaylistFailureModal
+        names={failedPlaylists}
+        isHost={isHost}
+        myName={me?.name ?? ""}
+        onClose={() => setFailedPlaylists(null)}
+      />
       <Message message={message} setMessage={setMessage} />
       <Error error={error} setError={setError} />
     </div>

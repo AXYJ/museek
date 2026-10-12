@@ -83,6 +83,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     getSessionItem<DatabaseTrack[]>("database_tracks", []),
   );
   const [message, setMessage] = useState<string>("");
+  const [isLaunching, setIsLaunching] = useState<boolean>(false);
+  const [failedPlaylists, setFailedPlaylists] = useState<string[] | null>(null);
 
   const [turn, setTurn] = useState<number>(1);
   const [phase, setPhase] = useState<GamePhase>("guessing");
@@ -123,6 +125,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     time,
     t,
     setPlayerId,
+    setIsLaunching,
+    setFailedPlaylists,
   });
 
   // ----------------------------------------------------------------
@@ -241,6 +245,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   //Lancer une partie
   const launchGame = useCallback(() => {
     if (socket) {
+      setIsLaunching(true);
       socket.emit("start_game");
     }
   }, [socket]);
@@ -369,6 +374,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       joinGame,
       beReady,
       launchGame,
+      isLaunching,
+      setIsLaunching,
+      failedPlaylists,
+      setFailedPlaylists,
       sendAnswer,
       musicAmount,
       setMusicAmount,
@@ -409,6 +418,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       joinGame,
       beReady,
       launchGame,
+      isLaunching,
+      failedPlaylists,
       sendAnswer,
       musicAmount,
       setMusicAmount,

@@ -36,6 +36,8 @@ interface SocketListenersProps {
   time: number;
   t: (key: string, replace?: Record<string, string>) => string;
   setPlayerId: (id: string) => void;
+  setIsLaunching: (launching: boolean) => void;
+  setFailedPlaylists: (names: string[] | null) => void;
 }
 
 export const useSocketListeners = (props: SocketListenersProps) => {
@@ -61,6 +63,8 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     time,
     t,
     setPlayerId,
+    setIsLaunching,
+    setFailedPlaylists,
   } = props;
 
   // Dernières valeurs des props, lues par les handlers sans réenregistrer les
@@ -119,17 +123,11 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     // Gestion des erreurs
     // ----------------
     const handleError = (error: string) => {
-      if (error.startsWith("playlist_load_error:")) {
-        const name = error.substring("playlist_load_error:".length);
-        setError(latestRef.current.t("errors.playlist_load_error", { name }));
-      } else {
-        const translated = latestRef.current.t(`errors.${error}`);
-        if (translated !== `errors.${error}`) {
-          setError(translated);
-        } else {
-          setError(error);
-        }
-      }
+      // Le bouton « Lancer » se débloque même si le message d'erreur est identique
+      // au précédent (setError ne changerait alors rien)
+      setIsLaunching(false);
+      const translated = latestRef.current.t(`errors.${error}`);
+      setError(translated !== `errors.${error}` ? translated : error);
 
       if (error === "room_not_found" || error === "room_full") {
         setRoomCode("");
@@ -196,6 +194,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("room_updated", handleRoomUpdated);
 
     const handleGameStarted = (players: Player[]) => {
+      setFailedPlaylists(null);
       rememberMe(players);
       setPlayers(players);
       socket.emit("send_playlist_url", latestRef.current.playlistUrl);
@@ -208,6 +207,8 @@ export const useSocketListeners = (props: SocketListenersProps) => {
       database_tracks: DatabaseTrack[],
       timing: GameTiming,
     ) => {
+      setIsLaunching(false);
+      setFailedPlaylists(null);
       setView("game");
       setToPlay(toPlay);
       setGameClock(toGameClock(timing));
@@ -321,11 +322,19 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("final_scores", handleFinalScores);
 
     const handleNoPlaylist = () => {
+      setIsLaunching(false);
       setError(latestRef.current.t("errors.no_playlist_tracks"));
       setView("lobby");
     };
 
     socket.on("no_playlist", handleNoPlaylist);
+
+    const handlePlaylistFailed = (names: string[]) => {
+      setIsLaunching(false);
+      setFailedPlaylists(names);
+    };
+
+    socket.on("playlist_failed", handlePlaylistFailed);
 
     const handleGameReset = (
       rules: { musicAmount?: number; time?: number },
@@ -387,6 +396,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
       socket.off("answer", handleAnswer);
       socket.off("final_scores", handleFinalScores);
       socket.off("no_playlist", handleNoPlaylist);
+      socket.off("playlist_failed", handlePlaylistFailed);
       socket.off("game_reset", handleGameReset);
       socket.off("game_reconnected", handleGameReconnected);
     };
@@ -408,6 +418,8 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     setTimeLeft,
     setGameClock,
     setPlayerId,
+    setIsLaunching,
+    setFailedPlaylists,
     time,
   ]);
 };
