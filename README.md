@@ -1,7 +1,7 @@
 # 🎵 Museek
 
 **Museek** est un blindtest multijoueur en ligne, gratuit et sans compte, jouable jusqu'à 12 avec vos propres playlists **Spotify**, **Deezer** ou **Apple Music**.
-Chacun apporte sa playlist, Museek mélange les morceaux, et le premier à deviner l'artiste et le titre marque les points.
+Chacun apporte sa playlist, Museek mélange les morceaux, et chaque joueur qui reconnaît l'artiste ou le titre marque des points.
 
 🌐 **Jouer en ligne :** [https://museek.xiao-web.com/](https://museek.xiao-web.com/)
 
