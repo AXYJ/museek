@@ -108,6 +108,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     view,
     setView,
     setError,
+    setMessage,
     setRoomCode,
     setPlayers,
     setIsConnected,

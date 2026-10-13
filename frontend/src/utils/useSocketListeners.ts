@@ -19,6 +19,7 @@ interface SocketListenersProps {
   view: View;
   setView: (view: View) => void;
   setError: (error: string | null) => void;
+  setMessage: (message: string) => void;
   setRoomCode: (code: string) => void;
   setPlayers: (players: Player[] | ((prev: Player[]) => Player[])) => void;
   setIsConnected: (connected: boolean) => void;
@@ -46,6 +47,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     view,
     setView,
     setError,
+    setMessage,
     setRoomCode,
     setPlayers,
     setIsConnected,
@@ -351,6 +353,12 @@ export const useSocketListeners = (props: SocketListenersProps) => {
 
     socket.on("game_reset", handleGameReset);
 
+    const handleHostTransferred = (previousHost: string) => {
+      setMessage(latestRef.current.t("lobby.host_transferred", { host: previousHost }));
+    };
+
+    socket.on("host_transferred", handleHostTransferred);
+
     const handleGameReconnected = (data: {
       toPlay: Track[];
       database_artists: DatabaseArtist[];
@@ -397,6 +405,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
       socket.off("final_scores", handleFinalScores);
       socket.off("no_playlist", handleNoPlaylist);
       socket.off("playlist_failed", handlePlaylistFailed);
+      socket.off("host_transferred", handleHostTransferred);
       socket.off("game_reset", handleGameReset);
       socket.off("game_reconnected", handleGameReconnected);
     };
@@ -404,6 +413,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket,
     setView,
     setError,
+    setMessage,
     setIsConnected,
     setRoomCode,
     setPlayers,

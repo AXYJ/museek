@@ -847,6 +847,15 @@ const checkAndResetGame = (roomCode: string): void => {
       p.tracks_scores_board = {};
     });
 
+    // L'hôte n'est pas revenu au lobby : le rôle passe à un joueur présent
+    const oldHost = room.players.find((p) => p.isHost && p.leavedPlayer);
+    const newHost = oldHost && activePlayers[0];
+    if (oldHost && newHost) {
+      oldHost.isHost = false;
+      newHost.isHost = true;
+      newHost.isReady = true;
+    }
+
     room.players = activePlayers;
     room.isGameOver = false;
     room.gameStartTime = null;
@@ -858,5 +867,8 @@ const checkAndResetGame = (roomCode: string): void => {
     };
 
     io.to(roomCode).emit("game_reset", rulesObj, toPublicPlayers(activePlayers));
+    if (oldHost && newHost?.socketId) {
+      io.to(newHost.socketId).emit("host_transferred", oldHost.name);
+    }
   }
 };

@@ -113,6 +113,7 @@
     },
     "lobby": {
         "code-copied": "Code copié !",
+        "host_transferred": "{{host}} a quitté la partie. Tu deviens l'hôte.",
         "copy-code-title": "Copier le code",
         "game-code-label": "Code de la partie :",
         "players-list": "Liste des joueurs",

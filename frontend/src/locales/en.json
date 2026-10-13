@@ -113,6 +113,7 @@
     },
     "lobby": {
         "code-copied": "Code copied!",
+        "host_transferred": "{{host}} left the game. You are now the host.",
         "copy-code-title": "Copy code",
         "game-code-label": "Game code:",
         "players-list": "Player List",
