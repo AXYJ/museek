@@ -148,6 +148,7 @@ export interface ServerToClientEvents {
   final_scores: (players: PublicPlayer[]) => void;
   no_playlist: (reason?: string) => void;
   playlist_failed: (names: string[]) => void;
+  host_transferred: (previousHost: string) => void;
   game_reset: (
     rules: { musicAmount: number; time: number },
     players: PublicPlayer[],
