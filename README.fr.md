@@ -7,6 +7,8 @@ Chacun apporte sa playlist, Museek mélange les morceaux, et chaque joueur qui r
 
 🌐 **Jouer en ligne :** [https://museek.xiao-web.com/](https://museek.xiao-web.com/)
 
+📝 **Article technique (en anglais) :** [Building a multiplayer music quiz where everyone brings their own playlist (Next.js + Socket.io)](https://museek.hashnode.dev/building-a-multiplayer-music-quiz-where-everyone-brings-their-own-playlist-next-js-socket-io)
+
 ![Accueil de Museek](docs/screenshots/home.webp)
 
 ---
