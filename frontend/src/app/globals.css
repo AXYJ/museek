@@ -82,6 +82,11 @@ button {
   cursor: pointer;
 }
 
+img {
+  user-select: none;
+  pointer-events: none;
+}
+
 .toggle-container ol {
   list-style-type: decimal;
 }

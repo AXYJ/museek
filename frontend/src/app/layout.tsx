@@ -122,6 +122,7 @@ export default function RootLayout({
                 window.deferredPrompt = e;
                 window.dispatchEvent(new CustomEvent('pwa-prompt-available'));
               });
+              window.addEventListener('dragstart', (e) => e.preventDefault());
             `,
           }}
         />
