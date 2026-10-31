@@ -175,6 +175,7 @@ export default async function selectTracks(
           ...t,
           name: cleanSpaces(t.name),
           artist: cleanSpaces(t.artist),
+          artists: t.artists?.map((a) => cleanSpaces(a)),
         }));
 
         // 1. Détecter les morceaux ayant des caractères non-ASCII à translitérer avec Groq
@@ -236,6 +237,7 @@ export default async function selectTracks(
             return {
               name,
               artist,
+              artists: t.artists,
               internationalName,
               internationalArtist,
               previewUrl: t.previewUrl || "",

@@ -10,7 +10,8 @@ import {
   getInternationalName,
   transliterateText,
 } from "../scripts/get-artists-tracks.ts";
-import { prepareTrack, scoreAnswer, normalizeString } from "../scripts/answers.ts";
+import { prepareTrack, scoreAnswer, normalizeString, splitArtists } from "../scripts/answers.ts";
+import { ARTISTS_WITH_SEPARATOR } from "../scripts/artists-with-separator.ts";
 import type { Track } from "../types/game.ts";
 
 let ok = true;
@@ -110,6 +111,28 @@ const beyonce = prepared(byName("Beyoncé", "Déjà Vu"));
 check("accents latins : « beyonce » et « deja vu » acceptés", same(scoreAnswer(beyonce, "beyonce", "deja vu"), full));
 const maneskin = prepared(byName("Måneskin, Zaz", "Zitti e buoni"));
 check("accents latins : « Maneskin, Zaz » accepté", scoreAnswer(maneskin, "Maneskin, Zaz", "").artistScore === 1);
+
+// Liste fournie par la plateforme : "&" et "," dans un nom ne découpent plus l'artiste
+const duo = prepared({ name: "Dommage", artist: "Bigflo & Oli", artists: ["Bigflo & Oli"], internationalArtist: "Bigflo & Oli" });
+check("duo : nom complet = 1", scoreAnswer(duo, "Bigflo & Oli", "").artistScore === 1);
+check("duo : un seul nom = 0", scoreAnswer(duo, "Bigflo", "").artistScore === 0);
+const collab = prepared({ name: "After the Storm", artist: "Kali Uchis, Tyler, The Creator", artists: ["Kali Uchis", "Tyler, The Creator"], internationalArtist: "Kali Uchis, Tyler, The Creator" });
+check("nom avec virgule dans une collab : les deux dans le désordre = 1", scoreAnswer(collab, "Tyler, The Creator, Kali Uchis", "").artistScore === 1);
+check("nom avec virgule dans une collab : un seul = 0,5", scoreAnswer(collab, "Tyler, The Creator", "").artistScore === 0.5);
+const romanized = prepared({ name: "Meridian", artist: "JORDANN, 邹沛沛", artists: ["JORDANN", "邹沛沛"], internationalArtist: "JORDANN, Zou Pei Pei" });
+check("liste fournie : nom romanisé accepté", scoreAnswer(romanized, "JORDANN, Zou Pei Pei", "").artistScore === 1);
+
+// Chaîne Apple Music, sans liste : les noms connus restent entiers et à leur place
+check("Apple : duo connu gardé entier", same(splitArtists("Bigflo & Oli"), ["Bigflo & Oli"]));
+check("Apple : nom connu puis collab", same(splitArtists("Bigflo & Oli & Petit Biscuit"), ["Bigflo & Oli", "Petit Biscuit"]));
+check("Apple : collab puis nom connu, ordre conservé", same(splitArtists("Kali Uchis, Tyler, The Creator & Bootsy Collins"), ["Kali Uchis", "Tyler, The Creator", "Bootsy Collins"]));
+check("Apple : casse ignorée", same(splitArtists("earth, wind & fire"), ["earth, wind & fire"]));
+check("Apple : collab inconnue découpée", same(splitArtists("Drake & Future"), ["Drake", "Future"]));
+check("Apple : nom connu dans un autre mot ignoré", same(splitArtists("Carmel & Kimbra"), ["Carmel", "Kimbra"]) && same(splitArtists("Sam & Davey"), ["Sam", "Davey"]));
+check("Apple : chaque nom de la liste reste entier", ARTISTS_WITH_SEPARATOR.every((a) => same(splitArtists(a), [a])));
+const appleDuo = prepared({ name: "Demain", artist: "Bigflo & Oli & Petit Biscuit", internationalArtist: "Bigflo & Oli & Petit Biscuit" });
+check("Apple : duo + artiste trouvés = 1", scoreAnswer(appleDuo, "Petit Biscuit, Bigflo & Oli", "").artistScore === 1);
+check("Apple : duo seul = 0,5", scoreAnswer(appleDuo, "Bigflo & Oli", "").artistScore === 0.5);
 
 // normalizeString : ni la casse ni les accents ne comptent, les écritures non latines sont gardées
 check("normalizeString garde le han et le kana intacts", normalizeString("  聖者の行進 ") === "聖者の行進" && normalizeString("Déjà") === "deja");

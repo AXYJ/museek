@@ -1,8 +1,9 @@
 import { Track } from "../types/game.js";
+import { ARTISTS_WITH_SEPARATOR } from "./artists-with-separator.js";
 
 // Correction des réponses : comparaison tolérante (casse et accents ignorés), artistes
-// séparés par ",", "&", "feat."… et noms acceptés dans l'écriture d'origine comme en
-// version internationale (romanisée).
+// fournis par la plateforme ou séparés par ",", "&", "feat."… et noms acceptés dans
+// l'écriture d'origine comme en version internationale (romanisée).
 
 export function normalizeString(str: string): string {
   if (!str) return "";
@@ -13,36 +14,55 @@ export function normalizeString(str: string): string {
     .replace(/[^\p{L}\p{M}\p{N}]/gu, "");
 }
 
+const KNOWN_ARTISTS = new RegExp(
+  `\\b(${ARTISTS_WITH_SEPARATOR.join("|")})\\b`,
+  "i",
+);
+
 export function splitArtists(artistStr: string): string[] {
   if (!artistStr || typeof artistStr !== "string") return [];
 
   const separators =
     /,\s*|&\s*|\s+\/\s+|\s+(?:and|feat\.?|featuring|with)\s+/gi;
 
+  // Grâce au groupe capturant, les noms connus restent aux indices impairs, à leur place
   return artistStr
-    .split(separators)
+    .split(KNOWN_ARTISTS)
+    .flatMap((part, i) => (i % 2 === 1 ? [part] : part.split(separators)))
     .map((a) => a.trim())
     .filter(
       (a) => a.length > 0 && !/^(feat\.?|featuring|with|&|and)$/i.test(a),
     );
 }
 
+// Liste de la plateforme si elle existe, sinon découpe de la chaîne (Apple Music)
+export function getTrackArtists(track: Track): string[] {
+  return track.artists?.filter(Boolean) ?? splitArtists(track.artist);
+}
+
 // Morceau prêt à jouer : champs par défaut et normalisations précalculées pour
 // la correction des réponses (voir scoreAnswer)
 export function prepareTrack(track: Track, index: number): Track {
-  const originalArtists = splitArtists(track.artist)
+  const artists = getTrackArtists(track);
+  const originalArtists = artists
     .map((a) => normalizeString(a))
     .filter(Boolean);
-  const internationalArtists = splitArtists(track.internationalArtist || "")
+  const internationalArtist = track.internationalArtist || "";
+  const internationalArtists = (
+    artists.length === 1
+      ? [internationalArtist]
+      : splitArtists(internationalArtist)
+  )
     .map((a) => normalizeString(a))
     .filter(Boolean);
+  // ponytail: nom avec "," ou "&" dans une collab, listes de tailles différentes : seul
+  // le nom d'origine est accepté. Romaniser artiste par artiste si ça gêne.
+  const aligned = internationalArtists.length === originalArtists.length;
 
   // Pour chaque artiste, les noms acceptés (original et international)
-  const requiredArtists = originalArtists.map((orig, idx) => {
-    const names = [orig];
-    if (internationalArtists[idx]) names.push(internationalArtists[idx]);
-    return names;
-  });
+  const requiredArtists = originalArtists.map((orig, idx) =>
+    aligned ? [orig, internationalArtists[idx]] : [orig],
+  );
 
   return {
     order: index + 1,
@@ -95,8 +115,13 @@ export function scoreAnswer(
   ) {
     artistScore = 1;
   } else if (requiredArtists.length > 0) {
+    // Segments voisins recollés : un nom peut contenir une virgule (« Tyler, The Creator »)
+    const candidates = [
+      ...playerGuesses,
+      ...playerGuesses.slice(1).map((g, i) => playerGuesses[i] + g),
+    ];
     const matchedCount = requiredArtists.filter((acceptableNames) =>
-      playerGuesses.some((guess) => acceptableNames.includes(guess)),
+      candidates.some((guess) => acceptableNames.includes(guess)),
     ).length;
     if (matchedCount === requiredArtists.length) artistScore = 1;
     else if (matchedCount > 0) artistScore = 0.5;

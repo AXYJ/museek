@@ -60,6 +60,10 @@ async function getSpotifyTracksAnonymously(
       }) => ({
         name: item.title,
         artist: item.subtitle,
+        // Entre deux artistes : virgule + espace insécable. Espace normale dans un nom
+        // (« Tyler, The Creator »).
+        // ponytail: format non documenté ; s'il change, une collab devient un seul nom
+        artists: item.subtitle.split(", "),
         previewUrl: item.audioPreview?.url || "",
         imageUrl: entity.coverArt?.sources?.[0]?.url || "",
         url:
@@ -167,10 +171,11 @@ async function getSpotifyAlbumTracks(
     if (!data.tracks || !data.tracks.items) return null;
     const imageUrl = data.images?.[0]?.url || "";
     const tracks: PlatformTrack[] = data.tracks.items.map((t) => {
-      const artistsStr = t.artists.map((a) => a.name).join(", ");
+      const artists = t.artists.map((a) => a.name);
       return {
         name: t.name,
-        artist: artistsStr,
+        artist: artists.join(", "),
+        artists,
         previewUrl: t.preview_url || "",
         imageUrl: imageUrl,
         url:

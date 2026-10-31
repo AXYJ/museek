@@ -2,6 +2,8 @@ export interface Track {
   order?: number;
   name: string;
   artist: string;
+  // Liste exacte quand la plateforme la fournit (voir getTrackArtists)
+  artists?: string[];
   internationalName?: string;
   internationalArtist?: string;
   previewUrl?: string;
@@ -35,6 +37,7 @@ export type PublicTrack = Omit<
 export interface PlatformTrack {
   name: string;
   artist: string;
+  artists?: string[];
   previewUrl: string;
   imageUrl: string;
   url: string;

@@ -87,6 +87,7 @@ export async function fetchDeezerTracks({
       return {
         name: t.title || "",
         artist: artistName,
+        artists: [artistName],
         previewUrl: t.preview || "",
         imageUrl: t.album?.cover_medium || fallbackImageUrl,
         url: t.link || (t.id ? `https://www.deezer.com/track/${t.id}` : ""),

@@ -25,7 +25,7 @@ import selectTracks, {
 } from "./scripts/get-artists-tracks.js";
 import { needsLlm, transliterateArtists } from "./scripts/transliterate.js";
 import { SlidingWindowLimiter, getClientIp } from "./scripts/rate-limit.js";
-import { prepareTrack, scoreAnswer, splitArtists } from "./scripts/answers.js";
+import { getTrackArtists, prepareTrack, scoreAnswer } from "./scripts/answers.js";
 import {
   Track,
   Room,
@@ -742,7 +742,7 @@ function collectDatabases(tracks: Track[]): {
         internationalName: t.internationalName || t.name,
       });
     }
-    for (const artistName of splitArtists(t.artist)) {
+    for (const artistName of getTrackArtists(t)) {
       const artistKey = artistName.toLowerCase();
       if (!seenArtists.has(artistKey)) {
         seenArtists.add(artistKey);
