@@ -126,6 +126,8 @@
         "time-per-track-tooltip": "The time allowed to guess and write the answers for each track.",
         "help": "Enable help",
         "help-tooltip": "The album cover gets clearer between 10 s and 5 s before the turn ends. Without help, you get 1 extra point per perfect answer (artist + track).",
+        "guess-player": "Guess who picked the track (3 players min.)",
+        "guess-player-tooltip": "Win an extra point by guessing which player picked this track.",
         "add-your-music": "Add your playlist",
         "playlist-url": "Public playlist URL",
         "playlist-url-tooltip": "The playlist URL. You can find the playlist URL by clicking on the \"Share\" button on the playlist, then \"Copy link\".",
@@ -146,6 +148,8 @@
         "track": "Track",
         "no-artist-found": "No artist found",
         "no-track-found": "No track found",
+        "player": "Player",
+        "no-player-found": "No player found",
         "time-remaining": "Time remaining",
         "next-turn": "Next turn",
         "revelation": "Reveal"
@@ -155,11 +159,13 @@
         "player": "Player",
         "artists": "Artist(s)",
         "track": "Track",
+        "picked-by": "Picked by",
         "replay": "Play Again"
     },
     "track-cover": {
         "no-image": "No image",
-        "answer-is": "The answer is:"
+        "answer-is": "The answer is:",
+        "picked-by": "Picked by"
     },
     "button": {
         "quit-game": "Quit game"

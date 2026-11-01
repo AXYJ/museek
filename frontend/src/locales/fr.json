@@ -126,6 +126,8 @@
         "time-per-track-tooltip": "Le temps accordé pour deviner et écrire les réponses pour chaque morceau.",
         "help": "Activer une aide",
         "help-tooltip": "La pochette d'album se défloute entre 10 s et 5 s avant la fin du tour. Sans aide, tu gagnes 1 point de plus par réponse parfaite (artiste + titre).",
+        "guess-player": "Deviner qui a choisi le morceau (3 joueurs min.)",
+        "guess-player-tooltip": "Gagne un point supplémentaire en devinant quel joueur a choisi ce morceau.",
         "add-your-music": "Ajoute ta playlist",
         "playlist-url": "URL de la playlist publique",
         "playlist-url-tooltip": "L'URL de la playlist. Tu peux trouver l'URL de la playlist en cliquant sur le bouton \"Partager\" de la playlist, puis sur \"Copier le lien\".",
@@ -146,6 +148,8 @@
         "track": "Morceau",
         "no-artist-found": "Aucun artiste trouvé",
         "no-track-found": "Aucun morceau trouvé",
+        "player": "Joueur",
+        "no-player-found": "Aucun joueur trouvé",
         "time-remaining": "Temps restant",
         "next-turn": "Prochain tour",
         "revelation": "Révélation"
@@ -155,11 +159,13 @@
         "player": "Joueur",
         "artists": "Artiste(s)",
         "track": "Morceau",
+        "picked-by": "Choisi par",
         "replay": "Rejouer"
     },
     "track-cover": {
         "no-image": "Pas d'image",
-        "answer-is": "La réponse est :"
+        "answer-is": "La réponse est :",
+        "picked-by": "Choisi par"
     },
     "button": {
         "quit-game": "Quitter la partie"

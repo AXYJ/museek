@@ -20,6 +20,8 @@ interface AutocompleteInputProps<T> {
   getSuggestionLabel: (item: T) => { main: string; secondary?: string };
   emptyText?: string;
   phase: string;
+  // Nombre de caractères saisis à partir duquel les suggestions s'affichent (0 = dès le focus)
+  minQueryLength?: number;
 }
 
 export default function AutocompleteInput<T>({
@@ -41,6 +43,7 @@ export default function AutocompleteInput<T>({
   getSuggestionLabel,
   emptyText,
   phase,
+  minQueryLength = 3,
 }: AutocompleteInputProps<T>) {
   const { t } = useTranslation();
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
@@ -142,7 +145,7 @@ export default function AutocompleteInput<T>({
   const handleFocus = () => {
     if (phase !== "guessing") return;
     onActivate();
-    if (query.length > 2) {
+    if (query.length >= minQueryLength) {
       setShowSuggestions(true);
     }
   };
@@ -151,7 +154,7 @@ export default function AutocompleteInput<T>({
     const newVal = e.target.value;
     onChange(newVal);
     const newQuery = getQuery(newVal);
-    if (newQuery.length > 2) {
+    if (newQuery.length >= minQueryLength) {
       setShowSuggestions(true);
     } else {
       setShowSuggestions(false);
@@ -190,7 +193,7 @@ export default function AutocompleteInput<T>({
         onClick={() => {
           if (phase !== "guessing") return;
           onActivate();
-          if (query.length > 2) {
+          if (query.length >= minQueryLength) {
             setShowSuggestions(true);
           }
         }}
@@ -220,7 +223,7 @@ export default function AutocompleteInput<T>({
           disabled={showAnswer}
         />
 
-        {showSuggestions && query.length > 2 && (
+        {showSuggestions && query.length >= minQueryLength && (
           <div className="absolute top-full right-0 left-0 z-50 mt-2 flex max-h-60 flex-col overflow-hidden overflow-y-auto rounded-xl border border-neutral-800/80 bg-neutral-900/95 shadow-2xl backdrop-blur-md">
             {suggestions.length > 0 ? (
               suggestions.map((item, idx) => {

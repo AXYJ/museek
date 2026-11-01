@@ -26,6 +26,7 @@ interface SocketListenersProps {
   setName: (name: string) => void;
   setMusicAmount: (amount: number) => void;
   setTime: (time: number) => void;
+  setGuessPlayer: (enabled: boolean) => void;
   playlistUrl: string;
   setToPlay: (toPlay: Track[]) => void;
   setDatabaseArtists: (database_artists: DatabaseArtist[]) => void;
@@ -54,6 +55,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     setName,
     setMusicAmount,
     setTime,
+    setGuessPlayer,
     playlistUrl,
     setToPlay,
     setDatabaseArtists,
@@ -276,6 +278,8 @@ export const useSocketListeners = (props: SocketListenersProps) => {
         setMusicAmount(value);
       } else if (key === "time") {
         setTime(value);
+      } else if (key === "guess_player") {
+        setGuessPlayer(value === 1);
       }
     };
 
@@ -288,6 +292,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
       name: string,
       artist_answer: boolean | number,
       track_answer: boolean,
+      player_answer: boolean,
     ) => {
       setPlayers((prev) =>
         prev.map((p) => {
@@ -308,6 +313,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
               artist_answer: isCorrect,
               artist_score: scoreVal,
               track_answer,
+              player_answer,
             };
           }
           return p;
@@ -339,12 +345,13 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("playlist_failed", handlePlaylistFailed);
 
     const handleGameReset = (
-      rules: { musicAmount?: number; time?: number },
+      rules: { musicAmount?: number; time?: number; guessPlayer?: boolean },
       players: Player[],
     ) => {
       if (rules) {
         if (rules.musicAmount !== undefined) setMusicAmount(rules.musicAmount);
         if (rules.time !== undefined) setTime(rules.time);
+        if (rules.guessPlayer !== undefined) setGuessPlayer(rules.guessPlayer);
       }
       rememberMe(players);
       setPlayers(players);
@@ -422,6 +429,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     setName,
     setMusicAmount,
     setTime,
+    setGuessPlayer,
     setToPlay,
     setDatabaseArtists,
     setDatabaseTracks,

@@ -12,7 +12,7 @@ import { useGame } from "@/context/GameContext";
 import { useTranslation } from "@/context/LanguageContext";
 
 export default function Results() {
-  const { players, toPlay, restart } = useGame();
+  const { players, toPlay, restart, guessPlayer } = useGame();
   const { t } = useTranslation();
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(1);
 
@@ -63,6 +63,11 @@ export default function Results() {
                 className="carousel-item-top aspect-square w-3/5 max-w-xs"
                 turn={index + 1}
               />
+              {guessPlayer && track.submittedBy && (
+                <p className="-mt-2 text-sm text-(--grey)">
+                  {t("track-cover.picked-by")} {track.submittedBy}
+                </p>
+              )}
 
               <div className="max-h-[25vh] w-full max-w-xl overflow-x-auto overflow-y-auto">
                 <table className="carousel-item-bottom w-full">
@@ -77,6 +82,11 @@ export default function Results() {
                       <th className="px-4 py-2 text-center text-xs font-semibold tracking-wider uppercase">
                         {t("results.track")}
                       </th>
+                      {guessPlayer && (
+                        <th className="px-4 py-2 text-center text-xs font-semibold tracking-wider uppercase">
+                          {t("results.picked-by")}
+                        </th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -116,6 +126,19 @@ export default function Results() {
                         >
                           {player.tracks_final_board?.[index] || ""}
                         </td>
+                        {guessPlayer && (
+                          <td
+                            className={`px-4 py-3 text-center text-xs ${order === 0 ? "pt-4" : ""} ${
+                              player.picks_final_board?.[index]
+                                ? player.picks_scores_board?.[index]
+                                  ? "font-medium text-(--green)"
+                                  : "text-(--red)"
+                                : ""
+                            }`}
+                          >
+                            {player.picks_final_board?.[index] || ""}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>

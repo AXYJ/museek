@@ -33,6 +33,7 @@ Everyone brings a playlist, Museek shuffles the tracks together, and every playe
 
 - **Collaborative blind test**: each player submits the link to one of their favourite playlists. The tracks are shuffled and played in real time. If a playlist can't be loaded, a pop-up warns everyone, players go back to "not ready" so the affected player can fix their link, and playlists that were already loaded are not reloaded on relaunch.
 - **Not a race**: speed doesn't count. Everyone scores on every track they know: 1 point for the artist (0.5 if there are several artists and you only find some of them) and 1 point for the title. Players who don't enable the help get 1 bonus point on each perfect answer (artist + title).
+- **Guess who picked the track**: with at least 3 players, the host can enable an extra field where everyone guesses which player added the track (+1 point). The answer is shown under the cover and in the results table.
 - **Optional help**: each player can enable it in the lobby. The album cover then gradually becomes clear between 10 s and 5 s before the end of the turn.
 - **No built-in chat**: the easiest way to play is in a voice call with your friends (Discord, Zoom…).
 - **Multi-platform support**: import public playlists from **Spotify**, **Deezer** and **Apple Music** (https links from these platforms only, short links included; any other link is rejected).

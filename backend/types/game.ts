@@ -76,6 +76,9 @@ export interface Player {
   tracks_final_board?: Record<number, string>;
   artists_scores_board?: Record<number, number>;
   tracks_scores_board?: Record<number, boolean>;
+  // Devinette du joueur qui a choisi le morceau (option guessPlayer)
+  picks_final_board?: Record<number, string>;
+  picks_scores_board?: Record<number, boolean>;
 }
 
 // Marque de type uniquement (aucune trace à l'exécution) : sans elle, un Player complet
@@ -101,6 +104,8 @@ export interface Room {
   players: Player[];
   musicAmount: number;
   time: number;
+  // Option « deviner qui a choisi le morceau » (3 joueurs minimum)
+  guessPlayer?: boolean;
   toPlay: Track[];
   database_artists: DatabaseArtist[];
   database_tracks: DatabaseTrack[];
@@ -127,9 +132,15 @@ export interface ClientToServerEvents {
   music_amount: (amount: number) => void;
   time: (time: number) => void;
   help: (enabled: boolean) => void;
+  guess_player: (enabled: boolean) => void;
   start_game: () => void;
   send_playlist_url: (url: string) => void;
-  submit_answer: (artist: string, track: string, turn: number) => void;
+  submit_answer: (
+    artist: string,
+    track: string,
+    turn: number,
+    player?: string,
+  ) => void;
   get_final_scores: () => void;
   restart_game: () => void;
   leave_game: () => void;
@@ -150,13 +161,14 @@ export interface ServerToClientEvents {
     name: string,
     artist_answer: boolean | number,
     track_answer: boolean,
+    player_answer: boolean,
   ) => void;
   final_scores: (players: PublicPlayer[]) => void;
   no_playlist: (reason?: string) => void;
   playlist_failed: (names: string[]) => void;
   host_transferred: (previousHost: string) => void;
   game_reset: (
-    rules: { musicAmount: number; time: number },
+    rules: { musicAmount: number; time: number; guessPlayer: boolean },
     players: PublicPlayer[],
   ) => void;
   game_reconnected: (data: {

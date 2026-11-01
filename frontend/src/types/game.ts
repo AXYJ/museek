@@ -91,7 +91,14 @@ export interface GameContextType {
   setDatabaseArtists: React.Dispatch<React.SetStateAction<DatabaseArtist[]>>;
   database_tracks: DatabaseTrack[];
   setDatabaseTracks: React.Dispatch<React.SetStateAction<DatabaseTrack[]>>;
-  sendAnswer: (artist: string, track: string, turn: number) => void;
+  sendAnswer: (
+    artist: string,
+    track: string,
+    turn: number,
+    player: string,
+  ) => void;
+  // Option « deviner qui a choisi le morceau »
+  guessPlayer: boolean;
   quitGame: () => void;
   message: string;
   setMessage: (message: string) => void;
@@ -118,9 +125,12 @@ export interface Player {
   artist_answer: boolean;
   artist_score?: number;
   track_answer: boolean;
+  player_answer?: boolean;
   artists_final_board?: Record<number, string>;
   tracks_final_board?: Record<number, string>;
   artists_scores_board?: Record<number, number>;
   tracks_scores_board?: Record<number, boolean>;
+  picks_final_board?: Record<number, string>;
+  picks_scores_board?: Record<number, boolean>;
   hasHelp: boolean;
 }

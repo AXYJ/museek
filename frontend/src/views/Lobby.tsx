@@ -29,6 +29,7 @@ export default function Lobby() {
     setMusicAmount,
     time,
     setTime,
+    guessPlayer,
     playlistUrl,
     setPlaylistUrl,
     launchGame,
@@ -50,6 +51,7 @@ export default function Lobby() {
   );
   const isHost = me?.isHost || false;
   const isReady = me?.isReady || false;
+  const notEnoughPlayers = players.length < 3;
 
   // Un lancement interrompu (déconnexion, retour au lobby) ne doit pas bloquer le bouton
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function Lobby() {
   }, [setIsLaunching]);
 
   const [infoType, setInfoType] = useState<
-    "number-music" | "time" | "help" | "url" | null
+    "number-music" | "time" | "help" | "guess-player" | "url" | null
   >(null);
 
   // Gestion du nombre de morceau par playlist
@@ -234,7 +236,60 @@ export default function Lobby() {
                     readOnly={!isHost}
                   />
                 </div>
-                <div className="flex items-center gap-4">
+                <div
+                  className={`flex items-center justify-between gap-4 transition-opacity ${notEnoughPlayers ? "opacity-50" : ""}`}
+                >
+                  <p>
+                    {t("lobby.guess-player")}
+                    <button
+                      className="relative ml-1 inline-flex items-center align-middle"
+                      aria-describedby="info-guess-player"
+                      onMouseOver={() => setInfoType("guess-player")}
+                      onMouseOut={() => setInfoType(null)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-info-icon lucide-info"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                      <Info
+                        id="info-guess-player"
+                        visible={infoType === "guess-player"}
+                      >
+                        <p>{t("lobby.guess-player-tooltip")}</p>
+                      </Info>
+                    </button>
+                  </p>
+                  <label
+                    className={`flex items-center gap-2 ${notEnoughPlayers ? "cursor-not-allowed" : ""}`}
+                  >
+                    Off
+                    <span className="switch">
+                      <input
+                        type="checkbox"
+                        checked={guessPlayer}
+                        disabled={!isHost || notEnoughPlayers}
+                        onChange={(e) =>
+                          socket?.emit("guess_player", e.target.checked)
+                        }
+                      />
+                      <span className="slider"></span>
+                    </span>
+                    On
+                  </label>
+                </div>
+                <div className="flex w-full items-center justify-between gap-4">
                   <p>
                     {t("lobby.help")}
                     <button

@@ -74,6 +74,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   });
   const [musicAmount, setMusicAmount] = useState<number>(3);
   const [time, setTime] = useState<number>(30);
+  const [guessPlayer, setGuessPlayer] = useState<boolean>(false);
   const [playlistUrl, setPlaylistUrl] = useState<string>("");
   const [toPlay, setToPlay] = useState<Track[]>([]);
   const [database_artists, setDatabaseArtists] = useState<DatabaseArtist[]>(
@@ -115,6 +116,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setName,
     setMusicAmount,
     setTime,
+    setGuessPlayer,
     playlistUrl,
     setToPlay,
     setDatabaseArtists,
@@ -262,9 +264,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   // Envoi des réponses aux serveur
   const sendAnswer = useCallback(
-    (artist: string, track: string, turn: number) => {
+    (artist: string, track: string, turn: number, player: string) => {
       if (socket) {
-        socket.emit("submit_answer", artist, track, turn);
+        socket.emit("submit_answer", artist, track, turn, player);
       }
     },
     [socket],
@@ -384,6 +386,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setMusicAmount,
       time,
       setTime,
+      guessPlayer,
       playlistUrl,
       toPlay,
       database_artists,
@@ -426,6 +429,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setMusicAmount,
       time,
       setTime,
+      guessPlayer,
       playlistUrl,
       toPlay,
       database_artists,

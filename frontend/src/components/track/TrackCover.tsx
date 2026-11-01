@@ -10,6 +10,8 @@ interface TrackCoverProps {
   internationalArtist?: string;
   name?: string;
   internationalName?: string;
+  // Joueur qui a choisi le morceau, révélé avec la réponse
+  submittedBy?: string;
   url?: string;
   counterText?: string;
   blurImage?: boolean;
@@ -29,6 +31,7 @@ export default function TrackCover({
   internationalArtist = "",
   name = "",
   internationalName = "",
+  submittedBy = "",
   url,
   counterText,
   blurImage = false,
@@ -132,6 +135,11 @@ export default function TrackCover({
                 </p>
               )}
             </div>
+            {submittedBy && (
+              <p className="mt-2 text-sm text-(--grey)/70">
+                {t("track-cover.picked-by")} {submittedBy}
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

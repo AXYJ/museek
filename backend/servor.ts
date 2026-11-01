@@ -25,7 +25,7 @@ import selectTracks, {
 } from "./scripts/get-artists-tracks.js";
 import { needsLlm, transliterateArtists } from "./scripts/transliterate.js";
 import { SlidingWindowLimiter, getClientIp } from "./scripts/rate-limit.js";
-import { getTrackArtists, prepareTrack, scoreAnswer } from "./scripts/answers.js";
+import { getTrackArtists, normalizeString, prepareTrack, scoreAnswer } from "./scripts/answers.js";
 import {
   Track,
   Room,
@@ -311,6 +311,7 @@ io.on(
       // Synchroniser les paramètres de la partie
       socket.emit("game-setting", "music_amount", room.musicAmount);
       socket.emit("game-setting", "time", room.time);
+      socket.emit("game-setting", "guess_player", room.guessPlayer ? 1 : 0);
 
       // Partie en cours (ou résultats affichés) : renvoyer l'état pour rejoindre l'écran de jeu
       if (gameActive && room.gameStartTime) {
@@ -388,11 +389,16 @@ io.on(
       p.tracks_final_board = {};
       p.artists_scores_board = {};
       p.tracks_scores_board = {};
+      p.picks_final_board = {};
+      p.picks_scores_board = {};
       p.leavedPlayer = false;
     });
     room.isGameOver = false;
     room.gameStartTime = null;
     room.isLoadingTracks = false;
+    // Des joueurs ont pu partir depuis l'activation de l'option
+    room.guessPlayer = !!room.guessPlayer && room.players.length >= 3;
+    io.to(roomCode).emit("game-setting", "guess_player", room.guessPlayer ? 1 : 0);
     io.to(roomCode).emit("game_started", toPublicPlayers(room.players));
   });
 
@@ -472,6 +478,15 @@ io.on(
     io.to(roomCode).emit("game-setting", "time", time);
   });
 
+  // Deviner qui a choisi le morceau (hôte, 3 joueurs minimum)
+  socket.on("guess_player", (enabled: boolean) => {
+    const { roomCode, room, player } = getSocketContext(socket);
+    if (!roomCode || !room || !player?.isHost) return;
+    if (typeof enabled !== "boolean") return;
+    if (enabled && room.players.length < 3) return;    room.guessPlayer = enabled;
+    io.to(roomCode).emit("game-setting", "guess_player", enabled ? 1 : 0);
+  });
+
   // Aide (propre à chaque joueur, modifiable seulement au lobby)
   socket.on("help", (enabled: boolean) => {
     const { roomCode, room, player } = getSocketContext(socket);
@@ -486,12 +501,13 @@ io.on(
   // --------------------------------------------------------
 
   // Envoi de la réponse (optimisé avec précalculs)
-  socket.on("submit_answer", (artist: string, track: string, turn: number) => {
+  socket.on("submit_answer", (artist: string, track: string, turn: number, playerGuess?: string) => {
     const { roomCode, room, player } = getSocketContext(socket);
     if (!roomCode || !room || !player) return;
     if (typeof artist !== "string" || typeof track !== "string") return;
     artist = artist.slice(0, 200);
     track = track.slice(0, 200);
+    playerGuess = typeof playerGuess === "string" ? playerGuess.slice(0, 200) : "";
 
     // Le tour est calculé côté serveur : le `turn` du client n'est pas fiable
     if (!room.gameStartTime || turn !== getTurnInfo(room.time, room.gameStartTime, room.toPlay.length).turn)
@@ -527,6 +543,19 @@ io.on(
       if (!player.hasHelp && artist_score === 1 && track_answer) {
         additionalScore += 1;
       }
+      // Bonus : trouver qui a choisi le morceau (y compris soi-même)
+      const submitter = currentTrack.submittedBy;
+      const player_answer =
+        !!room.guessPlayer &&
+        !!submitter &&
+        normalizeString(playerGuess) === normalizeString(submitter);
+      if (player_answer) additionalScore += 1;
+      if (room.guessPlayer) {
+        player.picks_final_board = player.picks_final_board || {};
+        player.picks_scores_board = player.picks_scores_board || {};
+        player.picks_final_board[turn - 1] = playerGuess.trim();
+        player.picks_scores_board[turn - 1] = player_answer;
+      }
       player.score = (player.score || 0) + additionalScore;
 
       io.to(roomCode).emit(
@@ -534,6 +563,7 @@ io.on(
         player.name,
         artist_score,
         track_answer,
+        player_answer,
       );
     }
   });
@@ -860,6 +890,8 @@ const checkAndResetGame = (roomCode: string): void => {
       p.tracks_final_board = {};
       p.artists_scores_board = {};
       p.tracks_scores_board = {};
+      p.picks_final_board = {};
+      p.picks_scores_board = {};
     });
 
     // L'hôte n'est pas revenu au lobby : le rôle passe à un joueur présent
@@ -879,6 +911,7 @@ const checkAndResetGame = (roomCode: string): void => {
     const rulesObj = {
       musicAmount: room.musicAmount,
       time: room.time,
+      guessPlayer: !!room.guessPlayer,
     };
 
     io.to(roomCode).emit("game_reset", rulesObj, toPublicPlayers(activePlayers));

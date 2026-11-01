@@ -43,6 +43,7 @@ export default function Game() {
     playerId,
     gameClock,
     setView,
+    guessPlayer,
   } = useGame();
 
   const { t } = useTranslation();
@@ -55,6 +56,8 @@ export default function Game() {
   const [trackGuess, setTrackGuess] = useState<string>("");
   const [guessingArtist, setGuessingArtist] = useState<boolean>(false);
   const [guessingSong, setGuessingSong] = useState<boolean>(false);
+  const [playerGuess, setPlayerGuess] = useState<string>("");
+  const [guessingPlayer, setGuessingPlayer] = useState<boolean>(false);
   const [isChangingVolume, setIsChangingVolume] = useState<boolean>(false);
   const volumeControlRef = useRef<HTMLDivElement | null>(null);
 
@@ -79,7 +82,7 @@ export default function Game() {
 
   // Bloquer le défilement du body lors de la saisie
   useEffect(() => {
-    if (guessingArtist || guessingSong) {
+    if (guessingArtist || guessingSong || guessingPlayer) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -87,7 +90,7 @@ export default function Game() {
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [guessingArtist, guessingSong]);
+  }, [guessingArtist, guessingSong, guessingPlayer]);
 
   // Helper to get the current artist query (the part after the last comma)
   const getArtistQuery = (input: string) => {
@@ -119,6 +122,16 @@ export default function Game() {
       const matchesInt = normalizeString(t.internationalName).includes(search);
       return matchesName || matchesInt;
     })
+    .slice(0, 5);
+
+  // Joueurs proposables (max 5) : ceux qui ont envoyé au moins un morceau, filtrés selon la saisie
+  const submitters = new Set(toPlay.map((track) => track.submittedBy));
+  const filteredPlayers = (players || [])
+    .filter(
+      (p) =>
+        submitters.has(p.name) &&
+        normalizeString(p.name).includes(normalizeString(playerGuess)),
+    )
     .slice(0, 5);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -177,10 +190,14 @@ export default function Game() {
   }, []);
 
   // Dernières saisies, lues par l'horloge sans la relancer à chaque frappe
-  const guessesRef = useRef({ artist: "", track: "" });
+  const guessesRef = useRef({ artist: "", track: "", player: "" });
   useEffect(() => {
-    guessesRef.current = { artist: artistGuess, track: trackGuess };
-  }, [artistGuess, trackGuess]);
+    guessesRef.current = {
+      artist: artistGuess,
+      track: trackGuess,
+      player: playerGuess,
+    };
+  }, [artistGuess, trackGuess, playerGuess]);
 
   // Horloge de partie : tour, phase et temps restant sont recalculés depuis l'heure
   // du serveur. Pas de décompte local qui dérive, et un retour de veille (mobile)
@@ -194,10 +211,11 @@ export default function Game() {
       const cur = clockRef.current;
 
       if (next.turn !== cur.turn) {
-        guessesRef.current = { artist: "", track: "" };
+        guessesRef.current = { artist: "", track: "", player: "" };
         setTurn(next.turn);
         setArtistGuess("");
         setTrackGuess("");
+        setPlayerGuess("");
         setPlayers((prev) =>
           prev.map((p) => ({
             ...p,
@@ -212,6 +230,7 @@ export default function Game() {
         if (next.phase !== "guessing") {
           setGuessingArtist(false);
           setGuessingSong(false);
+          setGuessingPlayer(false);
         }
       }
       setTimeLeft(next.timeLeft);
@@ -233,6 +252,7 @@ export default function Game() {
           guessesRef.current.artist,
           guessesRef.current.track,
           next.turn,
+          guessesRef.current.player,
         );
         answeredTurn = next.turn;
       }
@@ -328,6 +348,7 @@ export default function Game() {
           internationalArtist={currentTrack.internationalArtist}
           name={currentTrack.name}
           internationalName={currentTrack.internationalName}
+          submittedBy={guessPlayer ? currentTrack.submittedBy : undefined}
           counterText={`${turn}/${toPlay.length}`}
           blurImage={phase === "guessing"}
           hasHelp={me?.hasHelp}
@@ -393,6 +414,7 @@ export default function Game() {
               onActivate={() => {
                 setGuessingSong(false);
                 setGuessingArtist(true);
+                setGuessingPlayer(false);
               }}
               onDeactivate={() => setGuessingArtist(false)}
               timeLeft={timeLeft}
@@ -425,6 +447,7 @@ export default function Game() {
               onActivate={() => {
                 setGuessingArtist(false);
                 setGuessingSong(true);
+                setGuessingPlayer(false);
               }}
               onDeactivate={() => setGuessingSong(false)}
               timeLeft={timeLeft}
@@ -443,6 +466,35 @@ export default function Game() {
               phase={phase}
             />
           </div>
+
+          {/* Wrapper Joueur */}
+          {guessPlayer && (
+            <div className="relative h-18 w-full">
+              <AutocompleteInput
+                id="player-guess"
+                label={t("game.player")}
+                value={playerGuess}
+                onChange={setPlayerGuess}
+                suggestions={filteredPlayers}
+                isActive={guessingPlayer}
+                onActivate={() => {
+                  setGuessingArtist(false);
+                  setGuessingSong(false);
+                  setGuessingPlayer(true);
+                }}
+                onDeactivate={() => setGuessingPlayer(false)}
+                timeLeft={timeLeft}
+                showAnswer={showAnswer}
+                isCorrect={me?.player_answer}
+                isMultiple={false}
+                getSuggestionValue={(item) => item.name}
+                getSuggestionLabel={(item) => ({ main: item.name })}
+                emptyText={t("game.no-player-found")}
+                phase={phase}
+                minQueryLength={0}
+              />
+            </div>
+          )}
         </section>
       </div>
 
