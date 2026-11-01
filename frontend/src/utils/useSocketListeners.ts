@@ -198,6 +198,7 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("room_updated", handleRoomUpdated);
 
     const handleGameStarted = (players: Player[]) => {
+      setIsLaunching(true);
       setFailedPlaylists(null);
       rememberMe(players);
       setPlayers(players);
