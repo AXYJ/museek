@@ -269,13 +269,18 @@ export default function Home() {
             </div>
           </div>
         </Section>
-        <Section>
+        {/* lg:h-0 + min-h-full: FAQ doesn't drive the row height, it matches "how to play" and scrolls */}
+        <Section
+          sectionClassName="lg:h-0 lg:min-h-full"
+          className="flex min-h-0 flex-1 flex-col gap-4"
+        >
           <h2>{t("home.faq-title")}</h2>
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden lg:min-h-0 lg:flex-1 lg:overflow-y-auto accent-scroll">
             <Toggle question={t("home.faq-q1")} answer={t("home.faq-a1")} />
             <Toggle question={t("home.faq-q2")} answer={t("home.faq-a2")} />
             <Toggle question={t("home.faq-q3")} answer={t("home.faq-a3")} />
             <Toggle question={t("home.faq-q4")} answer={t("home.faq-a4")} />
+            <Toggle question={t("home.faq-q5")} answer={t("home.faq-a5")} />
           </div>
         </Section>
       </div>

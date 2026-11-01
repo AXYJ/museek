@@ -167,3 +167,24 @@ img {
   width: 100%;
   height: 100%;
 }
+
+/* Accent scrollbar without arrows (webkit), native thin fallback elsewhere */
+.accent-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.accent-scroll::-webkit-scrollbar-button {
+  display: none;
+}
+.accent-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.accent-scroll::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 9999px;
+}
+@supports not selector(::-webkit-scrollbar) {
+  .accent-scroll {
+    scrollbar-color: var(--accent) transparent;
+    scrollbar-width: thin;
+  }
+}

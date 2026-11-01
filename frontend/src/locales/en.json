@@ -36,6 +36,8 @@
         "faq-a3": "<ol class=\"space-y-2\"><li>Go to Deezer and find the playlist you want to share (the playlist must be public).</li><li>Click the 'Share' button next to the playlist name.</li><li>Click 'Copy'.</li><li>Paste this link in the field provided in the app.</li></ol>",
         "faq-q4": "How to add a playlist from Apple Music?",
         "faq-a4": "<ol class=\"space-y-2\"><li>Go to Apple Music and find the playlist you want to share (the playlist must be public).</li><li>Click the three dots (...) next to the playlist name.</li><li>Click 'Copy link'.</li><li>Paste this link in the field provided in the app.</li></ol>",
+        "faq-q5": "Is there a limit on the number of tracks per playlist?",
+        "faq-a5": "<p>Yes. Spotify, Deezer and Apple Music limit playlists to 100 retrievable tracks: only the first 100 tracks are used for the game.</p>",
         "error-connecting": "Connecting to server... Please wait.",
         "error-no-username": "Please enter a username.",
         "error-no-room": "Please enter a room code."

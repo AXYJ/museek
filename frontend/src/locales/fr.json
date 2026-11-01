@@ -36,6 +36,8 @@
         "faq-a3": "<ol class=\"space-y-2\"><li>Allez sur Deezer et trouvez la playlist que vous souhaitez partager (la playlist doit être publique).</li><li>Cliquez sur le bouton 'Partager' à côté du nom de la playlist.</li><li>Cliquez sur 'Copier'.</li><li>Collez ce lien dans le champ prévu à cet effet dans l'application.</li></ol>",
         "faq-q4": "Comment ajouter une playlist depuis Apple Music ?",
         "faq-a4": "<ol class=\"space-y-2\"><li>Allez sur Apple Music et trouvez la playlist que vous souhaitez partager (la playlist doit être publique).</li><li>Cliquez sur les trois petits points (...) à côté du nom de la playlist.</li><li>Cliquez sur 'Copier le lien'.</li><li>Collez ce lien dans le champ prévu à cet effet dans l'application.</li></ol>",
+        "faq-q5": "Y a-t-il une limite de morceaux par playlist ?",
+        "faq-a5": "<p>Oui. Spotify, Deezer et Apple Music limitent à 100 le nombre de morceaux récupérables par playlist : seuls les 100 premiers morceaux sont utilisés pour le jeu.</p>",
         "error-connecting": "Connexion au serveur en cours... Veuillez patienter.",
         "error-no-username": "Veuillez entrer un pseudo.",
         "error-no-room": "Veuillez entrer un code de room."
