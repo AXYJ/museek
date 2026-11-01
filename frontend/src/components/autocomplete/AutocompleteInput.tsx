@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/context/LanguageContext";
 
@@ -48,7 +48,11 @@ export default function AutocompleteInput<T>({
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const finalEmptyText = emptyText || t("autocomplete.no-results");
+  useEffect(() => {
+    if (isActive) inputRef.current?.focus();
+  }, [isActive]);
+
+  const finalEmptyText =emptyText || t("autocomplete.no-results");
 
   const getQuery = (inputVal: string) => {
     if (isMultiple) {
