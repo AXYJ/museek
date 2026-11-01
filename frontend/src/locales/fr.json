@@ -124,6 +124,8 @@
         "tracks-per-playlist-tooltip": "Le nombre de morceaux choisi dans chaque playlist.",
         "time-per-track": "Temps par morceau (secondes)",
         "time-per-track-tooltip": "Le temps accordé pour deviner et écrire les réponses pour chaque morceau.",
+        "help": "Activer une aide",
+        "help-tooltip": "La pochette d'album se défloute entre 10 s et 5 s avant la fin du tour. Sans aide, tu gagnes 1 point de plus par réponse parfaite (artiste + titre).",
         "add-your-music": "Ajoute ta playlist",
         "playlist-url": "URL de la playlist publique",
         "playlist-url-tooltip": "L'URL de la playlist. Tu peux trouver l'URL de la playlist en cliquant sur le bouton \"Partager\" de la playlist, puis sur \"Copier le lien\".",

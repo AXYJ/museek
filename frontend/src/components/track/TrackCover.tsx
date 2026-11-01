@@ -13,6 +13,10 @@ interface TrackCoverProps {
   url?: string;
   counterText?: string;
   blurImage?: boolean;
+  // Intensité du flou (1 = entier, 0 = image nette), pour l'aide qui défloute la cover
+  blurLevel?: number;
+  // Aide activée : pas de teinte ni de dégradé par-dessus la cover
+  hasHelp?: boolean;
   showAnswerOverlay?: boolean;
   className?: string;
   children?: React.ReactNode;
@@ -28,6 +32,8 @@ export default function TrackCover({
   url,
   counterText,
   blurImage = false,
+  blurLevel = 1,
+  hasHelp = false,
   showAnswerOverlay = false,
   className = "",
   children,
@@ -59,7 +65,7 @@ export default function TrackCover({
         isClickable
           ? "cursor-pointer transition-all duration-300 ease-out hover:scale-102 active:scale-95"
           : ""
-      } ${blurImage ? "blurred" : ""} ${className}`}
+      } ${blurImage ? "blurred" : ""} ${hasHelp ? "help" : ""} ${className}`}
     >
       <Grain id="track-grain" baseFrequency="0.9" scale="0.8" />
       {imageUrl ? (
@@ -80,10 +86,11 @@ export default function TrackCover({
             width={640}
             height={640}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-              blurImage ? "opacity-100 transition-none" : "opacity-0"
-            }`}
+              blurImage && blurLevel === 1 ? "transition-none" : ""
+            } ${blurImage && blurLevel < 1 ? "duration-1000 ease-linear" : ""}`}
             style={{
               filter: "url(#track-grain) grayscale(0.8)",
+              opacity: blurImage ? blurLevel : 0,
             }}
             priority
           />
@@ -170,7 +177,9 @@ export default function TrackCover({
           {children}
 
           {/* Vignette styling for readable text/controls */}
-          <div className="overlay-cover pointer-events-none absolute inset-0"></div>
+          {!hasHelp && (
+            <div className="overlay-cover pointer-events-none absolute inset-0"></div>
+          )}
         </>
       )}
 

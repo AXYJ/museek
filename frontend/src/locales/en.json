@@ -124,6 +124,8 @@
         "tracks-per-playlist-tooltip": "The number of tracks chosen from each playlist.",
         "time-per-track": "Time per track (seconds)",
         "time-per-track-tooltip": "The time allowed to guess and write the answers for each track.",
+        "help": "Enable help",
+        "help-tooltip": "The album cover gets clearer between 10 s and 5 s before the turn ends. Without help, you get 1 extra point per perfect answer (artist + track).",
         "add-your-music": "Add your playlist",
         "playlist-url": "Public playlist URL",
         "playlist-url-tooltip": "The playlist URL. You can find the playlist URL by clicking on the \"Share\" button on the playlist, then \"Copy link\".",

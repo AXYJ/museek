@@ -32,7 +32,8 @@ Chacun apporte sa playlist, Museek mélange les morceaux, et chaque joueur qui r
 ## ✨ Fonctionnalités
 
 - **Blindtest Collaboratif** : Chaque joueur soumet le lien d'une de ses playlists favorites. Les morceaux sont mélangés et diffusés en temps réel. Si une playlist ne peut pas être chargée, une pop-up prévient tout le monde, les joueurs repassent « pas prêts » pour que le joueur concerné corrige son lien, et les playlists déjà chargées ne sont pas rechargées au relancement.
-- **Pas une course** : la vitesse ne compte pas, chacun marque des points sur chaque morceau dont il connaît l'artiste (1 point, 0,5 s'il y en a plusieurs et que vous n'en trouvez qu'une partie) ou le titre (1 point).
+- **Pas une course** : la vitesse ne compte pas, chacun marque des points sur chaque morceau dont il connaît l'artiste (1 point, 0,5 s'il y en a plusieurs et que vous n'en trouvez qu'une partie) ou le titre (1 point). Sans l'aide activée, une réponse parfaite (artiste + titre) rapporte 1 point bonus.
+- **Aide optionnelle** : chaque joueur peut l'activer dans le lobby. La pochette d'album se défloute alors progressivement entre 10 s et 5 s avant la fin du tour.
 - **Pas de chat intégré** : le plus simple est de jouer en vocal avec vos amis (Discord, Zoom…).
 - **Support Multi-plateformes** : Importation de playlists publiques depuis **Spotify**, **Deezer** et **Apple Music** (liens https de ces plateformes uniquement, liens courts compris ; tout autre lien est refusé).
 - **Multijoueur en Temps Réel** : Création et gestion de salons de jeu (rooms) grâce aux WebSockets.

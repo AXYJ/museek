@@ -326,6 +326,10 @@ export default function Game() {
           internationalName={currentTrack.internationalName}
           counterText={`${turn}/${toPlay.length}`}
           blurImage={phase === "guessing"}
+          hasHelp={me?.hasHelp}
+          blurLevel={
+            me?.hasHelp ? Math.min(1, Math.max(0, (timeLeft - 5) / 5)) : 1
+          }
           showAnswerOverlay={showAnswer}
           className="aspect-square w-full max-w-72"
           turn={turn}
@@ -360,7 +364,7 @@ export default function Game() {
                     type="range"
                     min="0"
                     max="1"
-                    step="0.1"
+                    step="0.01"
                     value={volume}
                     onMouseDown={() => setIsChangingVolume(true)}
                     onChange={(e) => setVolume(Number(e.target.value))}

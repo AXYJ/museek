@@ -66,6 +66,8 @@ export interface Player {
   isHost: boolean;
   isReady: boolean;
   score: number;
+  // Aide activée (cover qui se défloute en fin de tour) : pas de point bonus
+  hasHelp: boolean;
   leavedPlayer: boolean;
   inLobby?: boolean;
   playlistUrl?: string;
@@ -124,6 +126,7 @@ export interface ClientToServerEvents {
   ready: (isReady: boolean) => void;
   music_amount: (amount: number) => void;
   time: (time: number) => void;
+  help: (enabled: boolean) => void;
   start_game: () => void;
   send_playlist_url: (url: string) => void;
   submit_answer: (artist: string, track: string, turn: number) => void;

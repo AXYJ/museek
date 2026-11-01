@@ -57,7 +57,7 @@ export default function Lobby() {
   }, [setIsLaunching]);
 
   const [infoType, setInfoType] = useState<
-    "number-music" | "time" | "url" | null
+    "number-music" | "time" | "help" | "url" | null
   >(null);
 
   // Gestion du nombre de morceau par playlist
@@ -233,6 +233,49 @@ export default function Lobby() {
                     maxDisabled={time >= 30}
                     readOnly={!isHost}
                   />
+                </div>
+                <div className="flex gap-4 items-center">
+                  <p>
+                    {t("lobby.help")}
+                    <button
+                      className="relative ml-1 inline-flex items-center align-middle"
+                      aria-describedby="info-time"
+                      onMouseOver={() => setInfoType("help")}
+                      onMouseOut={() => setInfoType(null)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-info-icon lucide-info"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                      <Info id="info-time" visible={infoType === "help"}>
+                        <p>{t("lobby.help-tooltip")}</p>
+                      </Info>
+                    </button>
+                  </p>
+                  <label className="flex items-center gap-2">
+                    Off
+                    <span className="switch">
+                      <input
+                        type="checkbox"
+                        checked={me?.hasHelp ?? false}
+                        onChange={(e) => socket?.emit("help", e.target.checked)}
+                      />
+                      <span className="slider"></span>
+                    </span>
+                    On
+                  </label>
                 </div>
               </div>
             </Section>

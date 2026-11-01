@@ -229,6 +229,7 @@ io.on(
             leavedPlayer: false,
             inLobby: true,
             score: 0,
+            hasHelp: false,
             isReady: true,
           },
         ],
@@ -297,6 +298,7 @@ io.on(
           leavedPlayer: false,
           inLobby: !gameActive,
           score: 0,
+          hasHelp: false,
           isReady: false,
         });
         console.log(
@@ -470,6 +472,15 @@ io.on(
     io.to(roomCode).emit("game-setting", "time", time);
   });
 
+  // Aide (propre à chaque joueur, modifiable seulement au lobby)
+  socket.on("help", (enabled: boolean) => {
+    const { roomCode, room, player } = getSocketContext(socket);
+    if (!roomCode || !room || !player?.inLobby) return;
+    if (typeof enabled !== "boolean") return;
+    player.hasHelp = enabled;
+    emitRoomUpdated(roomCode, room);
+  });
+
   // --------------------------------------------------------
   // Actions en partie
   // --------------------------------------------------------
@@ -510,6 +521,10 @@ io.on(
       // Calcul et mise à jour du score sur le serveur
       let additionalScore = artist_score;
       if (track_answer) {
+        additionalScore += 1;
+      }
+      // Bonus pour une réponse parfaite (artiste + titre) sans aide
+      if (!player.hasHelp && artist_score === 1 && track_answer) {
         additionalScore += 1;
       }
       player.score = (player.score || 0) + additionalScore;
