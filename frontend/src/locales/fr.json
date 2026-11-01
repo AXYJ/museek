@@ -123,7 +123,7 @@
         "time-per-track": "Temps par morceau (secondes)",
         "time-per-track-tooltip": "Le temps accordé pour deviner et écrire les réponses pour chaque morceau.",
         "add-your-music": "Ajoute ta playlist",
-        "playlist-url": "URL de la playlist",
+        "playlist-url": "URL de la playlist publique",
         "playlist-url-tooltip": "L'URL de la playlist. Tu peux trouver l'URL de la playlist en cliquant sur le bouton \"Partager\" de la playlist, puis sur \"Copier le lien\".",
         "quit": "Quitter",
         "launch": "Lancer",

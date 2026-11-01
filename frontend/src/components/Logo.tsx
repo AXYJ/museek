@@ -10,6 +10,7 @@ export default function Logo() {
       width={400}
       height={200}
       className="w-72"
+      loading="eager"
     />
   );
 }
