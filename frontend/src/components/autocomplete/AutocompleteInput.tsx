@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useTranslation } from "@/context/LanguageContext";
 
 interface AutocompleteInputProps<T> {
@@ -174,7 +173,7 @@ export default function AutocompleteInput<T>({
     <>
       {isActive && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-all duration-300"
+          className="animate-fade-in fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
           onClick={() => {
             onDeactivate();
             setShowSuggestions(false);
@@ -182,12 +181,10 @@ export default function AutocompleteInput<T>({
         />
       )}
 
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 350, damping: 35 }}
+      <div
         className={`flex flex-col ${
           isActive
-            ? "fixed top-[20%] left-1/2 z-50 w-80 max-w-[90vw] -translate-x-1/2"
+            ? "animate-fade-in fixed top-[20%] left-1/2 z-50 w-80 max-w-[90vw] -translate-x-1/2"
             : "absolute inset-0"
         }`}
         onClick={() => {
@@ -260,7 +257,7 @@ export default function AutocompleteInput<T>({
             )}
           </div>
         )}
-      </motion.div>
+      </div>
     </>
   );
 }
