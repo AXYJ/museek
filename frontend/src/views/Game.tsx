@@ -500,7 +500,15 @@ export default function Game() {
 
       {/* Barre de temps */}
       <div className="pointer-events-none mt-4 flex w-full max-w-lg flex-col items-center gap-2 md:w-1/2 lg:w-[calc(100vw-4rem)]">
-        <span className="text-sm font-semibold tracking-wider text-gray-300">
+        <span
+          className={`text-sm font-semibold tracking-wider transition-colors duration-300 ${
+            phase === "guessing" && timeLeft <= 5
+              ? "text-red-500"
+              : phase === "guessing" && timeLeft <= 10
+                ? "text-orange-400"
+                : "text-gray-300"
+          }`}
+        >
           {phase === "guessing"
             ? `${t("game.time-remaining")} : ${timeLeft}s`
             : phase === "transition"
