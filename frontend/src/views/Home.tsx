@@ -19,15 +19,8 @@ import ChangeLanguage from "@/components/button/ChangeLanguage";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
 
 export default function Home() {
-  const {
-    isConnected,
-    error,
-    setError,
-    name,
-    setName,
-    createGame,
-    joinGame,
-  } = useGame();
+  const { isConnected, error, setError, name, setName, createGame, joinGame } =
+    useGame();
   const { t } = useTranslation();
 
   const [roomInput, setRoomInput] = useState<string>("");
@@ -169,7 +162,12 @@ export default function Home() {
                     <div className="flex flex-wrap items-center justify-center gap-8">
                       <Image src="/spotify.png" alt="" width={50} height={50} />
                       <Image src="/deezer.png" alt="" width={50} height={50} />
-                      <Image src="/apple-music.svg" alt="" width={50} height={50} />
+                      <Image
+                        src="/apple-music.svg"
+                        alt=""
+                        width={50}
+                        height={50}
+                      />
                     </div>
                   </div>
                   <p className="px-2 text-center">{t("home.step2")}</p>
@@ -275,7 +273,7 @@ export default function Home() {
           className="flex min-h-0 flex-1 flex-col gap-4"
         >
           <h2>{t("home.faq-title")}</h2>
-          <div className="flex flex-col overflow-hidden lg:min-h-0 lg:flex-1 lg:overflow-y-auto accent-scroll">
+          <div className="accent-scroll flex flex-col overflow-hidden lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
             <Toggle question={t("home.faq-q1")} answer={t("home.faq-a1")} />
             <Toggle question={t("home.faq-q2")} answer={t("home.faq-a2")} />
             <Toggle question={t("home.faq-q3")} answer={t("home.faq-a3")} />

@@ -193,58 +193,58 @@ img {
   }
 }
 
-/* From Uiverse.io by Voxybuns */ 
+/* From Uiverse.io by Voxybuns */
 /* The switch - the box around the slider */
 .switch {
   /* Variables */
- --switch_width: 2.2em;
- --switch_height: 1.2em;
- --inset: 3px;
- font-size: 17px;
- position: relative;
- display: inline-block;
- width: var(--switch_width);
- height: var(--switch_height);
+  --switch_width: 2.2em;
+  --switch_height: 1.2em;
+  --inset: 3px;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: var(--switch_width);
+  height: var(--switch_height);
 }
 
 /* Hide default HTML checkbox */
 .switch input {
- opacity: 0;
- width: 0;
- height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 /* The slider */
 .slider {
- position: absolute;
- cursor: pointer;
- inset: 0;
- background-color: var(--semiaccent);
- transition: .15s;
- border-radius: var(--switch_height);
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--semiaccent);
+  transition: 0.15s;
+  border-radius: var(--switch_height);
 }
 
 .slider:before {
- position: absolute;
- content: "";
- height: calc(var(--switch_height) - 2 * var(--inset));
- width: calc(var(--switch_height) - 2 * var(--inset));
- left: var(--inset);
- top: var(--inset);
- border-radius: 100%;
- background-color: var(--white);
- transition: .15s;
+  position: absolute;
+  content: "";
+  height: calc(var(--switch_height) - 2 * var(--inset));
+  width: calc(var(--switch_height) - 2 * var(--inset));
+  left: var(--inset);
+  top: var(--inset);
+  border-radius: 100%;
+  background-color: var(--white);
+  transition: 0.15s;
 }
 
 input:checked + .slider {
- background-color: var(--accent);
+  background-color: var(--accent);
 }
 
 input:checked + .slider:before {
- transform: translateX(calc(var(--switch_width) - var(--switch_height)));
+  transform: translateX(calc(var(--switch_width) - var(--switch_height)));
 }
 
 input:focus-visible + .slider {
- outline: 2px solid var(--accent);
- outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

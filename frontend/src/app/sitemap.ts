@@ -2,7 +2,8 @@ import type { MetadataRoute } from "next";
 
 // Mettre à jour ces dates uniquement quand le contenu de la page change.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://museek.xiao-web.com";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "https://museek.xiao-web.com";
 
   return [
     {

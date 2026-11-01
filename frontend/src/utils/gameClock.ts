@@ -24,10 +24,22 @@ export function getClockState(
     return { turn: trackCount + 1, phase: "answer", timeLeft: 0 };
   }
   if (inTurn < clock.time) {
-    return { turn, phase: "guessing", timeLeft: Math.ceil(clock.time - inTurn) };
+    return {
+      turn,
+      phase: "guessing",
+      timeLeft: Math.ceil(clock.time - inTurn),
+    };
   }
   if (inTurn < clock.time + 5) {
-    return { turn, phase: "answer", timeLeft: Math.ceil(clock.time + 5 - inTurn) };
+    return {
+      turn,
+      phase: "answer",
+      timeLeft: Math.ceil(clock.time + 5 - inTurn),
+    };
   }
-  return { turn, phase: "transition", timeLeft: Math.ceil(turnDuration - inTurn) };
+  return {
+    turn,
+    phase: "transition",
+    timeLeft: Math.ceil(turnDuration - inTurn),
+  };
 }

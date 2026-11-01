@@ -229,7 +229,11 @@ export default function Game() {
         next.turn <= toPlay.length &&
         answeredTurn < next.turn
       ) {
-        sendAnswer(guessesRef.current.artist, guessesRef.current.track, next.turn);
+        sendAnswer(
+          guessesRef.current.artist,
+          guessesRef.current.track,
+          next.turn,
+        );
         answeredTurn = next.turn;
       }
       clockRef.current = { turn: next.turn, phase: next.phase, answeredTurn };
@@ -443,7 +447,7 @@ export default function Game() {
       </div>
 
       {/* Barre de temps */}
-      <div className="pointer-events-none mt-4 flex w-full lg:w-[calc(100vw-4rem)] max-w-lg flex-col items-center gap-2 md:w-1/2">
+      <div className="pointer-events-none mt-4 flex w-full max-w-lg flex-col items-center gap-2 md:w-1/2 lg:w-[calc(100vw-4rem)]">
         <span className="text-sm font-semibold tracking-wider text-gray-300">
           {phase === "guessing"
             ? `${t("game.time-remaining")} : ${timeLeft}s`

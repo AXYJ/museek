@@ -234,7 +234,7 @@ export default function Lobby() {
                     readOnly={!isHost}
                   />
                 </div>
-                <div className="flex gap-4 items-center">
+                <div className="flex items-center gap-4">
                   <p>
                     {t("lobby.help")}
                     <button

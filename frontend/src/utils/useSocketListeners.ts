@@ -354,7 +354,9 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("game_reset", handleGameReset);
 
     const handleHostTransferred = (previousHost: string) => {
-      setMessage(latestRef.current.t("lobby.host_transferred", { host: previousHost }));
+      setMessage(
+        latestRef.current.t("lobby.host_transferred", { host: previousHost }),
+      );
     };
 
     socket.on("host_transferred", handleHostTransferred);

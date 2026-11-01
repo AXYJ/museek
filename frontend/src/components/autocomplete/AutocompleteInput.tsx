@@ -51,7 +51,7 @@ export default function AutocompleteInput<T>({
     if (isActive) inputRef.current?.focus();
   }, [isActive]);
 
-  const finalEmptyText =emptyText || t("autocomplete.no-results");
+  const finalEmptyText = emptyText || t("autocomplete.no-results");
 
   const getQuery = (inputVal: string) => {
     if (isMultiple) {
