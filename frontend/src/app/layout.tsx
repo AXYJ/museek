@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: "%s | Museek",
   },
   description:
-    "Le blindtest où vous jouez avec VOS musiques ! Créez ou rejoignez une partie en ligne et testez vos connaissances musicales entre amis avec Spotify, Deezer ou Apple Music.",
+    "Le blindtest où vous jouez avec VOS musiques ! Créez ou rejoignez une partie en ligne entre amis avec vos playlists Spotify, Deezer ou Apple Music.",
   applicationName: "Museek",
   authors: [{ name: "Museek" }],
   creator: "Museek",

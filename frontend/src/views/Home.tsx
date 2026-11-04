@@ -160,11 +160,11 @@ export default function Home() {
                     aria-hidden="true"
                   >
                     <div className="flex flex-wrap items-center justify-center gap-8">
-                      <Image src="/spotify.png" alt="" width={50} height={50} />
-                      <Image src="/deezer.png" alt="" width={50} height={50} />
+                      <Image src="/spotify.png" alt="Spotify" width={50} height={50} />
+                      <Image src="/deezer.png" alt="Deezer" width={50} height={50} />
                       <Image
                         src="/apple-music.svg"
-                        alt=""
+                        alt="Apple Music"
                         width={50}
                         height={50}
                       />
