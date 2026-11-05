@@ -140,7 +140,7 @@ export default function Home() {
             >
               <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
                 <div
-                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-75.5"
                   aria-hidden="true"
                 >
                   <div className="w-full rounded-lg bg-(--accent) px-4 py-2 text-center text-(--white)">
@@ -150,14 +150,14 @@ export default function Home() {
                     {t("home.join")}
                   </div>
                 </div>
-                <p className="px-2 text-center lg:max-w-[302px]">
+                <p className="px-2 text-center lg:max-w-75.5">
                   {t("home.step1")}
                 </p>
               </div>
 
               <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
                 <div
-                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-75.5"
                   aria-hidden="true"
                 >
                   <div className="flex flex-wrap items-center justify-center gap-8">
@@ -181,14 +181,14 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <p className="px-2 text-center lg:max-w-[302px]">
+                <p className="px-2 text-center lg:max-w-75.5">
                   {t("home.step2")}
                 </p>
               </div>
 
               <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
                 <div
-                  className="flex min-h-32 w-full flex-col justify-center gap-2 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  className="flex min-h-32 w-full flex-col justify-center gap-2 rounded-lg px-16 py-4 lg:max-w-75.5"
                   aria-hidden="true"
                 >
                   <div>
@@ -216,7 +216,7 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <p className="px-2 text-center lg:max-w-[302px]">
+                <p className="px-2 text-center lg:max-w-75.5">
                   {t("home.step3")}
                 </p>
               </div>
