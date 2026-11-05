@@ -128,160 +128,188 @@ export default function Home() {
           ))}
         </ul>
       </Section>
-      <div className="grid w-full grid-cols-1 flex-col gap-4 md:flex-row md:gap-8 lg:grid-cols-2">
-        <Section>
-          <h2>{t("home.how-to-play")}</h2>
-          <div className="explain-container relative overflow-hidden">
-            <div className="explain-slider flex items-center justify-between gap-4">
-              <div
-                className="slides flex w-full items-center justify-start transition-transform duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentSlide * 100}%)`,
-                }}
-              >
-                <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
-                  <div
-                    className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4"
-                    aria-hidden="true"
-                  >
-                    <div className="w-full -rotate-2 rounded-lg bg-(--accent) px-4 py-2 text-center text-(--white)">
-                      {t("home.create")}
-                    </div>
-                    <div className="w-full -rotate-6 rounded-lg bg-(--accent) px-4 py-2 text-center text-(--white)">
-                      {t("home.join")}
-                    </div>
+      <Section>
+        <h2>{t("home.how-to-play")}</h2>
+        <div className="explain-container relative overflow-hidden">
+          <div className="explain-slider flex items-center justify-between gap-4">
+            <div
+              className="slides flex w-full items-center justify-start transition-transform duration-500 ease-in-out"
+              style={{
+                transform: `translateX(-${currentSlide * 100}%)`,
+              }}
+            >
+              <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
+                <div
+                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  aria-hidden="true"
+                >
+                  <div className="w-full rounded-lg bg-(--accent) px-4 py-2 text-center text-(--white)">
+                    {t("home.create")}
                   </div>
-                  <p className="px-2 text-center">{t("home.step1")}</p>
+                  <div className="w-full rounded-lg bg-(--accent) px-4 py-2 text-center text-(--white)">
+                    {t("home.join")}
+                  </div>
                 </div>
+                <p className="px-2 text-center lg:max-w-[302px]">
+                  {t("home.step1")}
+                </p>
+              </div>
 
-                <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
-                  <div
-                    className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4"
-                    aria-hidden="true"
-                  >
-                    <div className="flex flex-wrap items-center justify-center gap-8">
-                      <Image src="/spotify.png" alt="Spotify" width={50} height={50} />
-                      <Image src="/deezer.png" alt="Deezer" width={50} height={50} />
-                      <Image
-                        src="/apple-music.svg"
-                        alt="Apple Music"
-                        width={50}
-                        height={50}
-                      />
-                    </div>
+              <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
+                <div
+                  className="flex min-h-32 w-full flex-col items-center justify-center gap-4 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  aria-hidden="true"
+                >
+                  <div className="flex flex-wrap items-center justify-center gap-8">
+                    <Image
+                      src="/spotify.png"
+                      alt="Spotify"
+                      width={50}
+                      height={50}
+                    />
+                    <Image
+                      src="/deezer.png"
+                      alt="Deezer"
+                      width={50}
+                      height={50}
+                    />
+                    <Image
+                      src="/apple-music.svg"
+                      alt="Apple Music"
+                      width={50}
+                      height={50}
+                    />
                   </div>
-                  <p className="px-2 text-center">{t("home.step2")}</p>
                 </div>
+                <p className="px-2 text-center lg:max-w-[302px]">
+                  {t("home.step2")}
+                </p>
+              </div>
 
-                <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
-                  <div
-                    className="flex min-h-32 w-full flex-col justify-center gap-2 rounded-lg px-16 py-4"
-                    aria-hidden="true"
-                  >
-                    <div className="rotate-2">
-                      <label htmlFor="artist-guess" className="text-sm">
-                        {t("home.artist")}
-                      </label>
-                      <input
-                        id="artist-guess"
-                        type="text"
-                        tabIndex={-1}
-                        readOnly
-                        className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
-                      />
-                    </div>
-                    <div className="rotate-6">
-                      <label htmlFor="track-guess" className="text-sm">
-                        {t("home.track")}
-                      </label>
-                      <input
-                        id="track-guess"
-                        type="text"
-                        tabIndex={-1}
-                        readOnly
-                        className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
-                      />
-                    </div>
+              <div className="slide pointer-events-none flex w-full shrink-0 flex-col items-center gap-8 rounded-lg">
+                <div
+                  className="flex min-h-32 w-full flex-col justify-center gap-2 rounded-lg px-16 py-4 lg:max-w-[302px]"
+                  aria-hidden="true"
+                >
+                  <div>
+                    <label htmlFor="artist-guess" className="text-sm">
+                      {t("home.artist")}
+                    </label>
+                    <input
+                      id="artist-guess"
+                      type="text"
+                      tabIndex={-1}
+                      readOnly
+                      className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
+                    />
                   </div>
-                  <p className="px-2 text-center">{t("home.step3")}</p>
+                  <div>
+                    <label htmlFor="track-guess" className="text-sm">
+                      {t("home.track")}
+                    </label>
+                    <input
+                      id="track-guess"
+                      type="text"
+                      tabIndex={-1}
+                      readOnly
+                      className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
+                    />
+                  </div>
                 </div>
+                <p className="px-2 text-center lg:max-w-[302px]">
+                  {t("home.step3")}
+                </p>
               </div>
             </div>
-            <button
-              className="previous absolute top-1/2 left-0 flex aspect-square h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) transition-all duration-300 disabled:pointer-events-none disabled:opacity-0"
-              onClick={prevSlide}
-              disabled={currentSlide === 0}
-              aria-label={t("home.prev-slide")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-chevron-left-icon lucide-chevron-left"
-              >
-                <path d="m15 18-6-6 6-6" />
-              </svg>
-            </button>
-            <button
-              className="next absolute top-1/2 right-0 flex aspect-square h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) transition-all duration-300 disabled:pointer-events-none disabled:opacity-0"
-              onClick={nextSlide}
-              disabled={currentSlide === 2}
-              aria-label={t("home.next-slide")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-chevron-right-icon lucide-chevron-right"
-              >
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </button>
-            <div
-              className="mt-4 flex justify-center gap-2"
-              role="group"
-              aria-label={t("home.select-slide")}
-            >
-              {[0, 1, 2].map((index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={`h-4 w-4 rounded-full border-none p-0 ${index === currentSlide ? "bg-(--accent)" : "bg-(--white)"} cursor-pointer transition-all duration-300`}
-                  onClick={() => setCurrentSlide(index)}
-                  aria-label={`${t("home.go-to-slide")} ${index + 1}`}
-                  aria-current={index === currentSlide ? "step" : undefined}
-                />
-              ))}
-            </div>
           </div>
-        </Section>
-        {/* lg:h-0 + min-h-full: FAQ doesn't drive the row height, it matches "how to play" and scrolls */}
-        <Section
-          sectionClassName="lg:h-0 lg:min-h-full"
-          className="flex min-h-0 flex-1 flex-col gap-4"
-        >
-          <h2>{t("home.faq-title")}</h2>
-          <div className="accent-scroll flex flex-col overflow-hidden lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-            <Toggle question={t("home.faq-q1")} answer={t("home.faq-a1")} />
-            <Toggle question={t("home.faq-q2")} answer={t("home.faq-a2")} />
-            <Toggle question={t("home.faq-q3")} answer={t("home.faq-a3")} />
-            <Toggle question={t("home.faq-q4")} answer={t("home.faq-a4")} />
-            <Toggle question={t("home.faq-q5")} answer={t("home.faq-a5")} />
+          <button
+            className="previous absolute top-1/2 left-0 flex aspect-square h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) transition-all duration-300 disabled:pointer-events-none disabled:opacity-0"
+            onClick={prevSlide}
+            disabled={currentSlide === 0}
+            aria-label={t("home.prev-slide")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-chevron-left-icon lucide-chevron-left"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            className="next absolute top-1/2 right-0 flex aspect-square h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) transition-all duration-300 disabled:pointer-events-none disabled:opacity-0"
+            onClick={nextSlide}
+            disabled={currentSlide === 2}
+            aria-label={t("home.next-slide")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-chevron-right-icon lucide-chevron-right"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+          <div
+            className="mt-4 flex justify-center gap-2"
+            role="group"
+            aria-label={t("home.select-slide")}
+          >
+            {[0, 1, 2].map((index) => (
+              <button
+                key={index}
+                type="button"
+                className={`h-4 w-4 rounded-full border-none p-0 ${index === currentSlide ? "bg-(--accent)" : "bg-(--white)"} cursor-pointer transition-all duration-300`}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`${t("home.go-to-slide")} ${index + 1}`}
+                aria-current={index === currentSlide ? "step" : undefined}
+              />
+            ))}
           </div>
-        </Section>
-      </div>
+        </div>
+      </Section>
+      <Section>
+        <h2>{t("home.flow-title")}</h2>
+        <p>{t("home.flow-text-1")}</p>
+        <p>{t("home.flow-text-2")}</p>
+      </Section>
+      <Section>
+        <h2>{t("home.scoring-title")}</h2>
+        <p>{t("home.scoring-text")}</p>
+      </Section>
+      <Section>
+        <h2>{t("home.easy-title")}</h2>
+        <p>{t("home.easy-text")}</p>
+      </Section>
+      <Section>
+        <h2>{t("home.faq-title")}</h2>
+        <div className="flex flex-col overflow-hidden">
+          <Toggle question={t("home.faq-q1")} answer={t("home.faq-a1")} />
+          <Toggle question={t("home.faq-q2")} answer={t("home.faq-a2")} />
+          <Toggle question={t("home.faq-q3")} answer={t("home.faq-a3")} />
+          <Toggle question={t("home.faq-q4")} answer={t("home.faq-a4")} />
+          <Toggle question={t("home.faq-q5")} answer={t("home.faq-a5")} />
+          <Toggle question={t("home.faq-q6")} answer={t("home.faq-a6")} />
+          <Toggle question={t("home.faq-q7")} answer={t("home.faq-a7")} />
+          <Toggle question={t("home.faq-q8")} answer={t("home.faq-a8")} />
+          <Toggle question={t("home.faq-q9")} answer={t("home.faq-a9")} />
+          <Toggle question={t("home.faq-q10")} answer={t("home.faq-a10")} />
+        </div>
+      </Section>
 
       <footer className="mt-4 flex w-full flex-col items-center gap-4 text-center">
         <p className="text-(--white)/50">{t("home.message")}</p>
