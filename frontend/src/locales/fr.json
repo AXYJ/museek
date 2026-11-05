@@ -18,6 +18,7 @@
         "step3": "Devinez le titre et l'artiste du morceau et gagnez des points",
         "message": "Ce jeu est un projet indépendant et n'est ni affilié, ni sponsorisé, ni approuvé par Spotify / Deezer / Apple Music. Les titres, artistes et visuels associés restent la propriété exclusive de leurs ayants droit respectifs.",
         "rules": "Règles du jeu",
+        "rules-href": "/comment-jouer",
         "full-rules": "Voir les règles complètes et nos conseils",
         "mentions": "Mentions et politiques",
         "copyright": "© 2026 Museek",

@@ -18,12 +18,34 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: "/comment-jouer" },
+  alternates: {
+    canonical: "/comment-jouer",
+    languages: {
+      "fr-FR": "/comment-jouer",
+      en: "/en/how-to-play",
+      "x-default": "/comment-jouer",
+    },
+  },
   openGraph: {
     type: "article",
     url: "/comment-jouer",
+    locale: "fr_FR",
     title: `${TITLE} | Museek`,
     description: DESCRIPTION,
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Museek - Blindtest musical",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${TITLE} | Museek`,
+    description: DESCRIPTION,
+    images: ["/opengraph-image.png"],
   },
 };
 
@@ -78,12 +100,22 @@ export default function HowToPlayPage() {
             <Logo />
           </Link>
 
-          <nav aria-label="Fil d'Ariane" className="self-start text-sm">
-            <Link href="/" className={linkClass}>
-              Accueil
+          <div className="flex w-full flex-wrap items-center justify-between gap-2 text-sm">
+            <nav aria-label="Fil d'Ariane">
+              <Link href="/" className={linkClass}>
+                Accueil
+              </Link>
+              <span className="text-(--white)/50"> / Comment jouer</span>
+            </nav>
+            <Link
+              href="/en/how-to-play"
+              hrefLang="en"
+              lang="en"
+              className={linkClass}
+            >
+              Read in English
             </Link>
-            <span className="text-(--white)/50"> / Comment jouer</span>
-          </nav>
+          </div>
 
           <header className="flex flex-col items-center gap-4 text-center">
             <h1 className="text-3xl font-bold md:text-4xl">
@@ -240,15 +272,13 @@ export default function HowToPlayPage() {
           <Section>
             <h2>Pas besoin d&apos;écrire parfaitement</h2>
             <p>
-              La saisie est tolérante : majuscules, accents et ponctuation sont
-              ignorés, et une autocomplétion propose les noms d&apos;artistes et
-              de morceaux pendant que vous tapez. Les titres japonais, chinois
-              ou coréens peuvent aussi être écrits en caractères latins.
-            </p>
-            <p>
-              Museek joue l&apos;extrait que la plateforme met à disposition. Si
-              cet extrait est plus court que le temps de la manche, la musique
-              s&apos;arrête un peu avant la fin : c&apos;est normal.
+              Fautes d&apos;accents, majuscules ou titres en japonais écrits en
+              caractères latins : la saisie est tolérante et une autocomplétion
+              vous aide. Tous les détails sont dans la{" "}
+              <Link href="/#faq" className={linkClass}>
+                FAQ
+              </Link>
+              .
             </p>
           </Section>
 
