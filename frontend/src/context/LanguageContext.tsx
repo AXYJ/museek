@@ -1,6 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useSyncExternalStore } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import fr from "@/locales/fr.json";
 import en from "@/locales/en.json";
 import { readLocal, subscribeLocal, writeLocal } from "@/utils/useLocalStorage";
@@ -14,9 +19,15 @@ interface LanguageContextType {
   t: (key: string, replace?: Record<string, string>) => string;
 }
 
+// Robots d'indexation (Googlebot, Bingbot…) : leur navigateur est en anglais,
+// mais les métadonnées et le <html lang> sont en français. Sans ce garde-fou,
+// Google indexe une page au texte anglais déclarée française.
+const BOT_PATTERN = /bot|crawler|spider|crawling|slurp|lighthouse/i;
+
 function getLocale(): Locale {
   const saved = readLocal("game_lang");
   if (saved === "fr" || saved === "en") return saved;
+  if (BOT_PATTERN.test(navigator.userAgent)) return "fr";
   return navigator.language.startsWith("en") ? "en" : "fr";
 }
 
@@ -33,6 +44,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setLocale = (newLocale: Locale) => writeLocal("game_lang", newLocale);
+
+  // Garde l'attribut lang du document aligné sur la langue affichée
+  // (lecteurs d'écran, traduction automatique du navigateur).
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   // Fonction helper pour accéder aux clés imbriquées (ex: "common.play") et remplacer des placeholders
   const t = (path: string, replace?: Record<string, string>): string => {
