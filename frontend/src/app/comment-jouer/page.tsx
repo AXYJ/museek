@@ -298,12 +298,6 @@ export default function HowToPlayPage() {
                 révélation.
               </li>
               <li>
-                <strong>Essayez une soirée à thème.</strong> Années 2000,
-                génériques de dessins animés, musiques de films, rap français,
-                K-pop… Chacun prépare une playlist sur le thème, et le blindtest
-                devient un défi de culture musicale.
-              </li>
-              <li>
                 <strong>Mélangez les niveaux.</strong> Les joueurs qui débutent
                 peuvent activer l&apos;aide de la pochette, pendant que les
                 habitués jouent sans pour le point bonus.
