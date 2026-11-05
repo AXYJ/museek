@@ -88,20 +88,6 @@ export const metadata: Metadata = {
   category: "game",
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "Museek",
-  url: "https://museek.xiao-web.com",
-  description:
-    "Blindtest musical multijoueur : chaque joueur apporte sa playlist Spotify, Deezer ou Apple Music, Museek les mélange et vous devinez l'artiste et le titre. Gratuit, sans compte, jusqu'à 12 joueurs.",
-  applicationCategory: "GameApplication",
-  genre: ["Quiz musical", "Blindtest", "Multijoueur"],
-  operatingSystem: "All",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-  inLanguage: "fr-FR",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -110,10 +96,6 @@ export default function RootLayout({
   return (
     <html lang="fr" className="h-full antialiased">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

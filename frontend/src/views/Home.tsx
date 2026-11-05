@@ -281,6 +281,12 @@ export default function Home() {
             ))}
           </div>
         </div>
+        <Link
+          href={t("home.rules-href")}
+          className="self-center text-(--white) underline transition-all duration-300 hover:text-(--accent)"
+        >
+          {t("home.full-rules")}
+        </Link>
       </Section>
       <Section>
         <h2>{t("home.flow-title")}</h2>
@@ -296,7 +302,7 @@ export default function Home() {
         <p>{t("home.easy-text")}</p>
       </Section>
       <Section>
-        <h2>{t("home.faq-title")}</h2>
+        <h2 id="faq">{t("home.faq-title")}</h2>
         <div className="flex flex-col overflow-hidden">
           <Toggle question={t("home.faq-q1")} answer={t("home.faq-a1")} />
           <Toggle question={t("home.faq-q2")} answer={t("home.faq-a2")} />
@@ -313,6 +319,12 @@ export default function Home() {
 
       <footer className="mt-4 flex w-full flex-col items-center gap-4 text-center">
         <p className="text-(--white)/50">{t("home.message")}</p>
+        <Link
+          href={t("home.rules-href")}
+          className="rounded-lg bg-(--accent) px-4 py-2 text-(--white) transition-all duration-300 hover:bg-(--accent)/60 active:scale-95"
+        >
+          {t("home.rules")}
+        </Link>
         <Link
           href="/mentions-et-politiques"
           className="rounded-lg bg-(--accent) px-4 py-2 text-(--white) transition-all duration-300 hover:bg-(--accent)/60 active:scale-95"

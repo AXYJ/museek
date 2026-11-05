@@ -1,0 +1,43 @@
+"use client";
+
+// Import du context
+import { GameProvider, useGame } from "../context/GameContext";
+
+// Import des composants
+import Home from "../views/Home";
+import Lobby from "../views/Lobby";
+import Game from "../views/Game";
+import Result from "../views/Results";
+import Background from "../components/Background";
+
+function GameContent() {
+  const { view } = useGame();
+
+  // Rendu des vues
+  // Rendu conditionnel plutôt que routing Next.js pour éviter de perdre la connexion WebSocket
+  const baseView = view.split("#")[0];
+  switch (baseView) {
+    case "home":
+      return <Home />;
+    case "lobby":
+      return <Lobby />;
+    case "game":
+      return <Game />;
+    case "result":
+      return <Result />;
+    default:
+      return <Home />;
+  }
+}
+
+export default function HomeApp() {
+  return (
+    <Background>
+      <main className="mx-auto min-h-screen w-full px-8 md:max-w-lg lg:max-w-3xl">
+        <GameProvider>
+          <GameContent />
+        </GameProvider>
+      </main>
+    </Background>
+  );
+}
