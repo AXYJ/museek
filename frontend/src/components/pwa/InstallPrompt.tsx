@@ -84,7 +84,7 @@ export default function InstallPrompt() {
       {showPrompt && (
         <button
           onClick={handleInstallClick}
-          className="z-50 aspect-square cursor-pointer rounded-full bg-(--accent) p-4 text-black"
+          className="z-50 aspect-square cursor-pointer rounded-full bg-(--accent) p-4 text-(--background)"
           aria-label={t("home.install")}
         >
           <svg
@@ -93,7 +93,7 @@ export default function InstallPrompt() {
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#f6effb"
+            style={{ stroke: "var(--grey)" }}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -108,20 +108,20 @@ export default function InstallPrompt() {
 
       {/* Pop-up explicatif iOS à styliser par vos soins */}
       {showIOSInstructions && (
-        <div className="fixed inset-0 z-10000 flex items-center justify-center bg-black/60 p-4">
-          <div className="flex max-w-sm flex-col gap-4 rounded-2xl bg-(--white) p-6 text-black">
+        <div className="fixed inset-0 z-10000 flex items-center justify-center bg-(--background)/60 p-4">
+          <div className="flex max-w-sm flex-col gap-4 rounded-2xl bg-(--white) p-6 text-(--background)">
             {/* Titre popup */}
             <h3 className="text-xl font-bold">{t("pwa.ios-install-title")}</h3>
 
             {/* Instructions (convertir les retours à la ligne \n en balises ou rendu préformaté) */}
-            <p className="text-sm whitespace-pre-line text-gray-700">
+            <p className="text-sm whitespace-pre-line text-(--background)/70">
               {t("pwa.ios-install-steps")}
             </p>
 
             {/* Bouton de fermeture */}
             <button
               onClick={() => setShowIOSInstructions(false)}
-              className="mt-2 w-full cursor-pointer rounded-lg bg-black py-2 font-semibold text-white"
+              className="mt-2 w-full cursor-pointer rounded-lg bg-(--background) py-2 font-semibold text-(--white)"
             >
               {t("pwa.close")}
             </button>

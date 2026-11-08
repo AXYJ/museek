@@ -99,7 +99,7 @@ export default function TrackCover({
           />
         </div>
       ) : (
-        <div className="flex aspect-square w-full items-center justify-center bg-gray-700 text-sm text-gray-400">
+        <div className="flex aspect-square w-full items-center justify-center bg-(--grey)/10 text-sm text-(--grey)/60">
           {t("track-cover.no-image")}
         </div>
       )}
@@ -112,9 +112,9 @@ export default function TrackCover({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.0, ease: "easeInOut" }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 bg-black/75 px-8"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 bg-(--background)/75 px-8"
           >
-            <p className="text-base text-gray-300">
+            <p className="text-base text-(--grey)/80">
               {t("track-cover.answer-is")}
             </p>
             <div className="flex flex-col items-center">

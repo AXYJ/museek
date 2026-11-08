@@ -200,7 +200,7 @@ export default function Home() {
                       type="text"
                       tabIndex={-1}
                       readOnly
-                      className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
+                      className={`w-full rounded-lg bg-(--white) px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
                     />
                   </div>
                   <div>
@@ -212,7 +212,7 @@ export default function Home() {
                       type="text"
                       tabIndex={-1}
                       readOnly
-                      className={`w-full rounded-lg bg-white px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
+                      className={`w-full rounded-lg bg-(--white) px-4 py-2 focus:ring-2 focus:ring-(--accent) focus:outline-none`}
                     />
                   </div>
                 </div>

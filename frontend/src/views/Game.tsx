@@ -318,7 +318,7 @@ export default function Game() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-(--accent) border-t-transparent"></div>
-          <p className="text-lg text-gray-400">{t("game.loading")}</p>
+          <p className="text-lg text-(--grey)/60">{t("game.loading")}</p>
         </div>
       </div>
     );
@@ -393,7 +393,7 @@ export default function Game() {
                     value={volume}
                     onMouseDown={() => setIsChangingVolume(true)}
                     onChange={(e) => setVolume(Number(e.target.value))}
-                    className="h-2 w-24 cursor-pointer appearance-none rounded-lg bg-gray-200 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-(--accent) [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-(--accent)"
+                    className="h-2 w-24 cursor-pointer appearance-none rounded-lg bg-(--grey) [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-(--accent) [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-(--accent)"
                   />
                 </div>
               )}
@@ -505,8 +505,8 @@ export default function Game() {
             phase === "guessing" && timeLeft <= 5
               ? "text-red-500"
               : phase === "guessing" && timeLeft <= 10
-                ? "text-orange-400"
-                : "text-gray-300"
+                ? "text-(--warning)"
+                : "text-(--grey)/80"
           }`}
         >
           {phase === "guessing"

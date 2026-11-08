@@ -164,11 +164,11 @@ export default function AutocompleteInput<T>({
   let bgClass = "bg-(--white) text-(--background)";
   if (showAnswer) {
     if (isCorrect) {
-      bgClass = "bg-(--green) text-white";
+      bgClass = "bg-(--green) text-(--white)";
     } else if (isHalfCorrect) {
-      bgClass = "bg-amber-500 text-white";
+      bgClass = "bg-(--warning) text-(--white)";
     } else {
-      bgClass = "bg-(--red) text-white";
+      bgClass = "bg-(--red) text-(--white)";
     }
   }
 
@@ -176,7 +176,7 @@ export default function AutocompleteInput<T>({
     <>
       {isActive && (
         <div
-          className="animate-fade-in fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+          className="animate-fade-in fixed inset-0 z-40 bg-(--background)/60 backdrop-blur-sm"
           onClick={() => {
             onDeactivate();
             setShowSuggestions(false);
@@ -224,7 +224,7 @@ export default function AutocompleteInput<T>({
         />
 
         {showSuggestions && query.length >= minQueryLength && (
-          <div className="absolute top-full right-0 left-0 z-50 mt-2 flex max-h-60 flex-col overflow-hidden overflow-y-auto rounded-xl border border-neutral-800/80 bg-neutral-900/95 shadow-2xl backdrop-blur-md">
+          <div className="absolute top-full right-0 left-0 z-50 mt-2 flex max-h-60 flex-col overflow-hidden overflow-y-auto rounded-xl border border-(--grey)/10 bg-(--background)/95 shadow-2xl backdrop-blur-md">
             {suggestions.length > 0 ? (
               suggestions.map((item, idx) => {
                 const displayLabel = getSuggestionLabel(item);
@@ -236,17 +236,17 @@ export default function AutocompleteInput<T>({
                       e.preventDefault();
                       handleSelect(item);
                     }}
-                    className={`grid cursor-pointer grid-cols-3 items-center justify-between border-b border-neutral-800/50 px-4 py-3 text-sm transition-colors duration-150 last:border-0 ${
+                    className={`grid cursor-pointer grid-cols-3 items-center justify-between border-b border-(--grey)/5 px-4 py-3 text-sm transition-colors duration-150 last:border-0 ${
                       isItemActive
                         ? "bg-(--semiaccent) text-(--white)"
-                        : "text-gray-200 hover:bg-(--semiaccent) hover:text-(--white)"
+                        : "text-(--grey)/90 hover:bg-(--semiaccent) hover:text-(--white)"
                     }`}
                   >
                     <span className="col-span-2 font-medium">
                       {displayLabel.main}
                     </span>
                     {displayLabel.secondary && (
-                      <span className="wrap-break-words w-full text-right text-xs whitespace-normal text-gray-400 italic">
+                      <span className="wrap-break-words w-full text-right text-xs whitespace-normal text-(--grey)/60 italic">
                         ({displayLabel.secondary})
                       </span>
                     )}
@@ -254,7 +254,7 @@ export default function AutocompleteInput<T>({
                 );
               })
             ) : (
-              <div className="px-4 py-3 text-sm text-gray-400 italic">
+              <div className="px-4 py-3 text-sm text-(--grey)/60 italic">
                 {finalEmptyText}
               </div>
             )}

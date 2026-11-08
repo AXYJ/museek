@@ -24,7 +24,7 @@ export default function OfflineBanner() {
 
   return (
     /* Conteneur d'alerte hors-ligne bloquant tout l'écran (à styliser par vos soins) */
-    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-(--background) p-6 text-center text-white">
+    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-(--background) p-6 text-center text-(--white)">
       {/* Titre de l'erreur */}
       <h2 className="mb-2 flex items-center gap-2 text-2xl font-bold">
         <svg
@@ -33,7 +33,7 @@ export default function OfflineBanner() {
           height="24"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#f6effb"
+          style={{ stroke: "var(--grey)" }}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

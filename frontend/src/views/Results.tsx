@@ -93,7 +93,7 @@ export default function Results() {
                     {players?.map((player, order) => (
                       <tr
                         key={order}
-                        className="carousel-item-bottom-player border-t border-white/5"
+                        className="carousel-item-bottom-player border-t border-(--white)/5"
                       >
                         <td
                           className={`px-4 py-3 text-center text-xs font-semibold ${
@@ -108,7 +108,7 @@ export default function Results() {
                               ? player.artists_scores_board?.[index] === 1
                                 ? "font-medium text-(--green)"
                                 : player.artists_scores_board?.[index] === 0.5
-                                  ? "font-medium text-amber-500"
+                                  ? "font-medium text-(--warning)"
                                   : "text-(--red)"
                               : ""
                           }`}

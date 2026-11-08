@@ -9,7 +9,7 @@ export default function GrainedBackground({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#181818]">
+    <div className="relative min-h-screen w-full overflow-hidden">
       {/* Filtre de grain SVG global */}
       <Grain baseFrequency=".5" scale=".2" />
 
@@ -20,8 +20,8 @@ export default function GrainedBackground({
       >
         <defs>
           <linearGradient id="grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0E0712" />
-            <stop offset="100%" stopColor="#770FB8" />
+            <stop offset="0%" style={{ stopColor: "var(--background)" }} />
+            <stop offset="100%" style={{ stopColor: "var(--accent)" }} />
           </linearGradient>
         </defs>
 

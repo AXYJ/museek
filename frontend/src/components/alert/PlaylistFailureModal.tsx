@@ -27,7 +27,7 @@ export default function PlaylistFailureModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-(--background)/60 p-4 backdrop-blur-sm"
           role="alertdialog"
           aria-modal="true"
           aria-labelledby="playlist-failure-title"
@@ -44,7 +44,7 @@ export default function PlaylistFailureModal({
                 { names: names.join(", ") },
               )}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-(--grey)/60">
               {t(
                 isConcerned
                   ? "lobby.playlist-failure-yours"

@@ -27,7 +27,7 @@ export default function Mentions() {
       <div className="flex w-full max-w-2xl flex-col items-center gap-8 text-sm text-(--white)/80">
         {/* SECTION 1: MENTIONS LEGALES */}
         <div className="bg flex w-full flex-col items-center gap-4">
-          <h2 className="mb-2 text-center text-xl font-bold text-(--accent)">
+          <h2 className="mb-2 text-center text-xl font-bold">
             {t("mentions.legal-title")}
           </h2>
           <div className="flex w-full flex-col justify-between gap-2 md:flex-row">

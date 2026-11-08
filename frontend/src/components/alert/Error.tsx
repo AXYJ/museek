@@ -20,12 +20,12 @@ export default function Error({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-          className="fixed top-8 left-1/2 z-50 flex w-[calc(100vw-4rem)] max-w-md -translate-x-1/2 transform items-center justify-center gap-3 rounded-lg bg-red-600/90 py-3 pr-10 pl-6 text-white shadow-lg backdrop-blur-md md:w-full"
+          className="fixed top-8 left-1/2 z-50 flex w-[calc(100vw-4rem)] max-w-md -translate-x-1/2 transform items-center justify-center gap-3 rounded-lg bg-(--red)/90 py-3 pr-10 pl-6 text-(--white) shadow-lg backdrop-blur-md md:w-full"
         >
           <span className="font-medium">{error}</span>
           <button
             onClick={() => setError(null)}
-            className="absolute top-1/2 right-4 ml-2 -translate-y-1/2 cursor-pointer text-white transition-colors"
+            className="absolute top-1/2 right-4 ml-2 -translate-y-1/2 cursor-pointer text-(--white) transition-colors"
             aria-label={t("alert.close")}
           >
             <svg
