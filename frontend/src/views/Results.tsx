@@ -147,25 +147,25 @@ export default function Results() {
             </article>
           ))}
         </div>
-      </section>
 
-      {/* Carousel controls (outside sliding div to keep them fixed) */}
-      {toPlay.length > 1 && (
-        <>
-          <button
-            className="absolute top-56 left-2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:left-0 md:h-12 md:w-12"
-            onClick={prevTrack}
-          >
-            &#10094;
-          </button>
-          <button
-            className="absolute top-56 right-2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:right-0 md:h-12 md:w-12"
-            onClick={nextTrack}
-          >
-            &#10095;
-          </button>
-        </>
-      )}
+        {/* Carousel controls: fixed box matching the cover so arrows stay at its vertical center */}
+        {toPlay.length > 1 && (
+          <div className="pointer-events-none absolute inset-x-0 top-4 z-20 mx-auto aspect-square w-full max-w-72">
+            <button
+              className="pointer-events-auto absolute top-1/2 left-2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:-left-16 md:h-12 md:w-12"
+              onClick={prevTrack}
+            >
+              &#10094;
+            </button>
+            <button
+              className="pointer-events-auto absolute top-1/2 right-2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:-right-16 md:h-12 md:w-12"
+              onClick={nextTrack}
+            >
+              &#10095;
+            </button>
+          </div>
+        )}
+      </section>
 
       {/* Action Buttons */}
       <div className="mt-4 flex gap-4">
