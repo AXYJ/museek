@@ -16,6 +16,7 @@ import {
   transliterate as transliterateGroq,
   TransliterateItem,
 } from "./transliterate.js";
+import { findArtist, findTrack } from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
 let kuroshiroReady = false;
@@ -136,7 +137,9 @@ export default async function selectTracks(
   // Lien refusé (domaine non autorisé) ou court : résolu sans jamais appeler une autre plateforme
   const resolved = await resolveAllowedUrl(playlistUrl);
   if (!resolved) {
-    console.warn(`[selectTracks] Lien refusé ou non résolu: ${playlistUrl.slice(0, 80)}`);
+    console.warn(
+      `[selectTracks] Lien refusé ou non résolu: ${playlistUrl.slice(0, 80)}`,
+    );
     return { tracks: [], selectedTracks: [] };
   }
   const resolvedUrl = resolved.url.href;
@@ -178,10 +181,26 @@ export default async function selectTracks(
           artists: t.artists?.map((a) => cleanSpaces(a)),
         }));
 
+        const groqTranslations = new Map<
+          number,
+          { internationalArtist: string; internationalTitle: string }
+        >();
+
         // 1. Détecter les morceaux ayant des caractères non-ASCII à translitérer avec Groq
         const itemsToTranslate: TransliterateItem[] = [];
         playlistTracks.forEach((t, index) => {
           if (needsLlm(t.name, t.artist)) {
+            const internationalTitle = findTrack(t.artist, t.name)
+
+            if (internationalTitle) {
+              
+              groqTranslations.set(Number(index), {
+                // findArtist existe forcément si findTrack existe
+                internationalArtist: findArtist(t.artist)!,
+                internationalTitle: internationalTitle,
+              });
+              return;
+            }
             itemsToTranslate.push({
               id: index,
               artist: t.artist,
@@ -191,10 +210,7 @@ export default async function selectTracks(
         });
 
         // 2. Appel Groq en batch (si des morceaux non-ASCII existent)
-        const groqTranslations = new Map<
-          number,
-          { internationalArtist: string; internationalTitle: string }
-        >();
+        
         if (itemsToTranslate.length > 0) {
           try {
             console.log(
@@ -280,9 +296,10 @@ export default async function selectTracks(
   if (platform === "spotify") {
     selectedTracksWithImages = await Promise.all(
       selectedTracks.map(async (track) => {
-        const coverKey = `${track.internationalArtist || track.artist} ${track.internationalName || track.name}`
-          .toLowerCase()
-          .trim();
+        const coverKey =
+          `${track.internationalArtist || track.artist} ${track.internationalName || track.name}`
+            .toLowerCase()
+            .trim();
 
         // Vérifier dans le cache de couverture
         if (coverCache.has(coverKey)) {
