@@ -4,5 +4,5 @@ export function normalizeString(str: string | null | undefined): string {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+    .replace(/[^\p{L}\p{M}\p{N}]/gu, "");
 }
