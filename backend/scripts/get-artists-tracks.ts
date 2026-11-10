@@ -16,6 +16,7 @@ import {
   transliterate as transliterateGroq,
   TransliterateItem,
 } from "./transliterate.js";
+import { findArtist, findTrack } from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
 let kuroshiroReady = false;
@@ -178,10 +179,26 @@ export default async function selectTracks(
           artists: t.artists?.map((a) => cleanSpaces(a)),
         }));
 
-        // 1. Détecter les morceaux ayant des caractères non-ASCII à translitérer avec Groq
+        // Romanisation de chaque morceau par index : bibliothèque (correction manuelle) ou Groq
+        const groqTranslations = new Map<
+          number,
+          { internationalArtist: string; internationalTitle: string }
+        >();
+
+        // 1. Détecter les morceaux non-ASCII : ceux de la bibliothèque sont rangés tout de
+        // suite, les autres partent à Groq
         const itemsToTranslate: TransliterateItem[] = [];
         playlistTracks.forEach((t, index) => {
           if (needsLlm(t.name, t.artist)) {
+            const internationalTitle = findTrack(t.artist, t.name);
+            if (internationalTitle) {
+              groqTranslations.set(index, {
+                // findArtist existe forcément si findTrack existe
+                internationalArtist: findArtist(t.artist)!,
+                internationalTitle: internationalTitle,
+              });
+              return;
+            }
             itemsToTranslate.push({
               id: index,
               artist: t.artist,
@@ -191,10 +208,6 @@ export default async function selectTracks(
         });
 
         // 2. Appel Groq en batch (si des morceaux non-ASCII existent)
-        const groqTranslations = new Map<
-          number,
-          { internationalArtist: string; internationalTitle: string }
-        >();
         if (itemsToTranslate.length > 0) {
           try {
             console.log(
