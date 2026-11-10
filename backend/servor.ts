@@ -40,6 +40,7 @@ import {
   DatabaseArtist,
   DatabaseTrack,
 } from "./types/game.js";
+import { findArtist } from "./scripts/library.js";
 
 // Initialisation
 const app = express();
@@ -798,12 +799,12 @@ function collectDatabases(tracks: Track[]): {
   return { databaseTracks, artistNames };
 }
 
-// Version internationale de chaque artiste : Groq en batch pour les noms non-ASCII,
+// Version internationale de chaque artiste : Librairie de correction manuelle puis Groq en batch pour les noms non-ASCII,
 // repli sur la translittération locale
 async function buildArtistDatabase(
   artistNames: string[],
 ): Promise<DatabaseArtist[]> {
-  const forLlm = artistNames.filter((a) => needsLlm(a));
+  const forLlm = artistNames.filter((a) => needsLlm(a) && !findArtist(a));
   let groqArtistMap = new Map<string, string>();
   if (forLlm.length > 0) {
     try {
@@ -816,7 +817,7 @@ async function buildArtistDatabase(
   const database: DatabaseArtist[] = [];
   for (const artist of artistNames) {
     const internationalArtist =
-      groqArtistMap.get(artist) || (await getInternationalName(artist));
+       findArtist(artist) || groqArtistMap.get(artist) || (await getInternationalName(artist));
     database.push({ artist, internationalArtist });
   }
   return database;
