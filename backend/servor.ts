@@ -799,8 +799,8 @@ function collectDatabases(tracks: Track[]): {
   return { databaseTracks, artistNames };
 }
 
-// Version internationale de chaque artiste : Librairie de correction manuelle puis Groq en batch pour les noms non-ASCII,
-// repli sur la translittération locale
+// Version internationale de chaque artiste : bibliothèque (correction manuelle), puis Groq
+// en batch pour les noms non-ASCII, repli sur la translittération locale
 async function buildArtistDatabase(
   artistNames: string[],
 ): Promise<DatabaseArtist[]> {
@@ -817,7 +817,9 @@ async function buildArtistDatabase(
   const database: DatabaseArtist[] = [];
   for (const artist of artistNames) {
     const internationalArtist =
-       findArtist(artist) || groqArtistMap.get(artist) || (await getInternationalName(artist));
+      findArtist(artist) ||
+      groqArtistMap.get(artist) ||
+      (await getInternationalName(artist));
     database.push({ artist, internationalArtist });
   }
   return database;
