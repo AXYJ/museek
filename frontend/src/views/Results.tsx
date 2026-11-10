@@ -35,7 +35,7 @@ export default function Results() {
   };
 
   return (
-    <div className="relative mx-auto my-16 flex w-full max-w-4xl flex-col items-center gap-6 px-4">
+    <div className="relative mx-auto my-16 flex w-full max-w-4xl flex-col items-center gap-6">
       <QuitGame />
       <h1 className="text-4xl font-bold">{t("results.title")}</h1>
 
@@ -50,7 +50,7 @@ export default function Results() {
           {toPlay?.map((track, index) => (
             <article
               key={index}
-              className="relative flex w-full shrink-0 flex-col items-center gap-6 p-4"
+              className="relative flex w-full shrink-0 flex-col items-center gap-6 py-4"
             >
               <TrackCover
                 imageUrl={track.imageUrl}
@@ -60,7 +60,7 @@ export default function Results() {
                 internationalName={track.internationalName}
                 url={track.url}
                 counterText={`${index + 1}/${toPlay.length}`}
-                className="carousel-item-top aspect-square w-3/5 max-w-xs"
+                className="carousel-item-top aspect-square w-full max-w-72"
                 turn={index + 1}
               />
               {guessPlayer && track.submittedBy && (
@@ -153,13 +153,13 @@ export default function Results() {
       {toPlay.length > 1 && (
         <>
           <button
-            className="absolute top-2/5 left-8 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:top-48 md:h-12 md:w-12 lg:top-56"
+            className="absolute top-56 left-2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:left-0 md:h-12 md:w-12"
             onClick={prevTrack}
           >
             &#10094;
           </button>
           <button
-            className="absolute top-2/5 right-8 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:top-48 md:h-12 md:w-12 lg:top-56"
+            className="absolute top-56 right-2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-(--accent) text-(--white) shadow-lg transition-all hover:bg-(--semiaccent) active:scale-95 md:right-0 md:h-12 md:w-12"
             onClick={nextTrack}
           >
             &#10095;

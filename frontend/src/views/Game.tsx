@@ -330,7 +330,7 @@ export default function Game() {
   const showAnswer = phase === "answer" || phase === "transition";
 
   return (
-    <div className="relative mx-auto my-16 flex min-h-[calc(100vh-128px)] max-w-4xl flex-col items-center justify-center gap-4 px-4">
+    <div className="relative mx-auto my-16 flex min-h-[calc(100vh-128px)] max-w-4xl flex-col items-center justify-center gap-4">
       <audio ref={audioRef} src={currentTrack.previewUrl}></audio>
 
       <QuitGame />
