@@ -17,9 +17,10 @@ interface ArtistEntry extends Required<Pick<DatabaseArtist, "internationalArtist
 export type Library = Record<string, ArtistEntry>;
 
 // Chemin relatif au dossier de lancement (backend/, en dev comme avec `npm start`).
-// LIBRARY_PATH permet de pointer ailleurs, par exemple vers un volume Coolify plus tard.
+// MUSEEK_LIBRARY_FILE permet de pointer ailleurs, par exemple vers un volume Coolify plus tard.
+// (Pas LIBRARY_PATH : variable standard de l'éditeur de liens, déjà définie par Nixpacks en prod.)
 const getLibraryPath = () =>
-  process.env.LIBRARY_PATH || join(process.cwd(), "data", "library.json");
+  process.env.MUSEEK_LIBRARY_FILE || join(process.cwd(), "data", "library.json");
 
 // JSON.parse renvoie `any` : on vérifie la forme à l'exécution plutôt que de faire confiance
 // au fichier (une faute de frappe dans un fichier édité à la main arrive vite).
