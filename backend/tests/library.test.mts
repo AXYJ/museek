@@ -27,14 +27,14 @@ writeFileSync(
     SansRomanisation: { tracks: {} },
   }),
 );
-process.env.LIBRARY_PATH = bad;
+process.env.MUSEEK_LIBRARY_FILE = bad;
 resetLibraryCache();
 check("entrée valide gardée", findTrack("Valide", "A") === "a");
 check("titre sans romanisation ignoré", findTrack("Valide", "B") === undefined);
 check("artiste sans romanisation ignoré", findArtist("SansRomanisation") === undefined);
 
 // 3. Fichier absent : pas d'erreur, bibliothèque vide
-process.env.LIBRARY_PATH = join(dir, "absent.json");
+process.env.MUSEEK_LIBRARY_FILE = join(dir, "absent.json");
 resetLibraryCache();
 check("fichier absent sans plantage", findArtist("Faye Wong") === undefined);
 
