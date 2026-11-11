@@ -174,15 +174,18 @@ export default function AutocompleteInput<T>({
 
   return (
     <>
-      {isActive && (
-        <div
-          className="animate-fade-in fixed inset-0 z-40 bg-(--background)/80"
-          onClick={() => {
-            onDeactivate();
-            setShowSuggestions(false);
-          }}
-        />
-      )}
+      {/* Overlay toujours présent dans la page : à l'ouverture, seule son opacité change,
+          ce que la carte graphique fait sans avoir à créer et dessiner une nouvelle couche */}
+      <div
+        aria-hidden="true"
+        className={`fixed inset-0 z-40 bg-(--background)/80 transition-opacity duration-250 ease-out ${
+          isActive ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => {
+          onDeactivate();
+          setShowSuggestions(false);
+        }}
+      />
 
       <div
         className={`flex flex-col ${
