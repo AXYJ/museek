@@ -176,7 +176,7 @@ export default function AutocompleteInput<T>({
     <>
       {isActive && (
         <div
-          className="animate-fade-in fixed inset-0 z-40 bg-(--background)/60 backdrop-blur-sm"
+          className="animate-fade-in fixed inset-0 z-40 bg-(--background)/80"
           onClick={() => {
             onDeactivate();
             setShowSuggestions(false);
@@ -203,7 +203,7 @@ export default function AutocompleteInput<T>({
             {label}
           </label>
           {isActive && (
-            <span className="text-xs text-(--grey) italic">
+            <span className="text-xs text-(--grey) italic tabular-nums">
               {t("game.time-remaining")} : {timeLeft}s
             </span>
           )}

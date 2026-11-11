@@ -100,37 +100,49 @@ export default function Game() {
 
   const artistQuery = getArtistQuery(artistGuess);
 
+  // Saisies normalisées une seule fois par rendu, et non pour chaque élément de la base
+  const artistSearch = normalizeString(artistQuery);
+  const trackSearch = normalizeString(trackGuess);
+
   // Filter database artists (max 5 results)
-  const filteredArtists = (database_artists || [])
-    .filter((a) => {
-      if (!artistQuery || artistQuery.length < 3) return false;
-      const search = normalizeString(artistQuery);
-      const matchesName = normalizeString(a.artist).includes(search);
-      const matchesInt = normalizeString(a.internationalArtist).includes(
-        search,
-      );
-      return matchesName || matchesInt;
-    })
-    .slice(0, 5);
+  // Moins de 3 caractères : on ne parcourt pas du tout la base
+  const filteredArtists =
+    artistQuery.length < 3
+      ? []
+      : (database_artists || [])
+          .filter((a) => {
+            const matchesName = normalizeString(a.artist).includes(
+              artistSearch,
+            );
+            const matchesInt = normalizeString(a.internationalArtist).includes(
+              artistSearch,
+            );
+            return matchesName || matchesInt;
+          })
+          .slice(0, 5);
 
   // Filter database tracks (max 5 results)
-  const filteredTracks = (database_tracks || [])
-    .filter((t) => {
-      if (!trackGuess || trackGuess.length < 3) return false;
-      const search = normalizeString(trackGuess);
-      const matchesName = normalizeString(t.name).includes(search);
-      const matchesInt = normalizeString(t.internationalName).includes(search);
-      return matchesName || matchesInt;
-    })
-    .slice(0, 5);
+  const filteredTracks =
+    trackGuess.length < 3
+      ? []
+      : (database_tracks || [])
+          .filter((t) => {
+            const matchesName = normalizeString(t.name).includes(trackSearch);
+            const matchesInt = normalizeString(t.internationalName).includes(
+              trackSearch,
+            );
+            return matchesName || matchesInt;
+          })
+          .slice(0, 5);
 
   // Joueurs proposables (max 5) : ceux qui ont envoyé au moins un morceau, filtrés selon la saisie
   const submitters = new Set(toPlay.map((track) => track.submittedBy));
+  const playerSearch = normalizeString(playerGuess);
   const filteredPlayers = (players || [])
     .filter(
       (p) =>
         submitters.has(p.name) &&
-        normalizeString(p.name).includes(normalizeString(playerGuess)),
+        normalizeString(p.name).includes(playerSearch),
     )
     .slice(0, 5);
 
@@ -501,7 +513,7 @@ export default function Game() {
       {/* Barre de temps */}
       <div className="pointer-events-none mt-4 flex w-full max-w-lg flex-col items-center gap-2 md:w-1/2 lg:w-[calc(100vw-4rem)]">
         <span
-          className={`text-sm font-semibold tracking-wider transition-colors duration-300 ${
+          className={`text-sm font-semibold tracking-wider tabular-nums transition-colors duration-300 ${
             phase === "guessing" && timeLeft <= 5
               ? "text-red-500"
               : phase === "guessing" && timeLeft <= 10
@@ -517,15 +529,16 @@ export default function Game() {
         </span>
         <div className="h-2 w-full overflow-hidden rounded-full bg-(--white)/20">
           <div
-            className={`h-full rounded-full transition-all duration-1000 ease-linear ${
+            className={`h-full w-full rounded-full transition-transform duration-1000 ease-linear will-change-transform ${
               phase === "guessing"
                 ? "bg-(--accent)"
                 : phase === "transition"
                   ? "bg-(--grey)"
                   : "bg-(--green)"
             }`}
+            // Translation plutôt que largeur : animée par le GPU, sans recalcul de mise en page à chaque image
             style={{
-              width: `${((totalPhaseTime - timeLeft) / totalPhaseTime) * 100}%`,
+              transform: `translateX(-${(timeLeft / totalPhaseTime) * 100}%)`,
             }}
           ></div>
         </div>
