@@ -10,7 +10,11 @@ try {
   // pas de fichier .env
 }
 
-for (const name of ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "GROQ_API_KEY"]) {
+for (const name of [
+  "SPOTIFY_CLIENT_ID",
+  "SPOTIFY_CLIENT_SECRET",
+  "GROQ_API_KEY",
+]) {
   if (!process.env[name]?.trim()) {
     console.warn(`[servor] Variable d'environnement manquante : ${name}`);
   }
@@ -25,7 +29,12 @@ import selectTracks, {
 } from "./scripts/get-artists-tracks.js";
 import { needsLlm, transliterateArtists } from "./scripts/transliterate.js";
 import { SlidingWindowLimiter, getClientIp } from "./scripts/rate-limit.js";
-import { getTrackArtists, normalizeString, prepareTrack, scoreAnswer } from "./scripts/answers.js";
+import {
+  getTrackArtists,
+  normalizeString,
+  prepareTrack,
+  scoreAnswer,
+} from "./scripts/answers.js";
 import {
   Track,
   Room,
@@ -241,7 +250,11 @@ io.on(
         database_tracks: [],
       };
       socket.join(roomCode);
-      socket.emit("room_created", roomCode, toPublicPlayers(rooms[roomCode].players));
+      socket.emit(
+        "room_created",
+        roomCode,
+        toPublicPlayers(rooms[roomCode].players),
+      );
     });
 
     // --------------------------------------------------------
@@ -327,366 +340,392 @@ io.on(
       }
     });
 
-  // Quitter une partie
-  socket.on("leave_game", () => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player) return;
+    // Quitter une partie
+    socket.on("leave_game", () => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player) return;
 
-    delete socket.data.roomCode;
-    clearDisconnectTimeout(player.id);
-    player.leavedPlayer = true;
-    room.players = room.players.filter((p) => p.id !== player.id);
-    console.log(
-      `[${new Date().toISOString()}] User ${socket.id} left room ${roomCode}`,
-    );
-    socket.leave(roomCode);
-
-    // Si l'hôte part (lobby, partie ou résultats), un autre joueur devient hôte :
-    // sans hôte, personne ne pourrait relancer une partie
-    if (player.isHost) {
-      const newHost =
-        room.players.find((p) => !p.leavedPlayer) || room.players[0];
-      if (newHost) {
-        newHost.isHost = true;
-        newHost.isReady = true;
-      }
-    }
-
-    // Si plus aucun joueur dans la room, on supprime la room
-    if (room.players.length === 0) {
-      if (room.cleanupTimeout) {
-        clearTimeout(room.cleanupTimeout);
-      }
-      delete rooms[roomCode];
+      delete socket.data.roomCode;
+      clearDisconnectTimeout(player.id);
+      player.leavedPlayer = true;
+      room.players = room.players.filter((p) => p.id !== player.id);
       console.log(
-        `[${new Date().toISOString()}] Room ${roomCode} deleted because it is empty`,
+        `[${new Date().toISOString()}] User ${socket.id} left room ${roomCode}`,
       );
-    } else {
-      emitRoomUpdated(roomCode, room);
-      checkAndResetGame(roomCode);
-    }
-  });
+      socket.leave(roomCode);
 
-  // Prêt
-  socket.on("ready", (isReady: boolean) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player) return;
-    player.isReady = isReady;
-    emitRoomUpdated(roomCode, room);
-  });
-
-  // Lancement de la partie
-  socket.on("start_game", () => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player?.isHost) return;
-
-    // Réinitialiser la propriété playlistUrl de tous les joueurs à undefined pour pouvoir suivre les retours
-    room.players.forEach((p) => {
-      p.playlistUrl = undefined;
-      p.inLobby = false;
-      p.isReady = p.isHost;
-      p.score = 0;
-      p.artists_final_board = {};
-      p.tracks_final_board = {};
-      p.artists_scores_board = {};
-      p.tracks_scores_board = {};
-      p.picks_final_board = {};
-      p.picks_scores_board = {};
-      p.leavedPlayer = false;
-    });
-    room.isGameOver = false;
-    room.gameStartTime = null;
-    room.isLoadingTracks = false;
-    // Des joueurs ont pu partir depuis l'activation de l'option
-    room.guessPlayer = !!room.guessPlayer && room.players.length >= 3;
-    io.to(roomCode).emit("game-setting", "guess_player", room.guessPlayer ? 1 : 0);
-    io.to(roomCode).emit("game_started", toPublicPlayers(room.players));
-  });
-
-  // Ajout des autres playlist
-  socket.on("send_playlist_url", async (playlistUrl: string) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player) return;
-    if (typeof playlistUrl !== "string") return;
-
-    // Chargement trop fréquent depuis cette adresse : le joueur joue sans playlist plutôt
-    // que de bloquer le lancement de la partie pour les autres
-    // Une playlist déjà chargée (relancement après un échec) ne consomme pas de jeton
-    const cached = room.loadedPlaylists?.get(player.id);
-    const isCached =
-      cached?.url === playlistUrl && cached.amount === room.musicAmount;
-    if (playlistUrl && !isCached && !playlistLoads.tryHit(ip)) {
-      playlistUrl = "";
-      socket.emit("error", "rate_limited");
-    }
-    player.playlistUrl = playlistUrl || "";
-
-    // On attend que tous les joueurs aient répondu (url ou chaîne vide),
-    // et un seul chargement à la fois
-    const allSubmitted = room.players.every((p) => p.playlistUrl !== undefined);
-    if (!allSubmitted || room.isLoadingTracks) return;
-
-    room.isLoadingTracks = true;
-    room.toPlay = [];
-
-    try {
-      const { allTracks, selected, failed } = await loadPlayersTracks(room);
-
-      if (failed.length) {
-        // Les joueurs doivent se remettre prêts (et celui en échec corriger sa playlist) :
-        // l'hôte ne peut pas relancer sans les consulter. Les playlists déjà chargées
-        // sont gardées dans room.loadedPlaylists pour le relancement.
-        room.isLoadingTracks = false;
-        room.players.forEach((p) => {
-          p.isReady = p.isHost;
-        });
-        emitRoomUpdated(roomCode, room);
-        io.to(roomCode).emit("playlist_failed", failed);
-        return;
-      }
-      if (allTracks.length < 1) {
-        room.isLoadingTracks = false;
-        io.to(roomCode).emit("no_playlist", "no_playlist_tracks");
-        return;
-      }
-
-      await startWithTracks(room, roomCode, allTracks, selected);
-    } catch (processingErr) {
-      room.isLoadingTracks = false;
-      socket.emit("error", "internal_error");
-    }
-  });
-
-  // --------------------------------------------------------
-  // Paramètres de partie
-  // --------------------------------------------------------
-
-  // Musique par playlist
-  socket.on("music_amount", (amount: number) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player?.isHost) return;
-    if (!Number.isInteger(amount) || amount < 1 || amount > 30) return;
-    room.musicAmount = amount;
-    io.to(roomCode).emit("game-setting", "music_amount", amount);
-  });
-
-  // Temps
-  socket.on("time", (time: number) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player?.isHost) return;
-    if (!Number.isInteger(time) || time < 5 || time > 30 || time % 5 !== 0) return;
-    room.time = time;
-    io.to(roomCode).emit("game-setting", "time", time);
-  });
-
-  // Deviner qui a choisi le morceau (hôte, 3 joueurs minimum)
-  socket.on("guess_player", (enabled: boolean) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player?.isHost) return;
-    if (typeof enabled !== "boolean") return;
-    if (enabled && room.players.length < 3) return;    room.guessPlayer = enabled;
-    io.to(roomCode).emit("game-setting", "guess_player", enabled ? 1 : 0);
-  });
-
-  // Aide (propre à chaque joueur, modifiable seulement au lobby)
-  socket.on("help", (enabled: boolean) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player?.inLobby) return;
-    if (typeof enabled !== "boolean") return;
-    player.hasHelp = enabled;
-    emitRoomUpdated(roomCode, room);
-  });
-
-  // --------------------------------------------------------
-  // Actions en partie
-  // --------------------------------------------------------
-
-  // Envoi de la réponse (optimisé avec précalculs)
-  socket.on("submit_answer", (artist: string, track: string, turn: number, playerGuess?: string) => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player) return;
-    if (typeof artist !== "string" || typeof track !== "string") return;
-    artist = artist.slice(0, 200);
-    track = track.slice(0, 200);
-    playerGuess = typeof playerGuess === "string" ? playerGuess.slice(0, 200) : "";
-
-    // Le tour est calculé côté serveur : le `turn` du client n'est pas fiable
-    if (!room.gameStartTime || turn !== getTurnInfo(room.time, room.gameStartTime, room.toPlay.length).turn)
-      return;
-    // Pas de réponse une fois la solution révélée (2 s de marge pour la latence)
-    const turnElapsed = ((Date.now() - room.gameStartTime) / 1000) % (room.time + 7);
-    if (turnElapsed > room.time + 2) return;
-    // Une seule réponse par joueur et par tour
-    if (player.tracks_scores_board?.[turn - 1] !== undefined) return;
-
-    const currentTrack = room.toPlay[turn - 1];
-    if (currentTrack) {
-      const { artistScore: artist_score, trackCorrect: track_answer } =
-        scoreAnswer(currentTrack, artist, track);
-
-      player.artists_final_board = player.artists_final_board || {};
-      player.tracks_final_board = player.tracks_final_board || {};
-      const cleanArtist = (artist || "").trim().replace(/,$/, "").trim();
-      player.artists_final_board[turn - 1] = cleanArtist;
-      player.tracks_final_board[turn - 1] = track || "";
-
-      player.artists_scores_board = player.artists_scores_board || {};
-      player.tracks_scores_board = player.tracks_scores_board || {};
-      player.artists_scores_board[turn - 1] = artist_score;
-      player.tracks_scores_board[turn - 1] = track_answer;
-
-      // Calcul et mise à jour du score sur le serveur
-      let additionalScore = artist_score;
-      if (track_answer) {
-        additionalScore += 1;
-      }
-      // Bonus pour une réponse parfaite (artiste + titre) sans aide
-      if (!player.hasHelp && artist_score === 1 && track_answer) {
-        additionalScore += 1;
-      }
-      // Bonus : trouver qui a choisi le morceau (y compris soi-même)
-      const submitter = currentTrack.submittedBy;
-      const player_answer =
-        !!room.guessPlayer &&
-        !!submitter &&
-        normalizeString(playerGuess) === normalizeString(submitter);
-      if (player_answer) additionalScore += 1;
-      if (room.guessPlayer) {
-        player.picks_final_board = player.picks_final_board || {};
-        player.picks_scores_board = player.picks_scores_board || {};
-        player.picks_final_board[turn - 1] = playerGuess.trim();
-        player.picks_scores_board[turn - 1] = player_answer;
-      }
-      player.score = (player.score || 0) + additionalScore;
-
-      io.to(roomCode).emit(
-        "answer",
-        player.name,
-        artist_score,
-        track_answer,
-        player_answer,
-      );
-    }
-  });
-
-  // --------------------------------------------------------
-  // Post game
-  // --------------------------------------------------------
-
-  // Demande des scores finaux
-  socket.on("get_final_scores", () => {
-    const { room } = getSocketContext(socket);
-    if (room) {
-      socket.emit("final_scores", toPublicPlayers(room.players));
-    }
-  });
-
-  // Retour au lobby
-  socket.on("restart_game", () => {
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (roomCode && room && player) {
-      player.inLobby = true;
-      player.isReady = player.isHost;
-      room.isGameOver = true;
-      emitRoomUpdated(roomCode, room);
-      checkAndResetGame(roomCode);
-    }
-  });
-
-  // Délai de grâce avant de retirer un joueur déconnecté (5 min, réglable pour les tests)
-  const GRACE_PERIOD = Number(process.env.GRACE_PERIOD_MS) || 5 * 60 * 1000;
-
-  socket.on("disconnect", () => {
-    console.log(`[${new Date().toISOString()}] User disconnected: ${socket.id}`);
-    const { roomCode, room, player } = getSocketContext(socket);
-    if (!roomCode || !room || !player) return;
-
-    // Socket périmée : le joueur s'est déjà reconnecté avec une autre socket (retour
-    // d'une autre appli sur mobile). Cette déconnexion tardive ne doit pas compter.
-    if (player.socketId !== socket.id) return;
-
-    // Marquer le joueur comme temporairement déconnecté
-    player.leavedPlayer = true;
-
-    const activePlayers = room.players.filter((p) => !p.leavedPlayer);
-
-    if (activePlayers.length === 0) {
-      // Tous les joueurs sont déconnectés : on démarre le timer de suppression de la room
-      console.log(
-        `[${new Date().toISOString()}] All players in room ${roomCode} disconnected. Starting 5min cleanup timer.`,
-      );
-      if (!room.cleanupTimeout) {
-        room.cleanupTimeout = setTimeout(() => {
-          const currentRoom = rooms[roomCode];
-          if (
-            currentRoom &&
-            currentRoom.players.every((p) => p.leavedPlayer)
-          ) {
-            delete rooms[roomCode];
-            console.log(
-              `[${new Date().toISOString()}] Room ${roomCode} deleted after 5min grace period expiration`,
-            );
-          }
-        }, GRACE_PERIOD);
-      }
-    } else {
-      // D'autres joueurs sont encore connectés
+      // Si l'hôte part (lobby, partie ou résultats), un autre joueur devient hôte :
+      // sans hôte, personne ne pourrait relancer une partie
       if (player.isHost) {
-        // L'hôte s'est déconnecté : donner 5 minutes avant de transférer l'hôte
-        clearDisconnectTimeout(player.id);
-        disconnectTimeouts.set(player.id, setTimeout(() => {
-          disconnectTimeouts.delete(player.id);
-          const currentRoom = rooms[roomCode];
-          if (currentRoom) {
-            const currentHost = currentRoom.players.find(
-              (p) => p.id === player.id,
-            );
-            if (
-              currentHost &&
-              currentHost.leavedPlayer &&
-              currentHost.isHost
-            ) {
-              const nextHost = currentRoom.players.find(
-                (p) => !p.leavedPlayer,
-              );
-              if (nextHost) {
-                currentHost.isHost = false;
-                nextHost.isHost = true;
-                nextHost.isReady = true;
-                console.log(
-                  `[${new Date().toISOString()}] Host transferred in room ${roomCode} after 5min timeout`,
-                );
-                emitRoomUpdated(roomCode, currentRoom);
-              }
-            }
-          }
-        }, GRACE_PERIOD));
-      } else if (!isGameRunning(room)) {
-        // Joueur non-hôte dans le lobby : le retirer s'il ne revient pas après 5 minutes
-        clearDisconnectTimeout(player.id);
-        disconnectTimeouts.set(player.id, setTimeout(() => {
-          disconnectTimeouts.delete(player.id);
-          const currentRoom = rooms[roomCode];
-          if (currentRoom) {
-            const p = currentRoom.players.find((x) => x.id === player.id);
-            if (p && p.leavedPlayer) {
-              currentRoom.players = currentRoom.players.filter(
-                (x) => x.id !== player.id,
-              );
-              console.log(
-                `[${new Date().toISOString()}] Disconnected player removed from room ${roomCode} after 5min timeout`,
-              );
-              emitRoomUpdated(roomCode, currentRoom);
-              checkAndResetGame(roomCode);
-            }
-          }
-        }, GRACE_PERIOD));
+        const newHost =
+          room.players.find((p) => !p.leavedPlayer) || room.players[0];
+        if (newHost) {
+          newHost.isHost = true;
+          newHost.isReady = true;
+        }
       }
-    }
 
-    emitRoomUpdated(roomCode, room);
-  });
-});
+      // Si plus aucun joueur dans la room, on supprime la room
+      if (room.players.length === 0) {
+        if (room.cleanupTimeout) {
+          clearTimeout(room.cleanupTimeout);
+        }
+        delete rooms[roomCode];
+        console.log(
+          `[${new Date().toISOString()}] Room ${roomCode} deleted because it is empty`,
+        );
+      } else {
+        emitRoomUpdated(roomCode, room);
+        checkAndResetGame(roomCode);
+      }
+    });
+
+    // Prêt
+    socket.on("ready", (isReady: boolean) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player) return;
+      player.isReady = isReady;
+      emitRoomUpdated(roomCode, room);
+    });
+
+    // Lancement de la partie
+    socket.on("start_game", () => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.isHost) return;
+
+      // Réinitialiser la propriété playlistUrl de tous les joueurs à undefined pour pouvoir suivre les retours
+      room.players.forEach((p) => {
+        p.playlistUrl = undefined;
+        p.inLobby = false;
+        p.isReady = p.isHost;
+        p.score = 0;
+        p.artists_final_board = {};
+        p.tracks_final_board = {};
+        p.artists_scores_board = {};
+        p.tracks_scores_board = {};
+        p.picks_final_board = {};
+        p.picks_scores_board = {};
+        p.leavedPlayer = false;
+      });
+      room.isGameOver = false;
+      room.gameStartTime = null;
+      room.isLoadingTracks = false;
+      // Des joueurs ont pu partir depuis l'activation de l'option
+      room.guessPlayer = !!room.guessPlayer && room.players.length >= 3;
+      io.to(roomCode).emit(
+        "game-setting",
+        "guess_player",
+        room.guessPlayer ? 1 : 0,
+      );
+      io.to(roomCode).emit("game_started", toPublicPlayers(room.players));
+    });
+
+    // Ajout des autres playlist
+    socket.on("send_playlist_url", async (playlistUrl: string) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player) return;
+      if (typeof playlistUrl !== "string") return;
+
+      // Chargement trop fréquent depuis cette adresse : le joueur joue sans playlist plutôt
+      // que de bloquer le lancement de la partie pour les autres
+      // Une playlist déjà chargée (relancement après un échec) ne consomme pas de jeton
+      const cached = room.loadedPlaylists?.get(player.id);
+      const isCached =
+        cached?.url === playlistUrl && cached.amount === room.musicAmount;
+      if (playlistUrl && !isCached && !playlistLoads.tryHit(ip)) {
+        playlistUrl = "";
+        socket.emit("error", "rate_limited");
+      }
+      player.playlistUrl = playlistUrl || "";
+
+      // On attend que tous les joueurs aient répondu (url ou chaîne vide),
+      // et un seul chargement à la fois
+      const allSubmitted = room.players.every(
+        (p) => p.playlistUrl !== undefined,
+      );
+      if (!allSubmitted || room.isLoadingTracks) return;
+
+      room.isLoadingTracks = true;
+      room.toPlay = [];
+
+      try {
+        const { allTracks, selected, failed } = await loadPlayersTracks(room);
+
+        if (failed.length) {
+          // Les joueurs doivent se remettre prêts (et celui en échec corriger sa playlist) :
+          // l'hôte ne peut pas relancer sans les consulter. Les playlists déjà chargées
+          // sont gardées dans room.loadedPlaylists pour le relancement.
+          room.isLoadingTracks = false;
+          room.players.forEach((p) => {
+            p.isReady = p.isHost;
+          });
+          emitRoomUpdated(roomCode, room);
+          io.to(roomCode).emit("playlist_failed", failed);
+          return;
+        }
+        if (allTracks.length < 1) {
+          room.isLoadingTracks = false;
+          io.to(roomCode).emit("no_playlist", "no_playlist_tracks");
+          return;
+        }
+
+        await startWithTracks(room, roomCode, allTracks, selected);
+      } catch (processingErr) {
+        room.isLoadingTracks = false;
+        socket.emit("error", "internal_error");
+      }
+    });
+
+    // --------------------------------------------------------
+    // Paramètres de partie
+    // --------------------------------------------------------
+
+    // Musique par playlist
+    socket.on("music_amount", (amount: number) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.isHost) return;
+      if (!Number.isInteger(amount) || amount < 1 || amount > 30) return;
+      room.musicAmount = amount;
+      io.to(roomCode).emit("game-setting", "music_amount", amount);
+    });
+
+    // Temps
+    socket.on("time", (time: number) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.isHost) return;
+      if (!Number.isInteger(time) || time < 5 || time > 30 || time % 5 !== 0)
+        return;
+      room.time = time;
+      io.to(roomCode).emit("game-setting", "time", time);
+    });
+
+    // Deviner qui a choisi le morceau (hôte, 3 joueurs minimum)
+    socket.on("guess_player", (enabled: boolean) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.isHost) return;
+      if (typeof enabled !== "boolean") return;
+      if (enabled && room.players.length < 3) return;
+      room.guessPlayer = enabled;
+      io.to(roomCode).emit("game-setting", "guess_player", enabled ? 1 : 0);
+    });
+
+    // Aide (propre à chaque joueur, modifiable seulement au lobby)
+    socket.on("help", (enabled: boolean) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.inLobby) return;
+      if (typeof enabled !== "boolean") return;
+      player.hasHelp = enabled;
+      emitRoomUpdated(roomCode, room);
+    });
+
+    // --------------------------------------------------------
+    // Actions en partie
+    // --------------------------------------------------------
+
+    // Envoi de la réponse (optimisé avec précalculs)
+    socket.on(
+      "submit_answer",
+      (artist: string, track: string, turn: number, playerGuess?: string) => {
+        const { roomCode, room, player } = getSocketContext(socket);
+        if (!roomCode || !room || !player) return;
+        if (typeof artist !== "string" || typeof track !== "string") return;
+        artist = artist.slice(0, 200);
+        track = track.slice(0, 200);
+        playerGuess =
+          typeof playerGuess === "string" ? playerGuess.slice(0, 200) : "";
+
+        // Le tour est calculé côté serveur : le `turn` du client n'est pas fiable
+        if (
+          !room.gameStartTime ||
+          turn !==
+            getTurnInfo(room.time, room.gameStartTime, room.toPlay.length).turn
+        )
+          return;
+        // Pas de réponse une fois la solution révélée (2 s de marge pour la latence)
+        const turnElapsed =
+          ((Date.now() - room.gameStartTime) / 1000) % (room.time + 7);
+        if (turnElapsed > room.time + 2) return;
+        // Une seule réponse par joueur et par tour
+        if (player.tracks_scores_board?.[turn - 1] !== undefined) return;
+
+        const currentTrack = room.toPlay[turn - 1];
+        if (currentTrack) {
+          const { artistScore: artist_score, trackCorrect: track_answer } =
+            scoreAnswer(currentTrack, artist, track);
+
+          player.artists_final_board = player.artists_final_board || {};
+          player.tracks_final_board = player.tracks_final_board || {};
+          const cleanArtist = (artist || "").trim().replace(/,$/, "").trim();
+          player.artists_final_board[turn - 1] = cleanArtist;
+          player.tracks_final_board[turn - 1] = track || "";
+
+          player.artists_scores_board = player.artists_scores_board || {};
+          player.tracks_scores_board = player.tracks_scores_board || {};
+          player.artists_scores_board[turn - 1] = artist_score;
+          player.tracks_scores_board[turn - 1] = track_answer;
+
+          // Calcul et mise à jour du score sur le serveur
+          let additionalScore = artist_score;
+          if (track_answer) {
+            additionalScore += 1;
+          }
+          // Bonus pour une réponse parfaite (artiste + titre) sans aide
+          if (!player.hasHelp && artist_score === 1 && track_answer) {
+            additionalScore += 1;
+          }
+          // Bonus : trouver qui a choisi le morceau (y compris soi-même)
+          const submitter = currentTrack.submittedBy;
+          const player_answer =
+            !!room.guessPlayer &&
+            !!submitter &&
+            normalizeString(playerGuess) === normalizeString(submitter);
+          if (player_answer) additionalScore += 1;
+          if (room.guessPlayer) {
+            player.picks_final_board = player.picks_final_board || {};
+            player.picks_scores_board = player.picks_scores_board || {};
+            player.picks_final_board[turn - 1] = playerGuess.trim();
+            player.picks_scores_board[turn - 1] = player_answer;
+          }
+          player.score = (player.score || 0) + additionalScore;
+
+          io.to(roomCode).emit(
+            "answer",
+            player.name,
+            artist_score,
+            track_answer,
+            player_answer,
+          );
+        }
+      },
+    );
+
+    // --------------------------------------------------------
+    // Post game
+    // --------------------------------------------------------
+
+    // Demande des scores finaux
+    socket.on("get_final_scores", () => {
+      const { room } = getSocketContext(socket);
+      if (room) {
+        socket.emit("final_scores", toPublicPlayers(room.players));
+      }
+    });
+
+    // Retour au lobby
+    socket.on("restart_game", () => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (roomCode && room && player) {
+        player.inLobby = true;
+        player.isReady = player.isHost;
+        room.isGameOver = true;
+        emitRoomUpdated(roomCode, room);
+        checkAndResetGame(roomCode);
+      }
+    });
+
+    // Délai de grâce avant de retirer un joueur déconnecté (5 min, réglable pour les tests)
+    const GRACE_PERIOD = Number(process.env.GRACE_PERIOD_MS) || 5 * 60 * 1000;
+
+    socket.on("disconnect", () => {
+      console.log(
+        `[${new Date().toISOString()}] User disconnected: ${socket.id}`,
+      );
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player) return;
+
+      // Socket périmée : le joueur s'est déjà reconnecté avec une autre socket (retour
+      // d'une autre appli sur mobile). Cette déconnexion tardive ne doit pas compter.
+      if (player.socketId !== socket.id) return;
+
+      // Marquer le joueur comme temporairement déconnecté
+      player.leavedPlayer = true;
+
+      const activePlayers = room.players.filter((p) => !p.leavedPlayer);
+
+      if (activePlayers.length === 0) {
+        // Tous les joueurs sont déconnectés : on démarre le timer de suppression de la room
+        console.log(
+          `[${new Date().toISOString()}] All players in room ${roomCode} disconnected. Starting 5min cleanup timer.`,
+        );
+        if (!room.cleanupTimeout) {
+          room.cleanupTimeout = setTimeout(() => {
+            const currentRoom = rooms[roomCode];
+            if (
+              currentRoom &&
+              currentRoom.players.every((p) => p.leavedPlayer)
+            ) {
+              delete rooms[roomCode];
+              console.log(
+                `[${new Date().toISOString()}] Room ${roomCode} deleted after 5min grace period expiration`,
+              );
+            }
+          }, GRACE_PERIOD);
+        }
+      } else {
+        // D'autres joueurs sont encore connectés
+        if (player.isHost) {
+          // L'hôte s'est déconnecté : donner 5 minutes avant de transférer l'hôte
+          clearDisconnectTimeout(player.id);
+          disconnectTimeouts.set(
+            player.id,
+            setTimeout(() => {
+              disconnectTimeouts.delete(player.id);
+              const currentRoom = rooms[roomCode];
+              if (currentRoom) {
+                const currentHost = currentRoom.players.find(
+                  (p) => p.id === player.id,
+                );
+                if (
+                  currentHost &&
+                  currentHost.leavedPlayer &&
+                  currentHost.isHost
+                ) {
+                  const nextHost = currentRoom.players.find(
+                    (p) => !p.leavedPlayer,
+                  );
+                  if (nextHost) {
+                    currentHost.isHost = false;
+                    nextHost.isHost = true;
+                    nextHost.isReady = true;
+                    console.log(
+                      `[${new Date().toISOString()}] Host transferred in room ${roomCode} after 5min timeout`,
+                    );
+                    emitRoomUpdated(roomCode, currentRoom);
+                  }
+                }
+              }
+            }, GRACE_PERIOD),
+          );
+        } else if (!isGameRunning(room)) {
+          // Joueur non-hôte dans le lobby : le retirer s'il ne revient pas après 5 minutes
+          clearDisconnectTimeout(player.id);
+          disconnectTimeouts.set(
+            player.id,
+            setTimeout(() => {
+              disconnectTimeouts.delete(player.id);
+              const currentRoom = rooms[roomCode];
+              if (currentRoom) {
+                const p = currentRoom.players.find((x) => x.id === player.id);
+                if (p && p.leavedPlayer) {
+                  currentRoom.players = currentRoom.players.filter(
+                    (x) => x.id !== player.id,
+                  );
+                  console.log(
+                    `[${new Date().toISOString()}] Disconnected player removed from room ${roomCode} after 5min timeout`,
+                  );
+                  emitRoomUpdated(roomCode, currentRoom);
+                  checkAndResetGame(roomCode);
+                }
+              }
+            }, GRACE_PERIOD),
+          );
+        }
+      }
+
+      emitRoomUpdated(roomCode, room);
+    });
+  },
+);
 
 // Charge en parallèle la playlist de chaque joueur. `selected` : morceaux retenus
 // pour la partie ; `allTracks` : tous les morceaux chargés (base d'autocomplétion).
@@ -839,7 +878,11 @@ function getTurnInfo(
   time: number,
   gameStartTime: number,
   trackCount: number,
-): { turn: number; phase: "guessing" | "answer" | "transition"; timeLeft: number } {
+): {
+  turn: number;
+  phase: "guessing" | "answer" | "transition";
+  timeLeft: number;
+} {
   const turnDuration = time + 5 + 2;
   const elapsed = (Date.now() - gameStartTime) / 1000;
   const turn = Math.floor(elapsed / turnDuration) + 1;
@@ -853,7 +896,11 @@ function getTurnInfo(
   if (inTurn < time + 5) {
     return { turn, phase: "answer", timeLeft: Math.ceil(time + 5 - inTurn) };
   }
-  return { turn, phase: "transition", timeLeft: Math.ceil(turnDuration - inTurn) };
+  return {
+    turn,
+    phase: "transition",
+    timeLeft: Math.ceil(turnDuration - inTurn),
+  };
 }
 
 // Horloge de partie envoyée au client : il recalcule tour, phase et temps restant
@@ -917,7 +964,11 @@ const checkAndResetGame = (roomCode: string): void => {
       guessPlayer: !!room.guessPlayer,
     };
 
-    io.to(roomCode).emit("game_reset", rulesObj, toPublicPlayers(activePlayers));
+    io.to(roomCode).emit(
+      "game_reset",
+      rulesObj,
+      toPublicPlayers(activePlayers),
+    );
     if (oldHost && newHost?.socketId) {
       io.to(newHost.socketId).emit("host_transferred", oldHost.name);
     }
