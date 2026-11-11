@@ -49,7 +49,7 @@ import {
   DatabaseArtist,
   DatabaseTrack,
 } from "./types/game.js";
-import { findArtist } from "./scripts/library.js";
+import { findArtist, rememberArtist, saveLearned } from "./scripts/library.js";
 
 // Initialisation
 const app = express();
@@ -848,6 +848,10 @@ async function buildArtistDatabase(
   if (forLlm.length > 0) {
     try {
       groqArtistMap = await transliterateArtists(forLlm);
+      for (const [artist, international] of groqArtistMap) {
+        rememberArtist(artist, international);
+      }
+      saveLearned();
     } catch (err) {
       console.warn("[servor] Erreur transliterateArtists Groq :", err);
     }

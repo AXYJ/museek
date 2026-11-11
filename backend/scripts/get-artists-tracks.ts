@@ -16,7 +16,12 @@ import {
   transliterate as transliterateGroq,
   TransliterateItem,
 } from "./transliterate.js";
-import { findArtist, findTrack } from "./library.js";
+import {
+  findArtist,
+  findTrack,
+  saveLearned,
+  rememberTrack,
+} from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
 let kuroshiroReady = false;
@@ -217,11 +222,22 @@ export default async function selectTracks(
             );
             const results = await transliterateGroq(itemsToTranslate);
             for (const r of results) {
-              groqTranslations.set(Number(r.id), {
+              const index = Number(r.id);
+              const original = playlistTracks[index];
+              if (!original) continue; // le LLM peut renvoyer un id inexistant
+
+              groqTranslations.set(index, {
                 internationalArtist: r.internationalArtist,
                 internationalTitle: r.internationalTitle,
               });
+              rememberTrack(
+                original.artist,
+                original.name,
+                r.internationalArtist,
+                r.internationalTitle,
+              );
             }
+            saveLearned();
           } catch (e) {
             console.warn(
               "[selectTracks] Fallback sur translitération locale suite à erreur Groq :",
