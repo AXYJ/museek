@@ -52,3 +52,6 @@ REGISTRE.md
 
 # Session Claude Code
 .claude/
+
+/backend/data/learned.json
+/backend/data/learned.json.tmp
