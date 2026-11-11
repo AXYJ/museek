@@ -16,7 +16,12 @@ import {
   transliterate as transliterateGroq,
   TransliterateItem,
 } from "./transliterate.js";
-import { findArtist, findTrack } from "./library.js";
+import {
+  findArtist,
+  findTrack,
+  saveLearned,
+  rememberTrack,
+} from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
 let kuroshiroReady = false;
@@ -137,7 +142,9 @@ export default async function selectTracks(
   // Lien refusé (domaine non autorisé) ou court : résolu sans jamais appeler une autre plateforme
   const resolved = await resolveAllowedUrl(playlistUrl);
   if (!resolved) {
-    console.warn(`[selectTracks] Lien refusé ou non résolu: ${playlistUrl.slice(0, 80)}`);
+    console.warn(
+      `[selectTracks] Lien refusé ou non résolu: ${playlistUrl.slice(0, 80)}`,
+    );
     return { tracks: [], selectedTracks: [] };
   }
   const resolvedUrl = resolved.url.href;
@@ -215,11 +222,22 @@ export default async function selectTracks(
             );
             const results = await transliterateGroq(itemsToTranslate);
             for (const r of results) {
-              groqTranslations.set(Number(r.id), {
+              const index = Number(r.id);
+              const original = playlistTracks[index];
+              if (!original) continue; // le LLM peut renvoyer un id inexistant
+
+              groqTranslations.set(index, {
                 internationalArtist: r.internationalArtist,
                 internationalTitle: r.internationalTitle,
               });
+              rememberTrack(
+                original.artist,
+                original.name,
+                r.internationalArtist,
+                r.internationalTitle,
+              );
             }
+            saveLearned();
           } catch (e) {
             console.warn(
               "[selectTracks] Fallback sur translitération locale suite à erreur Groq :",
@@ -293,9 +311,10 @@ export default async function selectTracks(
   if (platform === "spotify") {
     selectedTracksWithImages = await Promise.all(
       selectedTracks.map(async (track) => {
-        const coverKey = `${track.internationalArtist || track.artist} ${track.internationalName || track.name}`
-          .toLowerCase()
-          .trim();
+        const coverKey =
+          `${track.internationalArtist || track.artist} ${track.internationalName || track.name}`
+            .toLowerCase()
+            .trim();
 
         // Vérifier dans le cache de couverture
         if (coverCache.has(coverKey)) {
