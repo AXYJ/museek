@@ -353,5 +353,32 @@
         "alternativeNames": ["You Don't Listen to Rock"]
       }
     }
+  },
+  "BLUE ENCOUNT": {
+    "internationalArtist": "BLUE ENCOUNT",
+    "tracks": {
+      "ポラリス": {
+        "internationalName": "Porarisu",
+        "alternativeNames": ["Polaris"]
+      }
+    }
+  },
+  "ROOKiEZ is PUNK'D": {
+    "internationalArtist": "ROOKiEZ is PUNK'D",
+    "tracks": {
+      "リアライズ": {
+        "internationalName": "Riaraizu",
+        "alternativeNames": ["Realize"]
+      }
+    }
+  },
+  "Yuuri": {
+    "internationalArtist": "Yuuri",
+    "tracks": {
+      "カーテンコール": {
+        "internationalName": "Katenkoru",
+        "alternativeNames": ["Curtain Call"]
+      }
+    }
   }
 }
