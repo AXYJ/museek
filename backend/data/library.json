@@ -25,5 +25,333 @@
         "alternativeNames": ["Silhouette"]
       }
     }
+  },
+  "YOASOBI": {
+    "internationalArtist": "YOASOBI",
+    "tracks": {
+      "夜に駆ける": {
+        "internationalName": "Yoru ni Kakeru",
+        "alternativeNames": ["Into the Night", "Racing into the Night"]
+      },
+      "群青": {
+        "internationalName": "Gunjo",
+        "alternativeNames": ["Gunjou", "Ultramarine"]
+      },
+      "アイドル": {
+        "internationalName": "Aidoru",
+        "alternativeNames": ["Idol"]
+      },
+      "怪物": {
+        "internationalName": "Kaibutsu",
+        "alternativeNames": ["Monster"]
+      },
+      "三原色": {
+        "internationalName": "Sangenshoku",
+        "alternativeNames": ["RGB", "Three Primary Colors"]
+      },
+      "あの夢をなぞって": {
+        "internationalName": "Ano Yume wo Nazotte",
+        "alternativeNames": ["Tracing That Dream"]
+      },
+      "アンコール": {
+        "internationalName": "Ankoru",
+        "alternativeNames": ["Encore"]
+      },
+      "ラブレター": {
+        "internationalName": "Rabu Reta",
+        "alternativeNames": ["Love Letter"]
+      },
+      "ハルジオン": {
+        "internationalName": "Harujion",
+        "alternativeNames": ["Halzion"]
+      },
+      "祝福": {
+        "internationalName": "Shukufuku",
+        "alternativeNames": ["Blessing", "The Blessing"]
+      },
+      "たぶん": {
+        "internationalName": "Tabun",
+        "alternativeNames": ["Probably"]
+      },
+      "優しい彗星": {
+        "internationalName": "Yasashii Suisei",
+        "alternativeNames": ["Comet", "Gentle Comet"]
+      },
+      "勇者": {
+        "internationalName": "Yusha",
+        "alternativeNames": ["The Brave", "Hero"]
+      }
+    }
+  },
+  "Kenshi Yonezu": {
+    "internationalArtist": "Kenshi Yonezu",
+    "tracks": {
+      "アイネクライネ": {
+        "internationalName": "Aine Kuraine",
+        "alternativeNames": ["Eine Kleine"]
+      },
+      "地球儀": {
+        "internationalName": "Chikyugi",
+        "alternativeNames": ["Spinning Globe", "Globe"]
+      },
+      "さよーならまたいつか！": {
+        "internationalName": "Sayonara Mata Itsuka",
+        "alternativeNames": ["Goodbye, Until Someday"]
+      }
+    }
+  },
+  "Ado": {
+    "internationalArtist": "Ado",
+    "tracks": {
+      "うっせぇわ": {
+        "internationalName": "Usseewa",
+        "alternativeNames": ["Shut Up"]
+      },
+      "新時代": {
+        "internationalName": "Shin Jidai",
+        "alternativeNames": ["New Genesis", "New Era"]
+      },
+      "唱": {
+        "internationalName": "Show",
+        "alternativeNames": ["Sho", "Sing"]
+      },
+      "踊": {
+        "internationalName": "Odo",
+        "alternativeNames": ["Dance"]
+      },
+      "逆光": {
+        "internationalName": "Gyakko",
+        "alternativeNames": ["Backlight"]
+      },
+      "私は最強": {
+        "internationalName": "Watashi wa Saikyo",
+        "alternativeNames": ["I'm Invincible", "I'm the Strongest"]
+      },
+      "レディメイド": {
+        "internationalName": "Redimeido",
+        "alternativeNames": ["Readymade"]
+      },
+      "会いたくて": {
+        "internationalName": "Aitakute",
+        "alternativeNames": ["I Want to See You"]
+      },
+      "夜のピエロ": {
+        "internationalName": "Yoru no Piero",
+        "alternativeNames": ["Yoru no Pierrot", "Pierrot of the Night"]
+      },
+      "心という名の不可解": {
+        "internationalName": "Kokoro to Iu Na no Fukakai",
+        "alternativeNames": ["The Enigma Called the Heart"]
+      },
+      "風のゆくえ": {
+        "internationalName": "Kaze no Yukue",
+        "alternativeNames": ["Where the Wind Goes"]
+      },
+      "ウタカタララバイ": {
+        "internationalName": "Utakata Rarabai",
+        "alternativeNames": ["Utakata Lullaby", "Fleeting Lullaby"]
+      },
+      "世界のつづき": {
+        "internationalName": "Sekai no Tsuzuki",
+        "alternativeNames": ["The World Continues"]
+      },
+      "愛して愛して愛して": {
+        "internationalName": "Aishite Aishite Aishite",
+        "alternativeNames": ["Love Me Love Me Love Me"]
+      },
+      "向日葵": {
+        "internationalName": "Himawari",
+        "alternativeNames": ["Sunflower"]
+      },
+      "永遠のあくる日": {
+        "internationalName": "Eien no Akuruhi",
+        "alternativeNames": ["The Day After Eternity"]
+      }
+    }
+  },
+  "LiSA": {
+    "internationalArtist": "LiSA",
+    "tracks": {
+      "紅蓮華": {
+        "internationalName": "Gurenge",
+        "alternativeNames": ["Crimson Lotus"]
+      },
+      "炎": {
+        "internationalName": "Homura",
+        "alternativeNames": ["Flame"]
+      },
+      "明け星": {
+        "internationalName": "Akeboshi",
+        "alternativeNames": ["Morning Star"]
+      },
+      "白銀": {
+        "internationalName": "Shirogane",
+        "alternativeNames": ["Silver"]
+      }
+    }
+  },
+  "Aimer": {
+    "internationalArtist": "Aimer",
+    "tracks": {
+      "蝶々結び": {
+        "internationalName": "Chouchou Musubi",
+        "alternativeNames": ["Butterfly Knot", "Bow Knot"]
+      },
+      "カタオモイ": {
+        "internationalName": "Kataomoi",
+        "alternativeNames": ["One-Sided Love", "Unrequited Love"]
+      },
+      "春はゆく": {
+        "internationalName": "Haru wa Yuku",
+        "alternativeNames": ["Spring Is Leaving"]
+      },
+      "朝が来る": {
+        "internationalName": "Asa ga Kuru",
+        "alternativeNames": ["Morning Comes"]
+      }
+    }
+  },
+  "Official HIGE DANdism": {
+    "internationalArtist": "Official HIGE DANdism",
+    "alternativeNames": ["Higedan", "Official Hige Dandism"],
+    "tracks": {
+      "宿命": {
+        "internationalName": "Shukumei",
+        "alternativeNames": ["Destiny", "Fate"]
+      },
+      "ミックスナッツ": {
+        "internationalName": "Mikkusu Nattsu",
+        "alternativeNames": ["Mixed Nuts"]
+      },
+      "ノーダウト": {
+        "internationalName": "No Dauto",
+        "alternativeNames": ["No Doubt"]
+      },
+      "イエスタデイ": {
+        "internationalName": "Iesutadei",
+        "alternativeNames": ["Yesterday"]
+      },
+      "115万キロのフィルム": {
+        "internationalName": "115 Man Kiro no Firumu",
+        "alternativeNames": ["1.15 Million Kilometer Film"]
+      }
+    }
+  },
+  "RADWIMPS": {
+    "internationalArtist": "RADWIMPS",
+    "tracks": {
+      "前前前世": {
+        "internationalName": "Zen Zen Zense",
+        "alternativeNames": ["Past Past Past Life"]
+      },
+      "スパークル": {
+        "internationalName": "Supakuru",
+        "alternativeNames": ["Sparkle"]
+      },
+      "なんでもないや": {
+        "internationalName": "Nandemonaiya",
+        "alternativeNames": ["It's Nothing"]
+      },
+      "愛にできることはまだあるかい": {
+        "internationalName": "Ai ni Dekiru Koto wa Mada Aru kai",
+        "alternativeNames": ["Is There Still Anything That Love Can Do"]
+      },
+      "グランドエスケープ": {
+        "internationalName": "Gurando Esukepu",
+        "alternativeNames": ["Grand Escape"]
+      }
+    }
+  },
+  "Eve": {
+    "internationalArtist": "Eve",
+    "tracks": {
+      "ドラマツルギー": {
+        "internationalName": "Doramatsurugi",
+        "alternativeNames": ["Dramaturgy"]
+      },
+      "お気に召すまま": {
+        "internationalName": "Oki ni Mesu Mama",
+        "alternativeNames": ["As You Like It"]
+      },
+      "群青讃歌": {
+        "internationalName": "Gunjo Sanka",
+        "alternativeNames": ["Hymn of Ultramarine"]
+      }
+    }
+  },
+  "King Gnu": {
+    "internationalArtist": "King Gnu",
+    "tracks": {
+      "白日": {
+        "internationalName": "Hakujitsu",
+        "alternativeNames": ["Broad Daylight"]
+      },
+      "一途": {
+        "internationalName": "Ichizu",
+        "alternativeNames": ["Wholehearted"]
+      },
+      "逆夢": {
+        "internationalName": "Sakayume",
+        "alternativeNames": ["Reverse Dream"]
+      },
+      "カメレオン": {
+        "internationalName": "Kamereon",
+        "alternativeNames": ["Chameleon"]
+      },
+      "三文小説": {
+        "internationalName": "Sanmon Shosetsu",
+        "alternativeNames": ["Cheap Novel"]
+      }
+    }
+  },
+  "Mrs. GREEN APPLE": {
+    "internationalArtist": "Mrs. GREEN APPLE",
+    "tracks": {
+      "青と夏": {
+        "internationalName": "Ao to Natsu",
+        "alternativeNames": ["Blue and Summer"]
+      },
+      "ケセラセラ": {
+        "internationalName": "Kesera Sera",
+        "alternativeNames": ["Que Sera Sera"]
+      },
+      "ライラック": {
+        "internationalName": "Rairakku",
+        "alternativeNames": ["Lilac"]
+      },
+      "インフェルノ": {
+        "internationalName": "Inferuno",
+        "alternativeNames": ["Inferno"]
+      },
+      "ダンスホール": {
+        "internationalName": "Dansu Horu",
+        "alternativeNames": ["Dance Hall"]
+      },
+      "僕のこと": {
+        "internationalName": "Boku no Koto",
+        "alternativeNames": ["About Me"]
+      }
+    }
+  },
+  "Aimyon": {
+    "internationalArtist": "Aimyon",
+    "tracks": {
+      "マリーゴールド": {
+        "internationalName": "Marigorudo",
+        "alternativeNames": ["Marigold"]
+      },
+      "裸の心": {
+        "internationalName": "Hadaka no Kokoro",
+        "alternativeNames": ["Naked Heart"]
+      },
+      "ハルノヒ": {
+        "internationalName": "Haru no Hi",
+        "alternativeNames": ["Spring Day"]
+      },
+      "君はロックを聴かない": {
+        "internationalName": "Kimi wa Rokku wo Kikanai",
+        "alternativeNames": ["You Don't Listen to Rock"]
+      }
+    }
   }
 }
