@@ -7,6 +7,8 @@ export interface Track {
   internationalName?: string;
   internationalArtist?: string;
   alternativeNames?: string[];
+  // Noms alternatifs de chaque artiste qui en a, par nom d'artiste (ex. { "いきものがかり": ["Ikimonogakari"] })
+  artistAlternativeNames?: Record<string, string[]>;
   previewUrl?: string;
   imageUrl?: string | null;
   submittedBy?: string;
@@ -50,6 +52,7 @@ export interface DatabaseArtist {
   id?: string;
   artist: string;
   internationalArtist?: string;
+  alternativeNames?: string[];
 }
 
 export interface DatabaseTrack {

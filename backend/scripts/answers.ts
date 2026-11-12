@@ -59,10 +59,22 @@ export function prepareTrack(track: Track, index: number): Track {
   // le nom d'origine est accepté. Romaniser artiste par artiste si ça gêne.
   const aligned = internationalArtists.length === originalArtists.length;
 
-  // Pour chaque artiste, les noms acceptés (original et international)
-  const requiredArtists = originalArtists.map((orig, idx) =>
-    aligned ? [orig, internationalArtists[idx]] : [orig],
-  );
+  // Noms alternatifs de la bibliothèque, retrouvés par nom d'origine normalisé
+  const altByArtist = new Map<string, string[]>();
+  for (const [name, alts] of Object.entries(
+    track.artistAlternativeNames ?? {},
+  )) {
+    altByArtist.set(
+      normalizeString(name),
+      alts.map((n) => normalizeString(n)).filter(Boolean),
+    );
+  }
+
+  // Pour chaque artiste, les noms acceptés (original, international et alternatifs)
+  const requiredArtists = originalArtists.map((orig, idx) => [
+    ...(aligned ? [orig, internationalArtists[idx]] : [orig]),
+    ...(altByArtist.get(orig) ?? []),
+  ]);
 
   return {
     order: index + 1,
@@ -71,6 +83,7 @@ export function prepareTrack(track: Track, index: number): Track {
     internationalName: track.internationalName || track.name || "",
     internationalArtist: track.internationalArtist || track.artist || "",
     alternativeNames: track.alternativeNames,
+    artistAlternativeNames: track.artistAlternativeNames,
     previewUrl: track.previewUrl || "",
     imageUrl: track.imageUrl || "",
     submittedBy: track.submittedBy || "",
