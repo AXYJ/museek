@@ -7,5 +7,14 @@
         "alternativeNames": ["Fragile Woman"]
       }
     }
+  },
+  "Ikimonogakari": {
+    "internationalArtist": "Ikimonogakari",
+    "tracks": {
+      "ブルーバード": {
+        "internationalName": "Buru Bado",
+        "alternativeNames": ["Blue Bird"]
+      }
+    }
   }
 }

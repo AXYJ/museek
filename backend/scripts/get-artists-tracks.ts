@@ -21,7 +21,7 @@ import {
   findTrack,
   saveLearned,
   rememberTrack,
-  findAlternativeNames
+  findAlternativeNames,
 } from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
@@ -193,20 +193,17 @@ export default async function selectTracks(
           { internationalArtist: string; internationalTitle: string }
         >();
 
-        // 1. Détecter les morceaux non-ASCII : ceux de la bibliothèque sont rangés tout de
-        // suite, les autres partent à Groq
+        // 1. Détecter les morceaux se trouvant dans la bibliothèques et les rangés, les autres partent à Groq
         const itemsToTranslate: TransliterateItem[] = [];
         playlistTracks.forEach((t, index) => {
-          if (needsLlm(t.name, t.artist)) {
-            const internationalTitle = findTrack(t.artist, t.name);
-            if (internationalTitle) {
-              groqTranslations.set(index, {
-                // findArtist existe forcément si findTrack existe
-                internationalArtist: findArtist(t.artist)!,
-                internationalTitle: internationalTitle,
-              });
-              return;
-            }
+          const internationalTitle = findTrack(t.artist, t.name);
+          if (internationalTitle) {
+            groqTranslations.set(index, {
+              // findArtist existe forcément si findTrack existe
+              internationalArtist: findArtist(t.artist)!,
+              internationalTitle: internationalTitle,
+            });
+          } else if (needsLlm(t.name, t.artist)) {
             itemsToTranslate.push({
               id: index,
               artist: t.artist,
@@ -266,8 +263,7 @@ export default async function selectTracks(
                 : await getInternationalName(artist)
             ).trim();
 
-            const alternativeNames = findAlternativeNames(artist, name)
-            
+            const alternativeNames = findAlternativeNames(artist, name);
 
             return {
               name,
@@ -279,7 +275,7 @@ export default async function selectTracks(
               imageUrl: t.imageUrl || "",
               url: t.url || "",
               submittedBy: player.name,
-              alternativeNames
+              alternativeNames,
             };
           }),
         );
