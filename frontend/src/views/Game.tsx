@@ -117,7 +117,10 @@ export default function Game() {
             const matchesInt = normalizeString(a.internationalArtist).includes(
               artistSearch,
             );
-            return matchesName || matchesInt;
+            const matchesAlt = a.alternativeNames?.some((name) =>
+              normalizeString(name).includes(artistSearch),
+            );
+            return matchesName || matchesInt || matchesAlt;
           })
           .slice(0, 5);
 
@@ -439,13 +442,20 @@ export default function Game() {
               isHalfCorrect={me?.artist_score === 0.5}
               isMultiple={true}
               getSuggestionValue={(item) => item.artist}
-              getSuggestionLabel={(item) => ({
-                main: item.artist,
-                secondary:
-                  item.internationalArtist !== item.artist
-                    ? item.internationalArtist
-                    : undefined,
-              })}
+              getSuggestionLabel={(item) => {
+                // Même principe que pour les titres : le nom alternatif trouvé passe en second
+                const matchedAlt = item.alternativeNames?.find((name) =>
+                  normalizeString(name).includes(artistSearch),
+                );
+                return {
+                  main: item.artist,
+                  secondary:
+                    matchedAlt ??
+                    (item.internationalArtist !== item.artist
+                      ? item.internationalArtist
+                      : undefined),
+                };
+              }}
               emptyText={t("game.no-artist-found")}
               phase={phase}
             />

@@ -49,7 +49,12 @@ import {
   DatabaseArtist,
   DatabaseTrack,
 } from "./types/game.js";
-import { findArtist, rememberArtist, saveLearned } from "./scripts/library.js";
+import {
+  findArtist,
+  findArtistAlternativeNames,
+  rememberArtist,
+  saveLearned,
+} from "./scripts/library.js";
 
 // Initialisation
 const app = express();
@@ -864,7 +869,13 @@ async function buildArtistDatabase(
       findArtist(artist) ||
       groqArtistMap.get(artist) ||
       (await getInternationalName(artist));
-    database.push({ artist, internationalArtist });
+    const alternativeNames = findArtistAlternativeNames(artist);
+    database.push({
+      artist,
+      internationalArtist,
+      // Champ omis s'il est vide : la liste part à chaque joueur
+      ...(alternativeNames.length > 0 && { alternativeNames }),
+    });
   }
   return database;
 }

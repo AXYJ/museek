@@ -16,6 +16,8 @@ type TrackInfo = Required<Pick<DatabaseTrack, "internationalName">> & {
 interface ArtistEntry extends Required<
   Pick<DatabaseArtist, "internationalArtist">
 > {
+  // Autres noms acceptés pour l'artiste (ex. nom anglais d'un groupe)
+  alternativeNames?: string[];
   tracks: Record<string, TrackInfo>;
 }
 
@@ -31,6 +33,23 @@ const getLibraryPath = () =>
 const getLearnedPath = () =>
   process.env.MUSEEK_LEARNED_FILE ||
   join(process.cwd(), "data", "learned.json");
+
+// Liste de noms alternatifs valide (une liste de textes), sinon undefined avec un
+// avertissement. Un champ fautif est ignoré sans faire perdre l'entrée qui le contient.
+function validAlternativeNames(
+  alt: unknown,
+  where: string,
+): string[] | undefined {
+  if (Array.isArray(alt) && alt.every((n) => typeof n === "string")) {
+    return alt;
+  }
+  if (alt !== undefined) {
+    console.warn(
+      `[library] alternativeNames ignoré (doit être une liste de textes) : ${where}`,
+    );
+  }
+  return undefined;
+}
 
 // JSON.parse renvoie `any` : on vérifie la forme à l'exécution plutôt que de faire confiance
 // au fichier (une faute de frappe dans un fichier édité à la main arrive vite).
@@ -68,19 +87,21 @@ function validate(raw: unknown): Library {
       // seuls les champs vérifiés y entrent
       const entry: TrackInfo = { internationalName: t.internationalName };
 
-      const alt = t.alternativeNames;
-      if (Array.isArray(alt) && alt.every((n) => typeof n === "string")) {
-        entry.alternativeNames = alt;
-      } else if (alt !== undefined) {
-        // Le titre reste valide, seul le champ fautif est ignoré
-        console.warn(
-          `[library] alternativeNames ignoré (doit être une liste de textes) : ${artist} / ${title}`,
-        );
-      }
+      const alt = validAlternativeNames(
+        t.alternativeNames,
+        `${artist} / ${title}`,
+      );
+      if (alt) entry.alternativeNames = alt;
 
       tracks[title] = entry;
     }
-    library[artist] = { internationalArtist: e.internationalArtist, tracks };
+    const artistEntry: ArtistEntry = {
+      internationalArtist: e.internationalArtist,
+      tracks,
+    };
+    const artistAlt = validAlternativeNames(e.alternativeNames, artist);
+    if (artistAlt) artistEntry.alternativeNames = artistAlt;
+    library[artist] = artistEntry;
   }
   return library;
 }
@@ -137,6 +158,14 @@ export function findAlternativeNames(artist: string, title: string): string[] {
   const alternativeNamesData = [...libraryData, ...learnedData];
 
   return alternativeNamesData;
+}
+
+// Noms alternatifs d'un artiste (bibliothèque manuelle puis fichier appris), ou liste vide
+export function findArtistAlternativeNames(artist: string): string[] {
+  return [
+    ...(loadLibrary(getLibraryPath())[artist]?.alternativeNames ?? []),
+    ...(loadLibrary(getLearnedPath())[artist]?.alternativeNames ?? []),
+  ];
 }
 
 export function resetLibraryCache(): void {

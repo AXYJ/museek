@@ -35,6 +35,7 @@ export interface Track {
 export interface DatabaseArtist {
   artist: string;
   internationalArtist?: string;
+  alternativeNames?: string[];
 }
 
 export interface DatabaseTrack {
