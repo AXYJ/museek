@@ -56,6 +56,7 @@ export interface DatabaseTrack {
   id?: string;
   name: string;
   internationalName?: string;
+  alternativeNames?: string[];
 }
 
 export interface Player {

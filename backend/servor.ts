@@ -825,6 +825,7 @@ function collectDatabases(tracks: Track[]): {
       databaseTracks.push({
         name: t.name,
         internationalName: t.internationalName || t.name,
+        alternativeNames: t.alternativeNames
       });
     }
     for (const artistName of getTrackArtists(t)) {
