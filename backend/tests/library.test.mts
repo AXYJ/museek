@@ -8,6 +8,7 @@ import { prepareTrack, scoreAnswer } from "../scripts/answers.ts";
 import {
   findAlternativeNames,
   findArtist,
+  findArtistAlternativeNames,
   findTrack,
   rememberArtist,
   rememberTrack,
@@ -46,6 +47,31 @@ check("nom alternatif accepté", scoreAnswer(altTrack, "", "fragile-woman").trac
 check("titre original toujours accepté", scoreAnswer(altTrack, "", "容易受傷的女人").trackCorrect);
 check("mauvaise réponse refusée", !scoreAnswer(altTrack, "", "banane").trackCorrect);
 
+// Noms alternatifs d'artistes : solo, puis dans une collaboration (chaque artiste compte)
+const soloTrack = prepareTrack(
+  {
+    name: "Titre",
+    artist: "王菲",
+    internationalArtist: "Wang Fei",
+    artistAlternativeNames: { "王菲": ["Faye Wong"] },
+  },
+  0,
+);
+check("artiste : nom alternatif accepté", scoreAnswer(soloTrack, "faye wong", "").artistScore === 1);
+check("artiste : romanisation toujours acceptée", scoreAnswer(soloTrack, "Wang Fei", "").artistScore === 1);
+check("artiste : mauvaise réponse refusée", scoreAnswer(soloTrack, "Banane", "").artistScore === 0);
+const featTrack = prepareTrack(
+  {
+    name: "Titre",
+    artist: "王菲, Autre",
+    artists: ["王菲", "Autre"],
+    artistAlternativeNames: { "王菲": ["Faye Wong"] },
+  },
+  0,
+);
+check("collab : alternatif + autre artiste = 1", scoreAnswer(featTrack, "Faye Wong, Autre", "").artistScore === 1);
+check("collab : alternatif seul = 0.5", scoreAnswer(featTrack, "Faye Wong", "").artistScore === 0.5);
+
 // 2. Fichier mal formé : les entrées invalides sont ignorées, les autres gardées
 const bad = join(dir, "library.json");
 writeFileSync(
@@ -56,6 +82,8 @@ writeFileSync(
       tracks: { A: { internationalName: "a" }, B: {}, C: { internationalName: "c", alternativeNames: "pas une liste" } },
     },
     SansRomanisation: { tracks: {} },
+    AvecAlternatif: { internationalArtist: "Avec", alternativeNames: ["Alias"], tracks: {} },
+    AlternatifInvalide: { internationalArtist: "Inv", alternativeNames: [1, 2], tracks: {} },
   }),
 );
 process.env.MUSEEK_LIBRARY_FILE = bad;
@@ -64,6 +92,9 @@ check("entrée valide gardée", findTrack("Valide", "A") === "a");
 check("titre sans romanisation ignoré", findTrack("Valide", "B") === undefined);
 check("alternativeNames invalide : titre gardé", findTrack("Valide", "C") === "c");
 check("alternativeNames invalide : champ ignoré", findAlternativeNames("Valide", "C").length === 0);
+check("artiste : noms alternatifs lus", findArtistAlternativeNames("AvecAlternatif")[0] === "Alias");
+check("artiste : alternatifs invalides ignorés, artiste gardé", findArtist("AlternatifInvalide") === "Inv" && findArtistAlternativeNames("AlternatifInvalide").length === 0);
+check("artiste inconnu : liste vide", findArtistAlternativeNames("Personne").length === 0);
 check("artiste sans romanisation ignoré", findArtist("SansRomanisation") === undefined);
 
 // 3. Fichier absent : pas d'erreur, bibliothèque vide
@@ -101,9 +132,28 @@ check("pas de .tmp restant", !existsSync(`${learned}.tmp`));
 const onDisk = JSON.parse(readFileSync(learned, "utf8"));
 check("fichier écrit lisible", onDisk["邹沛沛"]?.tracks["爱你"]?.internationalName === "Ai Ni");
 
+// Titre anglais officiel renvoyé par Groq : gardé comme nom alternatif s'il est utilisable
+rememberTrack("邓丽君", "月亮代表我的心", "Teresa Teng", "Yue Liang Dai Biao Wo De Xin", "The Moon Represents My Heart");
+rememberTrack("邓丽君", "甜蜜蜜", "Teresa Teng", "Tian Mi Mi", null);
+rememberTrack("邓丽君", "小城故事", "Teresa Teng", "Xiao Cheng Gu Shi", "小城故事");
+rememberTrack("邓丽君", "我只在乎你", "Teresa Teng", "Wo Zhi Zai Hu Ni", "wo zhi zai hu ni");
+check(
+  "titre anglais officiel mémorisé",
+  findAlternativeNames("邓丽君", "月亮代表我的心")[0] === "The Moon Represents My Heart",
+);
+check("pas de titre anglais (null) : rien", findAlternativeNames("邓丽君", "甜蜜蜜").length === 0);
+check("titre anglais non latin refusé", findAlternativeNames("邓丽君", "小城故事").length === 0);
+check("titre anglais identique à la romanisation ignoré", findAlternativeNames("邓丽君", "我只在乎你").length === 0);
+check("romanisation gardée malgré le titre anglais refusé", findTrack("邓丽君", "小城故事") === "Xiao Cheng Gu Shi");
+saveLearned();
+
 // Relu après redémarrage (cache vidé) : la mémoire survit
 resetLibraryCache();
 check("relu depuis le disque", findTrack("邹沛沛", "不完整的心") === "Bu Wan Zheng De Xin");
+check(
+  "titre anglais relu depuis le disque",
+  findAlternativeNames("邓丽君", "月亮代表我的心")[0] === "The Moon Represents My Heart",
+);
 
 // La bibliothèque manuelle passe devant le fichier appris
 const manual = join(dir, "manual.json");

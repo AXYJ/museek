@@ -22,7 +22,9 @@ import {
   saveLearned,
   rememberTrack,
   findAlternativeNames,
+  findArtistAlternativeNames,
 } from "./library.js";
+import { getTrackArtists } from "./answers.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
 let kuroshiroReady = false;
@@ -234,6 +236,7 @@ export default async function selectTracks(
                 original.name,
                 r.internationalArtist,
                 r.internationalTitle,
+                r.officialEnglishTitle,
               );
             }
             saveLearned();
@@ -266,6 +269,17 @@ export default async function selectTracks(
 
             const alternativeNames = findAlternativeNames(artist, name);
 
+            // Noms alternatifs de chaque artiste du morceau (un « feat. » en a plusieurs)
+            const artistAlternativeNames: Record<string, string[]> = {};
+            for (const a of getTrackArtists({
+              name,
+              artist,
+              artists: t.artists,
+            })) {
+              const alts = findArtistAlternativeNames(a);
+              if (alts.length > 0) artistAlternativeNames[a] = alts;
+            }
+
             return {
               name,
               artist,
@@ -277,6 +291,7 @@ export default async function selectTracks(
               url: t.url || "",
               submittedBy: player.name,
               alternativeNames,
+              artistAlternativeNames,
             };
           }),
         );
