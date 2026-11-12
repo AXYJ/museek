@@ -205,6 +205,7 @@ export function rememberTrack(
   title: string,
   internationalArtist: string,
   internationalName: string,
+  officialEnglishTitle?: unknown,
 ): void {
   if (
     isEmpty(artist, title) ||
@@ -219,7 +220,21 @@ export function rememberTrack(
   rememberArtist(artist, internationalArtist);
   // « = » et non « ??= » : Groq n'est appelé que si findTrack n'a rien trouvé, donc le titre
   // n'est jamais déjà là. « = » dit simplement « j'enregistre cette réponse ».
-  loadLibrary(getLearnedPath())[artist].tracks[title] = { internationalName };
+  const entry: TrackInfo = { internationalName };
+
+  // Titre anglais officiel (Groq) : gardé seulement si c'est un vrai texte latin, différent
+  // de la romanisation. Il devient un nom alternatif, accepté comme réponse.
+  const english =
+    typeof officialEnglishTitle === "string" ? officialEnglishTitle.trim() : "";
+  if (
+    english &&
+    !needsLlm(english) &&
+    english.toLowerCase() !== internationalName.trim().toLowerCase()
+  ) {
+    entry.alternativeNames = [english];
+  }
+
+  loadLibrary(getLearnedPath())[artist].tracks[title] = entry;
 }
 
 export function saveLearned() {

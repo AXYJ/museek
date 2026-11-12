@@ -236,6 +236,7 @@ export default async function selectTracks(
                 original.name,
                 r.internationalArtist,
                 r.internationalTitle,
+                r.officialEnglishTitle,
               );
             }
             saveLearned();
