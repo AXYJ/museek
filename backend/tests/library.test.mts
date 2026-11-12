@@ -4,7 +4,9 @@
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { prepareTrack, scoreAnswer } from "../scripts/answers.ts";
 import {
+  findAlternativeNames,
   findArtist,
   findTrack,
   rememberArtist,
@@ -29,13 +31,30 @@ check("titre connu", findTrack("Faye Wong", "容易受傷的女人") === "Rong Y
 check("artiste connu", findArtist("Faye Wong") === "Faye Wong");
 check("titre inconnu", findTrack("Faye Wong", "Inconnu") === undefined);
 check("artiste inconnu", findTrack("Personne", "容易受傷的女人") === undefined);
+check(
+  "noms alternatifs connus",
+  findAlternativeNames("Faye Wong", "容易受傷的女人").includes("Fragile Woman"),
+);
+check("noms alternatifs absents : liste vide", findAlternativeNames("Personne", "Rien").length === 0);
+
+// Un nom alternatif est accepté comme réponse, sans tenir compte des majuscules ni de la ponctuation
+const altTrack = prepareTrack(
+  { name: "容易受傷的女人", artist: "Faye Wong", alternativeNames: ["Fragile Woman"] },
+  0,
+);
+check("nom alternatif accepté", scoreAnswer(altTrack, "", "fragile-woman").trackCorrect);
+check("titre original toujours accepté", scoreAnswer(altTrack, "", "容易受傷的女人").trackCorrect);
+check("mauvaise réponse refusée", !scoreAnswer(altTrack, "", "banane").trackCorrect);
 
 // 2. Fichier mal formé : les entrées invalides sont ignorées, les autres gardées
 const bad = join(dir, "library.json");
 writeFileSync(
   bad,
   JSON.stringify({
-    Valide: { internationalArtist: "Valide", tracks: { A: { internationalName: "a" }, B: {} } },
+    Valide: {
+      internationalArtist: "Valide",
+      tracks: { A: { internationalName: "a" }, B: {}, C: { internationalName: "c", alternativeNames: "pas une liste" } },
+    },
     SansRomanisation: { tracks: {} },
   }),
 );
@@ -43,6 +62,8 @@ process.env.MUSEEK_LIBRARY_FILE = bad;
 resetLibraryCache();
 check("entrée valide gardée", findTrack("Valide", "A") === "a");
 check("titre sans romanisation ignoré", findTrack("Valide", "B") === undefined);
+check("alternativeNames invalide : titre gardé", findTrack("Valide", "C") === "c");
+check("alternativeNames invalide : champ ignoré", findAlternativeNames("Valide", "C").length === 0);
 check("artiste sans romanisation ignoré", findArtist("SansRomanisation") === undefined);
 
 // 3. Fichier absent : pas d'erreur, bibliothèque vide

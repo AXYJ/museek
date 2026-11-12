@@ -9,7 +9,9 @@ import { needsLlm } from "./transliterate.js";
 
 // Required : sans lui, les champs restent optionnels comme dans DatabaseArtist/DatabaseTrack,
 // et une entrée vide {} serait acceptée
-type TrackInfo = Required<Pick<DatabaseTrack, "internationalName">>;
+type TrackInfo = Required<Pick<DatabaseTrack, "internationalName">> & {
+  alternativeNames?: string[];
+};
 
 interface ArtistEntry extends Required<
   Pick<DatabaseArtist, "internationalArtist">
@@ -54,13 +56,29 @@ function validate(raw: unknown): Library {
     }
     const tracks: Record<string, TrackInfo> = {};
     for (const [title, info] of Object.entries(e.tracks)) {
-      if (typeof (info as Partial<TrackInfo>)?.internationalName === "string") {
-        tracks[title] = info as TrackInfo;
-      } else {
+      const t = info as Partial<TrackInfo> | null;
+      if (typeof t?.internationalName !== "string") {
         console.warn(
           `[library] Titre ignoré (forme invalide) : ${artist} / ${title}`,
         );
+        continue;
       }
+
+      // On construit l'entrée nous-mêmes au lieu de recopier `info` tel quel :
+      // seuls les champs vérifiés y entrent
+      const entry: TrackInfo = { internationalName: t.internationalName };
+
+      const alt = t.alternativeNames;
+      if (Array.isArray(alt) && alt.every((n) => typeof n === "string")) {
+        entry.alternativeNames = alt;
+      } else if (alt !== undefined) {
+        // Le titre reste valide, seul le champ fautif est ignoré
+        console.warn(
+          `[library] alternativeNames ignoré (doit être une liste de textes) : ${artist} / ${title}`,
+        );
+      }
+
+      tracks[title] = entry;
     }
     library[artist] = { internationalArtist: e.internationalArtist, tracks };
   }
@@ -106,6 +124,19 @@ export function findArtist(artist: string): string | undefined {
     loadLibrary(getLibraryPath())[artist]?.internationalArtist ||
     loadLibrary(getLearnedPath())[artist]?.internationalArtist
   );
+}
+
+export function findAlternativeNames(artist: string, title: string): string[] {
+  const libraryData =
+    loadLibrary(getLibraryPath())[artist]?.tracks[title]?.alternativeNames ??
+    [];
+  const learnedData =
+    loadLibrary(getLearnedPath())[artist]?.tracks[title]?.alternativeNames ??
+    [];
+
+  const alternativeNamesData = [...libraryData, ...learnedData];
+
+  return alternativeNamesData;
 }
 
 export function resetLibraryCache(): void {
@@ -163,16 +194,12 @@ export function rememberTrack(
 }
 
 export function saveLearned() {
-  const path = getLearnedPath()
+  const path = getLearnedPath();
   try {
     mkdirSync(dirname(path), { recursive: true });
-    const saveLearnedJson = JSON.stringify(
-      loadLibrary(path),
-      null,
-      2,
-    );
+    const saveLearnedJson = JSON.stringify(loadLibrary(path), null, 2);
     writeFileSync(`${path}.tmp`, saveLearnedJson);
-    renameSync(`${path}.tmp`, path)
+    renameSync(`${path}.tmp`, path);
   } catch (err) {
     console.warn(
       `[library] Erreur d'écriture de learned.json :`,
