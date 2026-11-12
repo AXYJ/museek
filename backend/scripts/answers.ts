@@ -70,6 +70,7 @@ export function prepareTrack(track: Track, index: number): Track {
     artist: track.artist || "",
     internationalName: track.internationalName || track.name || "",
     internationalArtist: track.internationalArtist || track.artist || "",
+    alternativeNames: track.alternativeNames,
     previewUrl: track.previewUrl || "",
     imageUrl: track.imageUrl || "",
     submittedBy: track.submittedBy || "",
@@ -79,6 +80,9 @@ export function prepareTrack(track: Track, index: number): Track {
     _requiredArtists: requiredArtists,
     _rawArtist: normalizeString(track.artist || ""),
     _rawIntArtist: normalizeString(track.internationalArtist || ""),
+    _normalizedAltNames: (track.alternativeNames ?? []).map((n) =>
+      normalizeString(n),
+    ),
   };
 }
 
@@ -92,9 +96,14 @@ export function scoreAnswer(
   const correctTrack = track._normalizedName ?? normalizeString(track.name);
   const correctIntTrack =
     track._normalizedIntName ?? normalizeString(track.internationalName || "");
+  const correctAltTrack =
+    track._normalizedAltNames ??
+    (track.alternativeNames ?? []).map((n) => normalizeString(n));
   const guessedTrack = normalizeString(trackGuess);
   const trackCorrect =
-    guessedTrack === correctTrack || guessedTrack === correctIntTrack;
+    guessedTrack === correctTrack ||
+    guessedTrack === correctIntTrack ||
+    correctAltTrack.includes(guessedTrack);
 
   const playerGuesses = (artistGuess || "")
     .split(",")

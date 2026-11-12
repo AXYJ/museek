@@ -40,6 +40,7 @@ export interface DatabaseArtist {
 export interface DatabaseTrack {
   name: string;
   internationalName?: string;
+  alternativeNames?: string[];
 }
 
 // Toutes les variables globales du jeu
