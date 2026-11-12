@@ -101,9 +101,28 @@ check("pas de .tmp restant", !existsSync(`${learned}.tmp`));
 const onDisk = JSON.parse(readFileSync(learned, "utf8"));
 check("fichier écrit lisible", onDisk["邹沛沛"]?.tracks["爱你"]?.internationalName === "Ai Ni");
 
+// Titre anglais officiel renvoyé par Groq : gardé comme nom alternatif s'il est utilisable
+rememberTrack("邓丽君", "月亮代表我的心", "Teresa Teng", "Yue Liang Dai Biao Wo De Xin", "The Moon Represents My Heart");
+rememberTrack("邓丽君", "甜蜜蜜", "Teresa Teng", "Tian Mi Mi", null);
+rememberTrack("邓丽君", "小城故事", "Teresa Teng", "Xiao Cheng Gu Shi", "小城故事");
+rememberTrack("邓丽君", "我只在乎你", "Teresa Teng", "Wo Zhi Zai Hu Ni", "wo zhi zai hu ni");
+check(
+  "titre anglais officiel mémorisé",
+  findAlternativeNames("邓丽君", "月亮代表我的心")[0] === "The Moon Represents My Heart",
+);
+check("pas de titre anglais (null) : rien", findAlternativeNames("邓丽君", "甜蜜蜜").length === 0);
+check("titre anglais non latin refusé", findAlternativeNames("邓丽君", "小城故事").length === 0);
+check("titre anglais identique à la romanisation ignoré", findAlternativeNames("邓丽君", "我只在乎你").length === 0);
+check("romanisation gardée malgré le titre anglais refusé", findTrack("邓丽君", "小城故事") === "Xiao Cheng Gu Shi");
+saveLearned();
+
 // Relu après redémarrage (cache vidé) : la mémoire survit
 resetLibraryCache();
 check("relu depuis le disque", findTrack("邹沛沛", "不完整的心") === "Bu Wan Zheng De Xin");
+check(
+  "titre anglais relu depuis le disque",
+  findAlternativeNames("邓丽君", "月亮代表我的心")[0] === "The Moon Represents My Heart",
+);
 
 // La bibliothèque manuelle passe devant le fichier appris
 const manual = join(dir, "manual.json");
