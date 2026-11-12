@@ -6,6 +6,7 @@ export interface Track {
   artists?: string[];
   internationalName?: string;
   internationalArtist?: string;
+  alternativeNames?: string[];
   previewUrl?: string;
   imageUrl?: string | null;
   submittedBy?: string;
@@ -15,6 +16,7 @@ export interface Track {
   _requiredArtists?: string[][];
   _rawArtist?: string;
   _rawIntArtist?: string;
+  _normalizedAltNames?: string[];
 }
 
 // Marque de type uniquement : sans elle, un Track complet serait accepté partout où l'on
@@ -31,6 +33,7 @@ export type PublicTrack = Omit<
   | "_requiredArtists"
   | "_rawArtist"
   | "_rawIntArtist"
+  | "_normalizedAltNames"
 > & { readonly [publicTrackBrand]: true };
 
 // Morceau tel que renvoyé par une plateforme (Spotify, Deezer, Apple Music)

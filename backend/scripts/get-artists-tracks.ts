@@ -21,6 +21,7 @@ import {
   findTrack,
   saveLearned,
   rememberTrack,
+  findAlternativeNames
 } from "./library.js";
 
 const kuroshiro = new (Kuroshiro.default || Kuroshiro)();
@@ -265,6 +266,9 @@ export default async function selectTracks(
                 : await getInternationalName(artist)
             ).trim();
 
+            const alternativeNames = findAlternativeNames(artist, name)
+            
+
             return {
               name,
               artist,
@@ -275,6 +279,7 @@ export default async function selectTracks(
               imageUrl: t.imageUrl || "",
               url: t.url || "",
               submittedBy: player.name,
+              alternativeNames
             };
           }),
         );
