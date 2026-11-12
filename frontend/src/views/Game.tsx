@@ -131,7 +131,11 @@ export default function Game() {
             const matchesInt = normalizeString(t.internationalName).includes(
               trackSearch,
             );
-            return matchesName || matchesInt;
+            // Noms alternatifs (ex. traduction) : au moins un doit contenir la saisie
+            const matchesAlt = t.alternativeNames?.some((name) =>
+              normalizeString(name).includes(trackSearch),
+            );
+            return matchesName || matchesInt || matchesAlt;
           })
           .slice(0, 5);
 
@@ -467,13 +471,21 @@ export default function Game() {
               isCorrect={me?.track_answer}
               isMultiple={false}
               getSuggestionValue={(item) => item.name}
-              getSuggestionLabel={(item) => ({
-                main: item.name,
-                secondary:
-                  item.internationalName !== item.name
-                    ? item.internationalName
-                    : undefined,
-              })}
+              getSuggestionLabel={(item) => {
+                // Si la saisie correspond à un nom alternatif, on l'affiche pour que le joueur
+                // comprenne pourquoi ce morceau est proposé
+                const matchedAlt = item.alternativeNames?.find((name) =>
+                  normalizeString(name).includes(trackSearch),
+                );
+                return {
+                  main: item.name,
+                  secondary:
+                    matchedAlt ??
+                    (item.internationalName !== item.name
+                      ? item.internationalName
+                      : undefined),
+                };
+              }}
               emptyText={t("game.no-track-found")}
               phase={phase}
             />

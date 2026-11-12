@@ -16,5 +16,43 @@
         "alternativeNames": ["Blue Bird"]
       }
     }
+  },
+  "KANA-BOON": {
+    "internationalArtist": "KANA-BOON",
+    "tracks": {
+      "シルエット": {
+        "internationalName": "Shiruetto",
+        "alternativeNames": ["Silhouette"]
+      }
+    }
+  },
+  "YOASOBI": {
+    "internationalArtist": "YOASOBI",
+    "tracks": {
+      "アイドル": {
+        "internationalName": "Aidoru",
+        "alternativeNames": ["Idol"]
+      },
+      "怪物": {
+        "internationalName": "Kaibutsu",
+        "alternativeNames": ["Monster"]
+      },
+      "勇者": {
+        "internationalName": "Yūsha",
+        "alternativeNames": ["The Brave"]
+      },
+      "夜に駆ける": {
+        "internationalName": "Yoru ni Kakeru",
+        "alternativeNames": ["Racing into the Night"]
+      },
+      "あの夢をなぞって": {
+        "internationalName": "Ano yume wo nazotte",
+        "alternativeNames": ["Tracing That Dream"]
+      },
+      "たぶん": {
+        "internationalName": "Tabun",
+        "alternativeNames": ["Probably"]
+      }
+    }
   }
 }
