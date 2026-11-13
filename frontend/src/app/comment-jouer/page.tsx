@@ -13,7 +13,7 @@ import { SITE_URL } from "@/utils/site";
 
 const TITLE = "Comment jouer : règles du blindtest entre amis";
 const DESCRIPTION =
-  "Règles complètes de Museek, le blindtest en ligne avec vos playlists : créer un salon, ajouter une playlist, réglages, calcul des points et conseils pour une bonne partie.";
+  "Règles de Museek, le blindtest en ligne avec vos playlists : créer un salon, régler la partie, calcul des points et conseils pour bien jouer.";
 
 export const metadata: Metadata = {
   title: TITLE,

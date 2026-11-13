@@ -13,7 +13,7 @@ import { SITE_URL } from "@/utils/site";
 
 const TITLE = "How to play: rules of the music quiz with friends";
 const DESCRIPTION =
-  "Full rules of Museek, the online music blind test played with your own playlists: create a room, add a playlist, settings, scoring and tips for a great game night.";
+  "Full rules of Museek, the online music blind test with your own playlists: create a room, pick settings, scoring and tips for a great game.";
 
 export const metadata: Metadata = {
   title: TITLE,
