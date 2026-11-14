@@ -469,7 +469,7 @@ export default function Game() {
                 )}
               </button>
               {isChangingVolume && (
-                <div className="absolute top-[-300%] left-1/2 z-10 -translate-x-1/2 -rotate-90">
+                <div className="absolute top-[-240%] left-1/2 z-10 -translate-x-1/2 -rotate-90">
                   <input
                     type="range"
                     min="0"
