@@ -98,10 +98,11 @@ export default function Lobby() {
     }
   };
 
-  // Copier le code de la partie
+  // Copier le lien d'invitation de la partie
   const handleCopyCode = () => {
     if (!roomCode) return;
-    navigator.clipboard.writeText(roomCode);
+    // Le lien complet suffit pour rejoindre : il ouvre directement le lobby
+    navigator.clipboard.writeText(`${window.location.origin}/room/${roomCode}`);
     setMessage(t("lobby.code-copied"));
   };
 
