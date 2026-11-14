@@ -197,7 +197,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       socket &&
       isConnected &&
       roomCode &&
-      name &&
       joinedSocketRef.current !== socket.id
     ) {
       joinedSocketRef.current = socket.id;
@@ -216,7 +215,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const id = localStorage.getItem("id");
       socket.emit("create_game", id, name);
       // Sauvegarde du pseudo uniquement au lancement de la partie
-      writeLocal(PLAYER_NAME_KEY, name);
+      if (name.trim() !== "") {
+        writeLocal(PLAYER_NAME_KEY, name);
+      }
     }
   }, [socket, name]);
 
@@ -227,10 +228,26 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         const id = localStorage.getItem("id");
         socket.emit("join_game", code, id, name);
         // Sauvegarde du pseudo uniquement au lancement de la partie
-        writeLocal(PLAYER_NAME_KEY, name);
+        if (name.trim() !== "") {
+          writeLocal(PLAYER_NAME_KEY, name);
+        }
       }
     },
     [socket, name],
+  );
+
+  // Changer de pseudo
+  const changeName = useCallback(
+    (name: string) => {
+      if (socket) {
+        socket.emit("change_name", name);
+        // Sauvegarde du pseudo
+        if (name.trim() !== "") {
+          writeLocal(PLAYER_NAME_KEY, name);
+        }
+      }
+    },
+    [socket],
   );
 
   // Prêt
@@ -376,6 +393,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       createGame,
       joinGame,
       beReady,
+      changeName,
       launchGame,
       isLaunching,
       setIsLaunching,
@@ -421,6 +439,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       createGame,
       joinGame,
       beReady,
+      changeName,
       launchGame,
       isLaunching,
       failedPlaylists,

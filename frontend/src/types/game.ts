@@ -64,6 +64,7 @@ export interface GameContextType {
   createGame: () => void;
   joinGame: (code: string) => void;
   beReady: () => void;
+  changeName: (name: string) => void;
   launchGame: () => void;
   // Lancement en cours (bouton « Lancer » de l'hôte)
   isLaunching: boolean;

@@ -56,10 +56,6 @@ export default function Home() {
       setError(t("home.error-connecting"));
       return;
     }
-    if (!name.trim()) {
-      setError(t("home.error-no-username"));
-      return;
-    }
     if (!roomInput.trim()) {
       setError(t("home.error-no-room"));
       return;

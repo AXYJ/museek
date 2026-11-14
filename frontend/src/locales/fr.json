@@ -137,6 +137,7 @@
         "code-copied": "Code copié !",
         "host_transferred": "{{host}} a quitté la partie. Tu deviens l'hôte.",
         "copy-code-title": "Copier le code",
+        "change-name-title": "Changer de pseudo",
         "game-code-label": "Code de la partie :",
         "players-list": "Liste des joueurs",
         "game-settings": "Paramètres de la partie",
