@@ -606,7 +606,7 @@ io.on(
 
           io.to(roomCode).emit(
             "answer",
-            player.name,
+            player.publicId,
             artist_score,
             track_answer,
             player_answer,

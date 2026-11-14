@@ -290,14 +290,14 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     // Gestion des réponses des joueurs
     // ----------------
     const handleAnswer = (
-      name: string,
+      publicId: string,
       artist_answer: boolean | number,
       track_answer: boolean,
       player_answer: boolean,
     ) => {
       setPlayers((prev) =>
         prev.map((p) => {
-          if (p.name === name) {
+          if (p.id === publicId) {
             let isCorrect = false;
             let scoreVal = 0;
 

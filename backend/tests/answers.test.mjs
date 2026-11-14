@@ -11,21 +11,34 @@ const check = (name, ok, extra = "") => {
 
 const a = io(URL, { transports: ["websocket"] });
 const b = io(URL, { transports: ["websocket"] });
+const c = io(URL, { transports: ["websocket"] });
+const d = io(URL, { transports: ["websocket"] });
+const e = io(URL, { transports: ["websocket"] });
+
+
 let roomCode, toPlay;
 let answersSeenByA = [];
-a.on("answer", (name, artistScore, trackOk) => answersSeenByA.push({ name, artistScore, trackOk }));
+a.on("answer", (id, artistScore, trackOk) => answersSeenByA.push({ id, artistScore, trackOk }));
 a.on("error", (e) => console.log("A error:", e));
 b.on("error", (e) => console.log("B error:", e));
 
-await Promise.all([a, b].map((s) => new Promise((r) => s.on("connect", r))));
+await Promise.all([a, b, c, d, e].map((s) => new Promise((r) => s.on("connect", r))));
 
 a.emit("create_game", "id-a", "Alice");
 roomCode = await new Promise((r) => a.on("room_created", (code) => r(code)));
 b.emit("join_game", roomCode, "id-b", "Bob");
+c.emit("join_game", roomCode, "id-c", "Carol");
+d.emit("join_game", roomCode, "id-d", "Dave");
+e.emit("join_game", roomCode, "id-e", "Dave");
 await sleep(300);
+
 
 a.on("game_started", () => a.emit("send_playlist_url", PLAYLIST));
 b.on("game_started", () => b.emit("send_playlist_url", ""));
+c.on("game_started", () => c.emit("send_playlist_url", ""));
+d.on("game_started", () => d.emit("send_playlist_url", ""));
+e.on("game_started", () => e.emit("send_playlist_url", "")); 
+
 const loaded = new Promise((r) => a.on("data_loaded", (tp) => r(tp)));
 // Bob active l'aide (possible seulement au lobby) : il n'aura pas le bonus « sans aide »
 b.emit("help", true);
@@ -40,6 +53,13 @@ const scoreOf = async (name) => {
   a.emit("get_final_scores");
   const players = await new Promise((r) => a.once("final_scores", r));
   return players.find((p) => p.name === name).score;
+};
+
+// Retrouve un joueur par sa socket : deux joueurs peuvent avoir le même pseudo
+const findPlayerBySocket = async (socket) => {
+  a.emit("get_final_scores");
+  const players = await new Promise((r) => a.once("final_scores", r));
+  return players.find((p) => p.socketId === socket.id);
 };
 
 // 1. bonne réponse envoyée 3 fois au tour 1 : comptée une seule fois
@@ -62,14 +82,20 @@ await sleep(500);
 check("Bob au bon tour : score 2", (await scoreOf("Bob")) === 2);
 
 // 4. mauvaise réponse au bon tour : acceptée mais 0 point, puis verrouillée
-const c = io(URL, { transports: ["websocket"] });
-await new Promise((r) => c.on("connect", r));
-c.emit("join_game", roomCode, "id-c", "Carol");
-await sleep(500);
 c.emit("submit_answer", "xxx", "yyy", 1);
 c.emit("submit_answer", t1.artist, t1.name, 1);
 await sleep(500);
 check("mauvaise réponse puis bonne : seule la 1re compte (0)", (await scoreOf("Carol")) === 0);
+
+// 5. deux joueurs au même pseudo : la réponse n'est attribuée qu'à celui qui a répondu
+d.emit("submit_answer", t1.artist, t1.name, 1);
+await sleep(500);
+const lastAnswerId = answersSeenByA.at(-1)?.id;
+const daveD = await findPlayerBySocket(d);
+const daveE = await findPlayerBySocket(e);
+check("deux Dave, deux publicId différents", !!daveD && !!daveE && daveD.id !== daveE.id);
+check("la réponse est attribuée au Dave qui a répondu", lastAnswerId === daveD?.id, `answer=${lastAnswerId} d=${daveD?.id}`);
+check("la réponse n'est pas attribuée à l'autre Dave", lastAnswerId !== daveE?.id);
 
 console.log(results.every(Boolean) ? "\nTOUT OK" : "\nECHEC");
 process.exit(results.every(Boolean) ? 0 : 1);
