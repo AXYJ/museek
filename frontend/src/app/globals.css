@@ -56,6 +56,13 @@
   --warning: #f59e0b;
 }
 
+/* Place de la barre de défilement toujours réservée : quand le body passe en
+   overflow-hidden (champ de réponse ouvert), la largeur de la page ne change pas
+   et le fond en grain n'a pas à être entièrement repeint */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   background-color: var(--background);
   background-image: linear-gradient(
