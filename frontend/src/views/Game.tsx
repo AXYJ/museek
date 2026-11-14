@@ -68,6 +68,34 @@ export default function Game() {
     if (volume > 0) lastAudibleVolumeRef.current = volume;
   }, [volume]);
 
+  // Délai avant de fermer le slider, le temps d'amener la souris dessus
+  const closeVolumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const openVolumeControl = () => {
+    if (closeVolumeTimeoutRef.current) {
+      clearTimeout(closeVolumeTimeoutRef.current);
+      closeVolumeTimeoutRef.current = null;
+    }
+    setIsChangingVolume(true);
+  };
+
+  const closeVolumeControlLater = () => {
+    closeVolumeTimeoutRef.current = setTimeout(() => {
+      setIsChangingVolume(false);
+      closeVolumeTimeoutRef.current = null;
+    }, 400);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeVolumeTimeoutRef.current) {
+        clearTimeout(closeVolumeTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const toggleMute = () => {
     setVolume(isMuted ? lastAudibleVolumeRef.current : 0);
   };
@@ -393,8 +421,8 @@ export default function Game() {
             <div
               className="absolute right-2 bottom-2 z-10"
               ref={volumeControlRef}
-              onMouseEnter={() => setIsChangingVolume(true)}
-              onMouseLeave={() => setIsChangingVolume(false)}
+              onMouseEnter={openVolumeControl}
+              onMouseLeave={closeVolumeControlLater}
             >
               <button
                 type="button"
@@ -441,7 +469,7 @@ export default function Game() {
                 )}
               </button>
               {isChangingVolume && (
-                <div className="absolute top-[-300%] left-1/2 z-10 -translate-x-1/2 -rotate-90 px-5">
+                <div className="absolute top-[-300%] left-1/2 z-10 -translate-x-1/2 -rotate-90">
                   <input
                     type="range"
                     min="0"
