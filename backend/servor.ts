@@ -322,7 +322,7 @@ io.on(
       } else {
         room.players.push({
           // Si le pseudo est absent, il renvoie un pseudo générique
-          // Si non, il renvoie le pseudo tel quel
+          // Sinon, il renvoie le pseudo tel quel
           name: resolvePlayerName(name, room.players.length),
           id: id,
           publicId: crypto.randomUUID(),
@@ -357,6 +357,16 @@ io.on(
           timing: getGameTiming(room.time, room.gameStartTime),
         });
       }
+    });
+
+    socket.on("change_name", (name: string) => {
+      const { roomCode, room, player } = getSocketContext(socket);
+      if (!roomCode || !room || !player?.inLobby) return;
+      if (typeof name !== "string") return;
+      if (name.trim() === "") return;
+      name = name.slice(0, 30);
+      player.name = name;
+      emitRoomUpdated(roomCode, room);
     });
 
     // Quitter une partie
