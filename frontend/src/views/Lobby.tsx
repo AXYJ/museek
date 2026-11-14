@@ -1,7 +1,7 @@
 "use client";
 
 // Import de react
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Import du contexte
 import { useGame } from "@/context/GameContext";
@@ -42,6 +42,7 @@ export default function Lobby() {
     error,
     setError,
     quitGame,
+    changeName,
   } = useGame();
 
   const { t } = useTranslation();
@@ -61,6 +62,11 @@ export default function Lobby() {
   const [infoType, setInfoType] = useState<
     "number-music" | "time" | "help" | "guess-player" | "url" | null
   >(null);
+
+  // Pseudo en cours de saisie : null quand on ne modifie pas, le champ affiche alors
+  // le pseudo connu du serveur (toujours à jour, même après un renommage)
+  const [nameDraft, setNameDraft] = useState<string | null>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   // Gestion du nombre de morceau par playlist
   const handleMusicAmount = (operation: "up" | "down") => {
@@ -97,6 +103,36 @@ export default function Lobby() {
     if (!roomCode) return;
     navigator.clipboard.writeText(roomCode);
     setMessage(t("lobby.code-copied"));
+  };
+
+  const handleChangeName = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    setNameDraft(event.target.value);
+  };
+
+  // Entrée (ou « OK » sur mobile) : on quitte le champ, et c'est la perte du focus
+  // qui valide. Un seul chemin pour envoyer, que l'on valide au clavier ou en cliquant ailleurs.
+  const handleSubmitNewName = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    nameInputRef.current?.blur();
+  };
+
+  const handleNameBlur = () => {
+    if (nameDraft === null) return;
+    const newName = nameDraft.trim();
+    setNameDraft(null);
+    if (newName === "") {
+      setError(t("home.error-no-username"));
+    } else if (newName !== me?.name) {
+      changeName(newName);
+    }
+  };
+
+  // Le crayon place le curseur dans le champ, texte sélectionné, prêt à être remplacé
+  const handleEditName = () => {
+    nameInputRef.current?.focus();
+    nameInputRef.current?.select();
   };
 
   return (
@@ -141,14 +177,57 @@ export default function Lobby() {
           >
             <h2>{t("lobby.players-list")}</h2>
             <div className="flex min-h-48 flex-1 flex-col gap-2 overflow-y-auto">
-              {players.map((player) => (
-                <p
-                  key={player.id}
-                  className={`rounded-full px-3 py-2 transition-all duration-300 ${player.isReady ? "bg-(--accent) text-(--white)" : "bg-(--grey) text-(--background)"}`}
-                >
-                  {player.name}
-                </p>
-              ))}
+              {players.map((player) =>
+                // Sa propre ligne devient un champ modifiable, les autres restent du texte
+                player.id === me?.id ? (
+                  <form
+                    key={player.id}
+                    onSubmit={handleSubmitNewName}
+                    className={`flex items-center gap-2 rounded-full px-3 py-2 transition-all duration-300 ${player.isReady ? "bg-(--accent) text-(--white)" : "bg-(--grey) text-(--background)"}`}
+                  >
+                    <input
+                      type="text"
+                      value={nameDraft ?? me?.name ?? ""}
+                      maxLength={30}
+                      onChange={handleChangeName}
+                      onBlur={handleNameBlur}
+                      ref={nameInputRef}
+                      aria-label={t("lobby.change-name-title")}
+                      className="min-w-0 flex-1 bg-transparent outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleEditName}
+                      title={t("lobby.change-name-title")}
+                      aria-label={t("lobby.change-name-title")}
+                      className="cursor-pointer transition-all duration-100 ease-out hover:scale-110 active:scale-95"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-square-pen"
+                      >
+                        <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                      </svg>
+                    </button>
+                  </form>
+                ) : (
+                  <p
+                    key={player.id}
+                    className={`rounded-full px-3 py-2 transition-all duration-300 ${player.isReady ? "bg-(--accent) text-(--white)" : "bg-(--grey) text-(--background)"}`}
+                  >
+                    {player.name}
+                  </p>
+                ),
+              )}
             </div>
           </Section>
           <div className="flex w-full flex-col items-center gap-4 lg:col-span-2">
