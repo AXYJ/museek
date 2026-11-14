@@ -26,17 +26,11 @@ export interface Track {
 declare const publicTrackBrand: unique symbol;
 
 // Morceau tel que vu par les clients : sans les champs internes de correction des
-// réponses (_normalizedName, _requiredArtists…), qui restent sur le serveur. Seule
+// réponses (tous ceux qui commencent par "_"), qui restent sur le serveur. Seule
 // toPublicTracks (servor.ts) en fabrique.
-export type PublicTrack = Omit<
-  Track,
-  | "_normalizedName"
-  | "_normalizedIntName"
-  | "_requiredArtists"
-  | "_rawArtist"
-  | "_rawIntArtist"
-  | "_normalizedAltNames"
-> & { readonly [publicTrackBrand]: true };
+export type PublicTrack = {
+  [K in keyof Track as K extends `_${string}` ? never : K]: Track[K];
+} & { readonly [publicTrackBrand]: true };
 
 // Morceau tel que renvoyé par une plateforme (Spotify, Deezer, Apple Music)
 export interface PlatformTrack {

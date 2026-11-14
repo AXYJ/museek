@@ -138,17 +138,15 @@ function toPublicPlayers(players: Player[]): PublicPlayer[] {
   );
 }
 
-// Ce que les clients reçoivent des morceaux : sans les champs internes de correction
+// Ce que les clients reçoivent des morceaux : sans les champs internes de correction.
+// Convention : tout champ qui commence par "_" est interne et n'est jamais envoyé,
+// ainsi un nouveau champ interne est filtré sans avoir à l'ajouter ici.
 function toPublicTracks(tracks: Track[]): PublicTrack[] {
   return tracks.map(
-    ({
-      _normalizedName,
-      _normalizedIntName,
-      _requiredArtists,
-      _rawArtist,
-      _rawIntArtist,
-      ...rest
-    }) => rest as PublicTrack,
+    (track) =>
+      Object.fromEntries(
+        Object.entries(track).filter(([key]) => !key.startsWith("_")),
+      ) as PublicTrack,
   );
 }
 
