@@ -170,6 +170,8 @@
         "no-track-found": "Aucun morceau trouvé",
         "player": "Joueur",
         "no-player-found": "Aucun joueur trouvé",
+        "mute": "Couper le son",
+        "unmute": "Remettre le son",
         "time-remaining": "Temps restant",
         "next-turn": "Prochain tour",
         "revelation": "Révélation"
