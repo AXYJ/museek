@@ -159,7 +159,7 @@ export interface ServerToClientEvents {
   ) => void;
   "game-setting": (key: string, value: number) => void;
   answer: (
-    name: string,
+    publicId: string,
     artist_answer: boolean | number,
     track_answer: boolean,
     player_answer: boolean,
