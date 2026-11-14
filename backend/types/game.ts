@@ -145,6 +145,7 @@ export interface ClientToServerEvents {
   get_final_scores: () => void;
   restart_game: () => void;
   leave_game: () => void;
+  change_name: (name: string) => void;
 }
 
 export interface ServerToClientEvents {
