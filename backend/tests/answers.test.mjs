@@ -27,6 +27,9 @@ await sleep(300);
 a.on("game_started", () => a.emit("send_playlist_url", PLAYLIST));
 b.on("game_started", () => b.emit("send_playlist_url", ""));
 const loaded = new Promise((r) => a.on("data_loaded", (tp) => r(tp)));
+// Bob active l'aide (possible seulement au lobby) : il n'aura pas le bonus « sans aide »
+b.emit("help", true);
+await sleep(200);
 a.emit("start_game");
 toPlay = await Promise.race([loaded, sleep(60000).then(() => null)]);
 check("partie démarrée, morceaux chargés", !!toPlay && toPlay.length > 0, `(${toPlay?.length} morceaux)`);
@@ -40,11 +43,12 @@ const scoreOf = async (name) => {
 };
 
 // 1. bonne réponse envoyée 3 fois au tour 1 : comptée une seule fois
+// Bonus de 1 point si la réponse est parfaite sans l'aide
 a.emit("submit_answer", t1.artist, t1.name, 1);
 a.emit("submit_answer", t1.artist, t1.name, 1);
 a.emit("submit_answer", t1.artist, t1.name, 1);
 await sleep(500);
-check("réponse répétée comptée une fois (score 2)", (await scoreOf("Alice")) === 2, `score=${await scoreOf("Alice")}`);
+check("réponse répétée comptée une fois (score 3)", (await scoreOf("Alice")) === 3, `score=${await scoreOf("Alice")}`);
 check("un seul événement answer émis", answersSeenByA.length === 1, `n=${answersSeenByA.length}`);
 
 // 2. mauvais tour (futur / passé / 0 / négatif) : ignoré
