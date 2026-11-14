@@ -134,9 +134,9 @@
         "back": "Retour"
     },
     "lobby": {
-        "code-copied": "Code copié !",
+        "code-copied": "Lien d'invitation copié !",
         "host_transferred": "{{host}} a quitté la partie. Tu deviens l'hôte.",
-        "copy-code-title": "Copier le code",
+        "copy-code-title": "Copier le lien d'invitation",
         "change-name-title": "Changer de pseudo",
         "game-code-label": "Code de la partie :",
         "players-list": "Liste des joueurs",

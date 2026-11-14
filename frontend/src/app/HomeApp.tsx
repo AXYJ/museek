@@ -30,11 +30,16 @@ function GameContent() {
   }
 }
 
-export default function HomeApp() {
+// initialRoomCode : code lu dans l'URL /room/[code], pour rejoindre directement le lobby
+export default function HomeApp({
+  initialRoomCode,
+}: {
+  initialRoomCode?: string;
+}) {
   return (
     <Background>
       <main className="mx-auto min-h-screen w-full px-8 md:max-w-lg lg:max-w-3xl">
-        <GameProvider>
+        <GameProvider initialRoomCode={initialRoomCode}>
           <GameContent />
         </GameProvider>
       </main>

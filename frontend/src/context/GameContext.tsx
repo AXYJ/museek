@@ -47,7 +47,14 @@ import { useTranslation } from "./LanguageContext";
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 // Création du provider
-export const GameProvider = ({ children }: { children: ReactNode }) => {
+export const GameProvider = ({
+  children,
+  initialRoomCode,
+}: {
+  children: ReactNode;
+  // Code lu dans l'URL /room/[code] : il prime sur la partie gardée dans sessionStorage
+  initialRoomCode?: string;
+}) => {
   const { t } = useTranslation();
   // null côté serveur et pendant l'hydratation, la socket partagée ensuite
   const socket = useSyncExternalStore<Socket | null>(
@@ -58,7 +65,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<View>("home");
+  // Avec un code de départ, la reconnexion automatique (plus bas) envoie join_game
+  // dès que la socket est connectée : le joueur arrive directement dans le lobby.
   const [roomCode, setRoomCode] = useState<string>(() => {
+    if (initialRoomCode) return initialRoomCode;
     if (typeof window !== "undefined") {
       return sessionStorage.getItem("game_code") || "";
     }
@@ -305,10 +315,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (!window.history.state || !window.history.state.view) {
-        window.history.replaceState({ view: "home" }, "");
+        // Arrivée par un lien /room/CODE : l'entrée « accueil » prend l'adresse /.
+        // Sinon, le bouton retour depuis le lobby rechargerait /room/CODE et
+        // rejoindrait aussitôt la partie qu'on vient de quitter.
+        window.history.replaceState(
+          { view: "home" },
+          "",
+          initialRoomCode ? "/" : undefined,
+        );
       }
     }
-  }, []);
+  }, [initialRoomCode]);
 
   // Gestion des évènements PopState (bouton retour du navigateur)
   useEffect(() => {
@@ -372,6 +389,21 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       window.history.pushState({ view: "result" }, "");
     }
   }, [view]);
+
+  // ----------------------------------------------------------------
+  // URL partageable : /room/CODE tant qu'on est dans une partie, / à l'accueil
+  // ----------------------------------------------------------------
+  // replaceState ne change que l'adresse affichée : pas de rechargement, la socket
+  // reste connectée, et l'entrée d'historique (son state.view) est conservée.
+  // Déclaré après la synchronisation de l'historique : il corrige l'adresse de
+  // l'entrée qu'elle vient de créer. Couvre aussi les erreurs (room introuvable ou
+  // pleine), qui vident roomCode et ramènent sur / .
+  useEffect(() => {
+    const url = view !== "home" && roomCode ? `/room/${roomCode}` : "/";
+    if (window.location.pathname !== url) {
+      window.history.replaceState(window.history.state, "", url);
+    }
+  }, [view, roomCode]);
 
   const value = useMemo(
     () => ({
