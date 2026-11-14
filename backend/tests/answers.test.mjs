@@ -15,7 +15,6 @@ const c = io(URL, { transports: ["websocket"] });
 const d = io(URL, { transports: ["websocket"] });
 const e = io(URL, { transports: ["websocket"] });
 
-
 let roomCode, toPlay;
 let answersSeenByA = [];
 a.on("answer", (id, artistScore, trackOk) => answersSeenByA.push({ id, artistScore, trackOk }));
@@ -31,7 +30,6 @@ c.emit("join_game", roomCode, "id-c", "Carol");
 d.emit("join_game", roomCode, "id-d", "Dave");
 e.emit("join_game", roomCode, "id-e", "Dave");
 await sleep(300);
-
 
 a.on("game_started", () => a.emit("send_playlist_url", PLAYLIST));
 b.on("game_started", () => b.emit("send_playlist_url", ""));

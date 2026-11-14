@@ -244,10 +244,11 @@ io.on(
       } while (rooms[roomCode]);
       socket.data.roomCode = roomCode;
       socket.data.playerId = id;
+      const newName = resolvePlayerName(name, 0);
       rooms[roomCode] = {
         players: [
           {
-            name: name,
+            name: newName,
             id: id,
             publicId: crypto.randomUUID(),
             socketId: socket.id,
@@ -320,7 +321,9 @@ io.on(
         );
       } else {
         room.players.push({
-          name: name,
+          // Si le pseudo est absent, il renvoie un pseudo générique
+          // Si non, il renvoie le pseudo tel quel
+          name: resolvePlayerName(name, room.players.length),
           id: id,
           publicId: crypto.randomUUID(),
           socketId: socket.id,
@@ -1001,5 +1004,15 @@ const checkAndResetGame = (roomCode: string): void => {
     if (oldHost && newHost?.socketId) {
       io.to(newHost.socketId).emit("host_transferred", oldHost.name);
     }
+  }
+};
+
+const resolvePlayerName = (name: string, playersLength: number): string => {
+  const normalizeName = name.trim();
+  if (normalizeName) {
+    return name;
+  } else {
+    const playerGenericName = `Player ${playersLength + 1}`;
+    return playerGenericName;
   }
 };
