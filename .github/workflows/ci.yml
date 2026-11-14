@@ -1,0 +1,56 @@
+# Nom affiché dans l'onglet "Actions" de GitHub
+name: CI
+
+# Quand lancer la CI
+on:
+  pull_request:          # à chaque PR (ouverture et nouveau push dessus)
+  push:
+    branches: [main]     # et à chaque push sur main
+
+jobs:
+  # ---------- Job 1 : le frontend ----------
+  frontend:
+    runs-on: ubuntu-latest           # machine Linux prêtée par GitHub, vide au départ
+    defaults:
+      run:
+        working-directory: frontend  # toutes les commandes "run" se lancent dans frontend/
+    steps:
+      # 1. Copier ton code sur la machine
+      - uses: actions/checkout@v4
+
+      # 2. Installer Node, et garder node_modules en cache entre deux CI
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # 3. Installer les dépendances exactement comme dans package-lock.json
+      - run: npm ci
+
+      # 4. Tes scripts de package.json
+      - name: Lint
+        run: npm run lint
+      - name: Vérification des types
+        run: npm run type-check
+      - name: Build
+        run: npm run build
+
+  # ---------- Job 2 : le backend (tourne en parallèle du frontend) ----------
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Vérification des types
+        run: npm run type-check
+      - name: Tests
+        run: npm test
