@@ -170,6 +170,8 @@
         "no-track-found": "No track found",
         "player": "Player",
         "no-player-found": "No player found",
+        "mute": "Mute",
+        "unmute": "Unmute",
         "time-remaining": "Time remaining",
         "next-turn": "Next turn",
         "revelation": "Reveal"
