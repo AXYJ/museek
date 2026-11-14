@@ -393,13 +393,12 @@ export default function Game() {
             <div
               className="absolute right-2 bottom-2 z-10"
               ref={volumeControlRef}
+              onMouseEnter={() => setIsChangingVolume(true)}
+              onMouseLeave={() => setIsChangingVolume(false)}
             >
               <button
                 type="button"
-                onClick={() => {
-                  toggleMute();
-                  setIsChangingVolume(true);
-                }}
+                onClick={toggleMute}
                 aria-label={isMuted ? t("game.unmute") : t("game.mute")}
                 className="cursor-pointer"
               >
@@ -442,7 +441,7 @@ export default function Game() {
                 )}
               </button>
               {isChangingVolume && (
-                <div className="absolute top-[-300%] left-1/2 z-10 -translate-x-1/2 -rotate-90">
+                <div className="absolute top-[-300%] left-1/2 z-10 -translate-x-1/2 -rotate-90 px-5">
                   <input
                     type="range"
                     min="0"
