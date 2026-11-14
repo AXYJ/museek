@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,md,css}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,md,css}\"",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "framer-motion": "^14.0.0",

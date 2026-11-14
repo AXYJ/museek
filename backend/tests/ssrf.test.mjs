@@ -25,14 +25,17 @@ async function tryLink(label, playlistUrl) {
   const s = io(URL, { transports: ["websocket"], forceNew: true });
   await new Promise((r) => s.on("connect", r));
   const errors = [];
+  const failed = [];
   s.on("error", (e) => errors.push(e));
+  // Échec de chargement : le serveur envoie la liste des pseudos dont la playlist n'a pas pu être chargée
+  s.on("playlist_failed", (names) => failed.push(...names));
   s.on("game_started", () => s.emit("send_playlist_url", playlistUrl));
   s.emit("create_game", "ssrf-" + label, "Testeur");
   await new Promise((r) => s.once("room_created", r));
   s.emit("start_game");
   await sleep(2000);
   s.disconnect();
-  return { contacts: [...hits], errors };
+  return { contacts: [...hits], errors, failed };
 }
 
 const liens = {
@@ -40,9 +43,9 @@ const liens = {
   "faux lien Apple Music": `http://127.0.0.1:${port}/playlist/abc123?x=music.apple.com`,
 };
 for (const [label, lien] of Object.entries(liens)) {
-  const { contacts, errors } = await tryLink(label, lien);
+  const { contacts, errors, failed } = await tryLink(label, lien);
   check(`${label} : la cible n'est jamais contactée`, contacts.length === 0, JSON.stringify(contacts));
-  check(`${label} : le joueur reçoit une erreur de playlist`, errors.some((e) => String(e).startsWith("playlist_load_error")), JSON.stringify(errors));
+  check(`${label} : le joueur est signalé en échec de playlist`, failed.includes("Testeur"), JSON.stringify({ failed, errors }));
 }
 
 target.close();

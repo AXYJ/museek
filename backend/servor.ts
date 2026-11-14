@@ -152,6 +152,18 @@ function toPublicTracks(tracks: Track[]): PublicTrack[] {
   );
 }
 
+// Activité du serveur, pour savoir quand on peut redéployer sans couper de partie.
+// Les rooms vivent en mémoire : même avec 0 connexion, une room en délai de grâce
+// (joueurs déconnectés qui peuvent revenir) serait perdue au redéploiement.
+function logActivity(): void {
+  const connections = io.of("/").sockets.size;
+  const openRooms = Object.values(rooms);
+  const runningGames = openRooms.filter(isGameRunning).length;
+  console.log(
+    `[${new Date().toISOString()}] Activity: ${connections} connection(s), ${openRooms.length} room(s), ${runningGames} game(s) running`,
+  );
+}
+
 function emitRoomUpdated(roomCode: string, room: Room): void {
   io.to(roomCode).emit("room_updated", roomCode, toPublicPlayers(room.players));
 }
@@ -208,6 +220,7 @@ io.on(
     >,
   ) => {
     console.log(`[${new Date().toISOString()}] User connected: ${socket.id}`);
+    logActivity();
 
     const ip = getClientIp(socket.handshake, TRUST_PROXY);
     socketsPerIp.set(ip, (socketsPerIp.get(ip) ?? 0) + 1);
@@ -635,6 +648,7 @@ io.on(
       console.log(
         `[${new Date().toISOString()}] User disconnected: ${socket.id}`,
       );
+      logActivity();
       const { roomCode, room, player } = getSocketContext(socket);
       if (!roomCode || !room || !player) return;
 
@@ -663,6 +677,7 @@ io.on(
               console.log(
                 `[${new Date().toISOString()}] Room ${roomCode} deleted after 5min grace period expiration`,
               );
+              logActivity();
             }
           }, GRACE_PERIOD);
         }

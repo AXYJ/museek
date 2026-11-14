@@ -71,15 +71,19 @@ try {
   p.emit("create_game", "p1", "Joueur");
   await new Promise((r) => p.once("room_created", r));
   p.on("game_started", () => p.emit("send_playlist_url", "https://127.0.0.1/playlist/abc"));
+  // Échec de chargement : le serveur envoie la liste des pseudos dont la playlist n'a pas pu être chargée
+  let failed = [];
+  p.on("playlist_failed", (names) => (failed = names));
   const cycles = [];
   for (let i = 0; i < 3; i++) {
     p.log.errors.length = 0;
     p.log.events.length = 0;
+    failed = [];
     p.emit("start_game");
     await sleep(1500);
-    cycles.push({ errors: [...p.log.errors], noPlaylist: p.log.events.includes("no_playlist") });
+    cycles.push({ errors: [...p.log.errors], failed, noPlaylist: p.log.events.includes("no_playlist") });
   }
-  check("chargements 1 et 2 : lien traité (refusé comme non autorisé)", cycles[0].errors.some((e) => e.startsWith("playlist_load_error")) && cycles[1].errors.some((e) => e.startsWith("playlist_load_error")), JSON.stringify(cycles.slice(0, 2)));
+  check("chargements 1 et 2 : lien traité (refusé comme non autorisé)", cycles[0].failed.includes("Joueur") && cycles[1].failed.includes("Joueur"), JSON.stringify(cycles.slice(0, 2)));
   check("chargement 3 : rate_limited, et la partie n'est pas bloquée (no_playlist)", cycles[2].errors.includes("rate_limited") && cycles[2].noPlaylist, JSON.stringify(cycles[2]));
 
   // 4. Connexions simultanées : 6 par adresse
