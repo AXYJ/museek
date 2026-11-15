@@ -30,10 +30,11 @@ const URL = `http://localhost:${PORT}`;
 
 let server = null;
 if (needsServer) {
-  // Délai de grâce réduit à 3 s pour tester les déconnexions sans attendre 5 minutes ;
+  // Délais de grâce réduits (3 s, et 1 s après fermeture d'onglet) pour tester les déconnexions sans attendre 5 minutes ;
   // limites par IP très hautes : les tests ouvrent beaucoup de connexions depuis la même adresse
   server = await startServer(PORT, {
     GRACE_PERIOD_MS: "3000",
+    LEAVING_GRACE_MS: "1000",
     RATE_LIMIT_ROOMS: "100000",
     RATE_LIMIT_PLAYLISTS: "100000",
     RATE_LIMIT_BAD_JOINS: "100000",

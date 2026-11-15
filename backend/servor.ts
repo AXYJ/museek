@@ -654,6 +654,15 @@ io.on(
 
     // Délai de grâce avant de retirer un joueur déconnecté (5 min, réglable pour les tests)
     const GRACE_PERIOD = Number(process.env.GRACE_PERIOD_MS) || 5 * 60 * 1000;
+    // Délai court quand le navigateur a annoncé la fermeture de l'onglet : laisse juste
+    // le temps à un rechargement (F5) de se reconnecter et de garder sa place
+    const LEAVING_GRACE_PERIOD = Number(process.env.LEAVING_GRACE_MS) || 5 * 1000;
+
+    // Le navigateur ferme l'onglet ou recharge la page (pagehide côté front).
+    // Un mobile qui change d'appli ne l'envoie pas et garde le délai de 5 minutes.
+    socket.on("leaving", () => {
+      socket.data.leaving = true;
+    });
 
     socket.on("disconnect", () => {
       console.log(
@@ -671,11 +680,14 @@ io.on(
       player.leavedPlayer = true;
 
       const activePlayers = room.players.filter((p) => !p.leavedPlayer);
+      const gracePeriod = socket.data.leaving
+        ? LEAVING_GRACE_PERIOD
+        : GRACE_PERIOD;
 
       if (activePlayers.length === 0) {
         // Tous les joueurs sont déconnectés : on démarre le timer de suppression de la room
         console.log(
-          `[${new Date().toISOString()}] All players in room ${roomCode} disconnected. Starting 5min cleanup timer.`,
+          `[${new Date().toISOString()}] All players in room ${roomCode} disconnected. Starting cleanup timer.`,
         );
         if (!room.cleanupTimeout) {
           room.cleanupTimeout = setTimeout(() => {
@@ -686,16 +698,16 @@ io.on(
             ) {
               delete rooms[roomCode];
               console.log(
-                `[${new Date().toISOString()}] Room ${roomCode} deleted after 5min grace period expiration`,
+                `[${new Date().toISOString()}] Room ${roomCode} deleted after grace period expiration`,
               );
               logActivity();
             }
-          }, GRACE_PERIOD);
+          }, gracePeriod);
         }
       } else {
         // D'autres joueurs sont encore connectés
         if (player.isHost) {
-          // L'hôte s'est déconnecté : donner 5 minutes avant de transférer l'hôte
+          // L'hôte s'est déconnecté : attendre le délai de grâce avant de transférer l'hôte
           clearDisconnectTimeout(player.id);
           disconnectTimeouts.set(
             player.id,
@@ -719,16 +731,28 @@ io.on(
                     nextHost.isHost = true;
                     nextHost.isReady = true;
                     console.log(
-                      `[${new Date().toISOString()}] Host transferred in room ${roomCode} after 5min timeout`,
+                      `[${new Date().toISOString()}] Host transferred in room ${roomCode} after disconnect timeout`,
                     );
+                    // Dans le lobby, l'ancien hôte est aussi retiré, comme un autre joueur
+                    if (!isGameRunning(currentRoom)) {
+                      currentRoom.players = currentRoom.players.filter(
+                        (x) => x.id !== player.id,
+                      );
+                    }
                     emitRoomUpdated(roomCode, currentRoom);
+                    if (nextHost.socketId) {
+                      io.to(nextHost.socketId).emit(
+                        "host_transferred",
+                        currentHost.name,
+                      );
+                    }
                   }
                 }
               }
-            }, GRACE_PERIOD),
+            }, gracePeriod),
           );
         } else if (!isGameRunning(room)) {
-          // Joueur non-hôte dans le lobby : le retirer s'il ne revient pas après 5 minutes
+          // Joueur non-hôte dans le lobby : le retirer s'il ne revient pas avant la fin du délai
           clearDisconnectTimeout(player.id);
           disconnectTimeouts.set(
             player.id,
@@ -742,13 +766,13 @@ io.on(
                     (x) => x.id !== player.id,
                   );
                   console.log(
-                    `[${new Date().toISOString()}] Disconnected player removed from room ${roomCode} after 5min timeout`,
+                    `[${new Date().toISOString()}] Disconnected player removed from room ${roomCode} after disconnect timeout`,
                   );
                   emitRoomUpdated(roomCode, currentRoom);
                   checkAndResetGame(roomCode);
                 }
               }
-            }, GRACE_PERIOD),
+            }, gracePeriod),
           );
         }
       }

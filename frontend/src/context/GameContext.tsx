@@ -184,6 +184,23 @@ export const GameProvider = ({
   }, [socket]);
 
   // ----------------------------------------------------------------
+  // Fermeture de l'onglet ou rechargement (F5)
+  // ----------------------------------------------------------------
+  // On prévient le serveur que ce n'est pas une simple mise en veille (mobile qui
+  // change d'appli) : il retire alors le joueur après quelques secondes au lieu de
+  // 5 minutes. Un F5 se reconnecte avant la fin de ce délai et garde sa place.
+  useEffect(() => {
+    if (!socket) return;
+    const handlePageHide = (event: PageTransitionEvent) => {
+      // Page mise en cache par le navigateur (bfcache) : elle peut revenir avec Retour
+      if (event.persisted) return;
+      socket.emit("leaving");
+    };
+    window.addEventListener("pagehide", handlePageHide);
+    return () => window.removeEventListener("pagehide", handlePageHide);
+  }, [socket]);
+
+  // ----------------------------------------------------------------
   // Sauvegarde du code de partie dans le sessionStorage
   // ----------------------------------------------------------------
   useEffect(() => {
