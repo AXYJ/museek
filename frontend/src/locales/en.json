@@ -150,6 +150,8 @@
         "guess-player": "Guess who picked the track (3 players min.)",
         "guess-player-tooltip": "Win an extra point by guessing which player picked this track.",
         "add-your-music": "Add your playlist",
+        "demo-playlist": "Use the demo playlist",
+        "demo-playlist-tooltip": "No playlist at hand? Play with a selection of 50 classics (pop, J-Pop, Cantopop, French songs).",
         "playlist-url": "Public playlist URL",
         "playlist-url-tooltip": "The playlist URL. You can find the playlist URL by clicking on the \"Share\" button on the playlist, then \"Copy link\".",
         "quit": "Quit",

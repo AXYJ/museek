@@ -150,6 +150,8 @@
         "guess-player": "Deviner qui a choisi le morceau (3 joueurs min.)",
         "guess-player-tooltip": "Gagne un point supplémentaire en devinant quel joueur a choisi ce morceau.",
         "add-your-music": "Ajoute ta playlist",
+        "demo-playlist": "Utiliser la playlist démo",
+        "demo-playlist-tooltip": "Pas de playlist sous la main ? Joue avec une sélection de 50 classiques (pop, J-Pop, Cantopop, chanson française).",
         "playlist-url": "URL de la playlist publique",
         "playlist-url-tooltip": "L'URL de la playlist. Tu peux trouver l'URL de la playlist en cliquant sur le bouton \"Partager\" de la playlist, puis sur \"Copier le lien\".",
         "quit": "Quitter",

@@ -18,6 +18,10 @@ import Info from "@/components/Info/Info";
 import ChangeLanguage from "@/components/button/ChangeLanguage";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
 
+// Playlist pour tester Museek sans importer la sienne (voir backend/data/library.json
+// pour les titres chinois de cette playlist)
+const DEMO_PLAYLIST_URL = "https://www.deezer.com/playlist/15980647503";
+
 export default function Lobby() {
   const {
     roomCode,
@@ -60,13 +64,26 @@ export default function Lobby() {
   }, [setIsLaunching]);
 
   const [infoType, setInfoType] = useState<
-    "number-music" | "time" | "help" | "guess-player" | "url" | null
+    "number-music" | "time" | "help" | "guess-player" | "demo" | "url" | null
   >(null);
 
   // Pseudo en cours de saisie : null quand on ne modifie pas, le champ affiche alors
   // le pseudo connu du serveur (toujours à jour, même après un renommage)
   const [nameDraft, setNameDraft] = useState<string | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+
+  // Playlist démo : le champ affiche le lien de la démo, et l'ancien lien est
+  // remis quand on désactive le switch
+  const useDemo = playlistUrl === DEMO_PLAYLIST_URL;
+  const [urlBeforeDemo, setUrlBeforeDemo] = useState("");
+  const handleDemo = (enabled: boolean) => {
+    if (enabled) {
+      setUrlBeforeDemo(playlistUrl);
+      setPlaylistUrl(DEMO_PLAYLIST_URL);
+    } else {
+      setPlaylistUrl(urlBeforeDemo);
+    }
+  };
 
   // Gestion du nombre de morceau par playlist
   const handleMusicAmount = (operation: "up" | "down") => {
@@ -417,6 +434,49 @@ export default function Lobby() {
             <Section>
               <h2>{t("lobby.add-your-music")}</h2>
               <div className="flex flex-col gap-6">
+                <div className="flex w-full items-center justify-between gap-4">
+                  <p>
+                    {t("lobby.demo-playlist")}
+                    <button
+                      className="relative ml-1 inline-flex items-center align-middle"
+                      aria-describedby="info-demo"
+                      onMouseOver={() => setInfoType("demo")}
+                      onMouseOut={() => setInfoType(null)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-info-icon lucide-info"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4" />
+                        <path d="M12 8h.01" />
+                      </svg>
+                      <Info id="info-demo" visible={infoType === "demo"}>
+                        <p>{t("lobby.demo-playlist-tooltip")}</p>
+                      </Info>
+                    </button>
+                  </p>
+                  <label className="flex items-center gap-2">
+                    Off
+                    <span className="switch">
+                      <input
+                        type="checkbox"
+                        checked={useDemo}
+                        onChange={(e) => handleDemo(e.target.checked)}
+                      />
+                      <span className="slider"></span>
+                    </span>
+                    On
+                  </label>
+                </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="playlist">
                     {t("lobby.playlist-url")}
@@ -450,8 +510,9 @@ export default function Lobby() {
                   <input
                     type="text"
                     id="playlist"
-                    className="h-8 w-full rounded-lg bg-(--white) px-4 text-base text-(--background)"
+                    className={`h-8 w-full rounded-lg bg-(--white) px-4 text-base text-(--background) transition-opacity ${useDemo ? "cursor-not-allowed opacity-50" : ""}`}
                     value={playlistUrl}
+                    disabled={useDemo}
                     onChange={(e) => setPlaylistUrl(e.target.value)}
                   />
                 </div>

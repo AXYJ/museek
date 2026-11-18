@@ -1,10 +1,64 @@
 {
   "Faye Wong": {
     "internationalArtist": "Faye Wong",
+    "alternativeNames": ["王菲", "Wang Fei"],
     "tracks": {
       "容易受傷的女人": {
         "internationalName": "Rong Yi Shou Shang De Nu Ren",
-        "alternativeNames": ["Fragile Woman"]
+        "alternativeNames": ["容易受伤的女人", "Fragile Woman"]
+      },
+      "執迷不悔": {
+        "internationalName": "Zhi Mi Bu Hui",
+        "alternativeNames": ["执迷不悔"]
+      }
+    }
+  },
+  "Beyond": {
+    "internationalArtist": "Beyond",
+    "tracks": {
+      "Sky (Edit)": {
+        "internationalName": "Hai Kuo Tian Kong",
+        "alternativeNames": ["海阔天空", "海闊天空", "Sky"]
+      },
+      "真的愛妳": {
+        "internationalName": "Zhen De Ai Ni",
+        "alternativeNames": ["真的爱你", "真的爱妳", "真的愛你"]
+      }
+    }
+  },
+  "Eason Chan": {
+    "internationalArtist": "Eason Chan",
+    "alternativeNames": ["陳奕迅", "陈奕迅", "Chen Yixun"],
+    "tracks": {
+      "Because Of Love": {
+        "internationalName": "Yin Wei Ai Qing",
+        "alternativeNames": ["因为爱情", "因為愛情"]
+      },
+      "富士山下": {
+        "internationalName": "Fu Shi Shan Xia"
+      }
+    }
+  },
+  "Jacky Cheung": {
+    "internationalArtist": "Jacky Cheung",
+    "alternativeNames": ["張學友", "张学友", "Cheung Hok-yau", "Zhang Xueyou"],
+    "tracks": {
+      "每天愛你多一些": {
+        "internationalName": "Mei Tian Ai Ni Duo Yi Xie",
+        "alternativeNames": ["每天爱你多一些"]
+      },
+      "一千個傷心的理由": {
+        "internationalName": "Yi Qian Ge Shang Xin De Li You",
+        "alternativeNames": ["一千个伤心的理由"]
+      }
+    }
+  },
+  "周深": {
+    "internationalArtist": "Zhou Shen",
+    "tracks": {
+      "大魚（唱片版）": {
+        "internationalName": "Da Yu",
+        "alternativeNames": ["大鱼", "大魚", "Big Fish"]
       }
     }
   },
@@ -378,6 +432,14 @@
       "カーテンコール": {
         "internationalName": "Katenkoru",
         "alternativeNames": ["Curtain Call"]
+      }
+    }
+  },
+  "Natori": {
+    "internationalArtist": "Natori",
+    "tracks": {
+      "プロポーズ": {
+        "internationalName": "Propose"
       }
     }
   }
