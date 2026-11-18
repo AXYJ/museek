@@ -146,6 +146,7 @@ export interface ClientToServerEvents {
   restart_game: () => void;
   leave_game: () => void;
   change_name: (name: string) => void;
+  leaving: () => void;
 }
 
 export interface ServerToClientEvents {
@@ -191,4 +192,6 @@ export interface InterServerEvents {}
 export interface SocketData {
   playerId?: string;
   roomCode?: string;
+  // Le navigateur a annoncé la fermeture de l'onglet (pagehide) juste avant de se déconnecter
+  leaving?: boolean;
 }
