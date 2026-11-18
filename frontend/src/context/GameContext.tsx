@@ -18,9 +18,6 @@ import type { Socket } from "socket.io-client";
 const PLAYER_NAME_KEY = "game_name";
 const VOLUME_KEY = "game_volume";
 
-// Durée d'affichage des messages et des erreurs
-const ALERT_DURATION = 2000;
-
 // Import des types
 import {
   View,
@@ -150,21 +147,6 @@ export const GameProvider = ({
       localStorage.setItem(VOLUME_KEY, volume.toString());
     }
   }, [volume]);
-
-  // ----------------------------------------------------------------
-  // Les erreurs et les messages disparaissent seuls
-  // ----------------------------------------------------------------
-  useEffect(() => {
-    if (!error) return;
-    const timer = setTimeout(() => setError(null), ALERT_DURATION);
-    return () => clearTimeout(timer);
-  }, [error]);
-
-  useEffect(() => {
-    if (!message) return;
-    const timer = setTimeout(() => setMessage(""), ALERT_DURATION);
-    return () => clearTimeout(timer);
-  }, [message]);
 
   // ----------------------------------------------------------------
   // Connexion au serveur

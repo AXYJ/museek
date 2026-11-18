@@ -177,7 +177,12 @@
         "unmute": "Remettre le son",
         "time-remaining": "Temps restant",
         "next-turn": "Prochain tour",
-        "revelation": "Révélation"
+        "revelation": "Révélation",
+        "sr-reveal": "Réponse : {{track}} de {{artist}}. Artiste : {{artistResult}}. Morceau : {{trackResult}}.",
+        "sr-reveal-picked": "Choisi par {{player}} : {{result}}.",
+        "sr-found": "trouvé",
+        "sr-half-found": "à moitié trouvé",
+        "sr-missed": "raté"
     },
     "results": {
         "title": "Résultat de la partie",

@@ -177,7 +177,12 @@
         "unmute": "Unmute",
         "time-remaining": "Time remaining",
         "next-turn": "Next turn",
-        "revelation": "Reveal"
+        "revelation": "Reveal",
+        "sr-reveal": "Answer: {{track}} by {{artist}}. Artist: {{artistResult}}. Track: {{trackResult}}.",
+        "sr-reveal-picked": "Picked by {{player}}: {{result}}.",
+        "sr-found": "found",
+        "sr-half-found": "half found",
+        "sr-missed": "missed"
     },
     "results": {
         "title": "Game Results",

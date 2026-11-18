@@ -632,6 +632,34 @@ export default function Game() {
         </div>
       </div>
 
+      {/* Annonce de la révélation pour les lecteurs d'écran (le chrono n'est pas annoncé) */}
+      <p className="sr-only" aria-live="polite">
+        {phase === "answer" &&
+          t("game.sr-reveal", {
+            track: currentTrack.name,
+            artist: currentTrack.artist,
+            artistResult: t(
+              me?.artist_score === 1
+                ? "game.sr-found"
+                : me?.artist_score === 0.5
+                  ? "game.sr-half-found"
+                  : "game.sr-missed",
+            ),
+            trackResult: t(
+              me?.track_answer ? "game.sr-found" : "game.sr-missed",
+            ),
+          }) +
+            (guessPlayer && currentTrack.submittedBy
+              ? " " +
+                t("game.sr-reveal-picked", {
+                  player: currentTrack.submittedBy,
+                  result: t(
+                    me?.player_answer ? "game.sr-found" : "game.sr-missed",
+                  ),
+                })
+              : "")}
+      </p>
+
       {/* Affichage des erreurs */}
       <Error error={error} setError={setError} />
       <Message message={message} setMessage={setMessage} />
