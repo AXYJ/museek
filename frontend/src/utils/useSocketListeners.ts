@@ -11,7 +11,6 @@ import {
   GameTiming,
 } from "../types/game";
 import { toGameClock } from "./gameClock";
-import { getSocketUrl, isLocalHost } from "./config";
 import { getSessionItem, setSessionItem } from "./storageUtils";
 
 interface SocketListenersProps {
@@ -80,20 +79,6 @@ export const useSocketListeners = (props: SocketListenersProps) => {
 
   useEffect(() => {
     if (!socket) return;
-
-    // Keep-alive pour éviter que le serveur (ex: Render) ne mette le socket en veille (uniquement en production)
-    const socketUrl = getSocketUrl();
-    let keepAliveInterval: NodeJS.Timeout | null = null;
-    if (!isLocalHost(new URL(socketUrl).hostname)) {
-      keepAliveInterval = setInterval(
-        () => {
-          fetch(socketUrl, { mode: "no-cors" }).catch(() => {
-            // Ignorer silencieusement les échecs de ping keep-alive
-          });
-        },
-        5 * 60 * 1000,
-      );
-    }
 
     // ----------------
     // Connexion & Cycle de vie
@@ -399,9 +384,6 @@ export const useSocketListeners = (props: SocketListenersProps) => {
     socket.on("game_reconnected", handleGameReconnected);
 
     return () => {
-      if (keepAliveInterval) {
-        clearInterval(keepAliveInterval);
-      }
       socket.off("connect", handleConnect);
       socket.off("connect_error", handleConnectError);
       socket.off("disconnect", handleDisconnect);

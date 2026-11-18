@@ -99,6 +99,12 @@ const failedJoins = new SlidingWindowLimiter(
 );
 const socketsPerIp = new Map<string, number>();
 
+// Délai de grâce avant de retirer un joueur déconnecté (5 min, réglable pour les tests)
+const GRACE_PERIOD = Number(process.env.GRACE_PERIOD_MS) || 5 * 60 * 1000;
+// Délai court quand le navigateur a annoncé la fermeture de l'onglet : laisse juste
+// le temps à un rechargement (F5) de se reconnecter et de garder sa place
+const LEAVING_GRACE_PERIOD = Number(process.env.LEAVING_GRACE_MS) || 5 * 1000;
+
 io.use((socket, next) => {
   const ip = getClientIp(socket.handshake, TRUST_PROXY);
   if ((socketsPerIp.get(ip) ?? 0) >= MAX_SOCKETS_PER_IP) {
@@ -660,12 +666,6 @@ io.on(
         checkAndResetGame(roomCode);
       }
     });
-
-    // Délai de grâce avant de retirer un joueur déconnecté (5 min, réglable pour les tests)
-    const GRACE_PERIOD = Number(process.env.GRACE_PERIOD_MS) || 5 * 60 * 1000;
-    // Délai court quand le navigateur a annoncé la fermeture de l'onglet : laisse juste
-    // le temps à un rechargement (F5) de se reconnecter et de garder sa place
-    const LEAVING_GRACE_PERIOD = Number(process.env.LEAVING_GRACE_MS) || 5 * 1000;
 
     // Le navigateur ferme l'onglet ou recharge la page (pagehide côté front).
     // Un mobile qui change d'appli ne l'envoie pas et garde le délai de 5 minutes.
