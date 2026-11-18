@@ -91,5 +91,15 @@ await sleep(500);
 const back = view3.find((p) => p.name === "Alice");
 check("reconnexion avec le bon id secret : même identifiant public et hôte", back?.id === pubAlice.id && back?.isHost === true && back?.socketId === alice3.id);
 
+// 5. Id secret démesuré : ignoré, ni room créée ni joueur ajouté
+const mallory = await connect();
+let malloryCreated = false;
+mallory.once("room_created", () => (malloryCreated = true));
+mallory.emit("create_game", "x".repeat(100_000), "Mallory");
+const before = view3.length;
+mallory.emit("join_game", code, "y".repeat(100_000), "Mallory");
+await sleep(500);
+check("id secret trop long : create_game et join_game ignorés", !malloryCreated && view3.length === before);
+
 console.log(results.every(Boolean) ? "\nTOUT OK" : "\nECHEC");
 process.exit(results.every(Boolean) ? 0 : 1);

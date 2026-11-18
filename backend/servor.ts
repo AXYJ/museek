@@ -232,7 +232,7 @@ io.on(
     // Création d'une partie
     // --------------------------------------------------------
     socket.on("create_game", (id: string, name: string) => {
-      if (typeof id !== "string" || typeof name !== "string") return;
+      if (!isValidId(id) || typeof name !== "string") return;
       name = name.slice(0, 30);
       if (!roomCreations.tryHit(ip)) {
         socket.emit("error", "rate_limited");
@@ -280,7 +280,7 @@ io.on(
     socket.on("join_game", (roomCode: string, id: string, name: string) => {
       if (
         typeof roomCode !== "string" ||
-        typeof id !== "string" ||
+        !isValidId(id) ||
         typeof name !== "string"
       )
         return;
@@ -1040,6 +1040,11 @@ const checkAndResetGame = (roomCode: string): void => {
     }
   }
 };
+
+// Identifiant secret de reconnexion : un UUID côté client (36 caractères)
+function isValidId(id: unknown): id is string {
+  return typeof id === "string" && id.length > 0 && id.length <= 64;
+}
 
 const resolvePlayerName = (name: string, playersLength: number): string => {
   const normalizeName = name.trim();
