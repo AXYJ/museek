@@ -40,6 +40,7 @@ e.on("game_started", () => e.emit("send_playlist_url", ""));
 const loaded = new Promise((r) => a.on("data_loaded", (tp) => r(tp)));
 // Bob active l'aide (possible seulement au lobby) : il n'aura pas le bonus « sans aide »
 b.emit("help", true);
+for (const s of [b, c, d, e]) s.emit("ready", true);
 await sleep(200);
 a.emit("start_game");
 toPlay = await Promise.race([loaded, sleep(60000).then(() => null)]);

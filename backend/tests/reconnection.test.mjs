@@ -23,6 +23,8 @@ let bPlayers = [];
 b.on("room_updated", (_c, players) => (bPlayers = players));
 b.emit("join_game", code, "id-b", "Bob");
 await sleep(300);
+b.emit("ready", true);
+await sleep(100);
 
 a.on("game_started", () => a.emit("send_playlist_url", PLAYLIST));
 b.on("game_started", () => b.emit("send_playlist_url", ""));
@@ -56,7 +58,20 @@ check(
   JSON.stringify([...internalKeys(toPlay), ...internalKeys(state?.toPlay ?? [])]),
 );
 
+// --- En pleine partie : retour au lobby et relance ignorés ---
+let restartedMidGame = 0;
+a.on("game_started", () => restartedMidGame++);
+// Tout le monde prêt : seule la garde « partie en cours » peut bloquer start_game
+for (const s of [a, b2]) s.emit("ready", true);
+await sleep(200);
+a.emit("start_game");
+await sleep(500);
+check("start_game de l'hôte ignoré en pleine partie", restartedMidGame === 0);
+b2.emit("restart_game");
+await sleep(300);
+
 // --- Un nouveau joueur qui arrive en cours de partie reçoit aussi l'état ---
+// (échouerait si le restart_game de Bob ci-dessus avait clos la partie)
 const c = await connect();
 const recoC = new Promise((r) => c.once("game_reconnected", r));
 c.emit("join_game", code, "id-c", "Carol");

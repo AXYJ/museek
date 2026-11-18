@@ -45,6 +45,8 @@ await sleep(400);
 // 1. Pas de fuite : ni id secret ni lien de playlist, y compris après le lancement d'une partie
 alice.on("game_started", () => alice.emit("send_playlist_url", PLAYLIST_SECRET));
 bob.on("game_started", () => bob.emit("send_playlist_url", ""));
+bob.emit("ready", true);
+await sleep(100);
 alice.emit("start_game");
 await sleep(2500);
 // Un nouvel envoi de la liste des joueurs, une fois le lien d'Alice enregistré par le serveur

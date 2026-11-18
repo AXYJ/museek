@@ -413,6 +413,7 @@ io.on(
     socket.on("ready", (isReady: boolean) => {
       const { roomCode, room, player } = getSocketContext(socket);
       if (!roomCode || !room || !player) return;
+      if (typeof isReady !== "boolean") return;
       player.isReady = isReady;
       emitRoomUpdated(roomCode, room);
     });
@@ -421,6 +422,10 @@ io.on(
     socket.on("start_game", () => {
       const { roomCode, room, player } = getSocketContext(socket);
       if (!roomCode || !room || !player?.isHost) return;
+      // Le bouton du lobby n'est qu'une aide : le serveur vérifie lui-même qu'aucun
+      // chargement ni aucune partie n'est en cours et que tout le monde est prêt
+      if (room.isLoadingTracks || isGameRunning(room)) return;
+      if (!room.players.every((p) => p.isReady)) return;
 
       // Réinitialiser la propriété playlistUrl de tous les joueurs à undefined pour pouvoir suivre les retours
       room.players.forEach((p) => {
@@ -643,6 +648,10 @@ io.on(
     // Retour au lobby
     socket.on("restart_game", () => {
       const { roomCode, room, player } = getSocketContext(socket);
+      // Pas de retour au lobby en pleine partie : la room passerait pour terminée.
+      // 2 s de marge : le client affiche les résultats selon son horloge, qui peut
+      // être légèrement en avance sur celle du serveur.
+      if (room && isGameRunning(room, 2000)) return;
       if (roomCode && room && player) {
         player.inLobby = true;
         player.isReady = player.isHost;
@@ -983,11 +992,11 @@ function hasActiveGame(room: Room): boolean {
 
 // La partie se joue réellement : on s'arrête à la fin de la phase de réponse du
 // dernier morceau, comme le client (qui passe alors aux résultats)
-function isGameRunning(room: Room): boolean {
+function isGameRunning(room: Room, marginMs = 0): boolean {
   if (!hasActiveGame(room) || !room.gameStartTime) return false;
   const lastAnswerEnd =
     (room.toPlay.length - 1) * (room.time + 7) + room.time + 5;
-  return Date.now() < room.gameStartTime + lastAnswerEnd * 1000;
+  return Date.now() < room.gameStartTime + lastAnswerEnd * 1000 - marginMs;
 }
 
 const checkAndResetGame = (roomCode: string): void => {

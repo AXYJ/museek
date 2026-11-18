@@ -55,10 +55,26 @@ check(
   JSON.stringify(settings),
 );
 
+let guestView = null;
+host.on("room_updated", (_c, players) => (guestView = players.find((p) => !p.isHost)));
+for (const v of ["oui", 1, null, { a: 1 }]) guest.emit("ready", v);
+await sleep(300);
+check("ready : valeurs non booléennes ignorées", guestView === null || guestView.isReady === false, JSON.stringify(guestView?.isReady));
+
 reset();
 host.emit("start_game");
 await sleep(500);
-check("hôte : start_game fonctionne", started === 1);
+check("hôte : start_game refusé tant que l'invité n'est pas prêt", started === 0);
+
+guest.emit("ready", true);
+await sleep(200);
+reset();
+host.on("game_started", () => host.emit("send_playlist_url", ""));
+guest.on("game_started", () => guest.emit("send_playlist_url", ""));
+host.emit("start_game");
+await sleep(500);
+check("hôte : start_game fonctionne quand tout le monde est prêt", started === 1);
+// start_game / restart_game en pleine partie : voir reconnection.test.mjs
 
 console.log(results.every(Boolean) ? "\nTOUT OK" : "\nECHEC");
 process.exit(results.every(Boolean) ? 0 : 1);
