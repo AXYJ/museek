@@ -82,7 +82,7 @@ export const GameProvider = ({
     }
     return 0.05;
   });
-  const [musicAmount, setMusicAmount] = useState<number>(3);
+  const [musicAmount, setMusicAmount] = useState<number>(5);
   const [time, setTime] = useState<number>(30);
   const [guessPlayer, setGuessPlayer] = useState<boolean>(false);
   const [playlistUrl, setPlaylistUrl] = useState<string>("");

@@ -260,7 +260,7 @@ io.on(
             isReady: true,
           },
         ],
-        musicAmount: 3,
+        musicAmount: 5,
         time: 30,
         toPlay: [],
         database_artists: [],
