@@ -54,3 +54,33 @@ jobs:
         run: npm run type-check
       - name: Tests
         run: npm test
+
+  # ---------- Job 3 : parcours joueur dans un vrai navigateur ----------
+  playwright:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend    # dossier par défaut de ce job
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          # Le "|" permet d'écrire une valeur sur plusieurs lignes : un fichier par ligne
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      # Dépendances du frontend (dossier par défaut)
+      - run: npm ci
+      # Dépendances du backend : Playwright le démarre via webServer
+      - run: npm ci
+        working-directory: backend     # sur une étape, ça remplace le dossier par défaut
+
+      # Chromium et les bibliothèques Linux dont il a besoin
+      - name: Installer Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Tests Playwright
+        run: npx playwright test
