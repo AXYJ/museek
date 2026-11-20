@@ -151,6 +151,18 @@
       "さよーならまたいつか！": {
         "internationalName": "Sayonara Mata Itsuka",
         "alternativeNames": ["Goodbye, Until Someday"]
+      },
+      "ピースサイン": {
+        "internationalName": "Pisu Sain",
+        "alternativeNames": ["Peace Sign"]
+      },
+      "ナンバーナイン": {
+        "internationalName": "Nanba Nain",
+        "alternativeNames": ["Number Nine"]
+      },
+      "パプリカ": {
+        "internationalName": "Papurika",
+        "alternativeNames": ["Paprika"]
       }
     }
   },
@@ -440,6 +452,240 @@
     "tracks": {
       "プロポーズ": {
         "internationalName": "Propose"
+      }
+    }
+  },
+  "Tatsuya Kitani": {
+    "internationalArtist": "Tatsuya Kitani",
+    "tracks": {
+      "聖者の行進": {
+        "internationalName": "Seija no Kōshin",
+        "alternativeNames": ["When The Weak Go Marching In"]
+      },
+      "青のすみか": {
+        "internationalName": "Ao no Sumika",
+        "alternativeNames": ["Where Our Blue Is"]
+      },
+      "ずうっといっしょ！": {
+        "internationalName": "Zuutto Issho",
+        "alternativeNames": ["ALWAYS BE WITH YOU XD"]
+      },
+      "スカー": {
+        "internationalName": "Suka",
+        "alternativeNames": ["Scar"]
+      }
+    }
+  },
+  "Hachi": {
+    "internationalArtist": "Hachi",
+    "tracks": {
+      "マトリョシカ": {
+        "internationalName": "Matoryoshika",
+        "alternativeNames": ["Matryoshka"]
+      },
+      "ドーナツホール": {
+        "internationalName": "Donatsu Horu",
+        "alternativeNames": ["Donut Hole"]
+      }
+    }
+  },
+  "Yorushika": {
+    "internationalArtist": "Yorushika",
+    "tracks": {
+      "ヒッチコック": {
+        "internationalName": "Hitchikokku",
+        "alternativeNames": ["Hitchcock"]
+      },
+      "ノーチラス": {
+        "internationalName": "Nochirasu",
+        "alternativeNames": ["Nautilus"]
+      },
+      "アポリア": {
+        "internationalName": "Aporia",
+        "alternativeNames": ["Aporia"]
+      },
+      "テレパス": {
+        "internationalName": "Terepasu",
+        "alternativeNames": ["Telepath"]
+      },
+      "アルジャーノン": {
+        "internationalName": "Arujanon",
+        "alternativeNames": ["Algernon"]
+      },
+      "ブレーメン": {
+        "internationalName": "Buremen",
+        "alternativeNames": ["Bremen"]
+      },
+      "ルバート": {
+        "internationalName": "Rubato",
+        "alternativeNames": ["Rubato"]
+      },
+      "言って。": {
+        "internationalName": "Itte.",
+        "alternativeNames": ["Say It."]
+      },
+      "準透明少年": {
+        "internationalName": "Jun Tomei Shonen",
+        "alternativeNames": ["Semi-Transparent Boy"]
+      },
+      "ただ君に晴れ": {
+        "internationalName": "Tada Kimi ni Hare",
+        "alternativeNames": ["Just a Sunny Day for You"]
+      },
+      "雲と幽霊": {
+        "internationalName": "Kumo to Yurei",
+        "alternativeNames": ["The Clouds and the Ghost"]
+      },
+      "藍二乗": {
+        "internationalName": "Ai Nijo",
+        "alternativeNames": ["Deep Indigo"]
+      },
+      "パレード": {
+        "internationalName": "Paredo",
+        "alternativeNames": ["Parade"]
+      },
+      "だから僕は音楽を辞めた": {
+        "internationalName": "Dakara Boku wa Ongaku wo Yameta",
+        "alternativeNames": ["That's Why I Gave Up on Music"]
+      },
+      "心に穴が空いた": {
+        "internationalName": "Kokoro ni Ana ga Aita",
+        "alternativeNames": ["A Hole Opened Up in My Heart"]
+      },
+      "雨とカプチーノ": {
+        "internationalName": "Ame to Kapuchino",
+        "alternativeNames": ["Rain with Cappuccino"]
+      },
+      "夜行": {
+        "internationalName": "Yako",
+        "alternativeNames": ["Night Journey"]
+      },
+      "花に亡霊": {
+        "internationalName": "Hana ni Borei",
+        "alternativeNames": ["Ghost in a Flower"]
+      },
+      "春ひさぎ": {
+        "internationalName": "Haru Hisagi",
+        "alternativeNames": ["Prostitution"]
+      },
+      "思想犯": {
+        "internationalName": "Shisohan",
+        "alternativeNames": ["Thoughtcrime"]
+      },
+      "盗作": {
+        "internationalName": "Tosaku",
+        "alternativeNames": ["Plagiarism"]
+      },
+      "風を食む": {
+        "internationalName": "Kaze wo Hamu",
+        "alternativeNames": ["Eat the Wind"]
+      },
+      "春泥棒": {
+        "internationalName": "Haru Dorobo",
+        "alternativeNames": ["Spring Thief"]
+      },
+      "月に吠える": {
+        "internationalName": "Tsuki ni Hoeru",
+        "alternativeNames": ["Howl at the Moon"]
+      },
+      "左右盲": {
+        "internationalName": "Sayumo",
+        "alternativeNames": ["Left-Right Confusion"]
+      },
+      "チノカテ": {
+        "internationalName": "Chinokate",
+        "alternativeNames": ["The Fruits of the Earth"]
+      },
+      "老人と海": {
+        "internationalName": "Rojin to Umi",
+        "alternativeNames": ["The Old Man and the Sea"]
+      },
+      "第一夜": {
+        "internationalName": "Dai Ichiya",
+        "alternativeNames": ["The First Night"]
+      },
+      "斜陽": {
+        "internationalName": "Shayo",
+        "alternativeNames": ["Setting Sun"]
+      },
+      "月光浴": {
+        "internationalName": "Gekkoyoku",
+        "alternativeNames": ["Moonbath"]
+      },
+      "晴る": {
+        "internationalName": "Haru",
+        "alternativeNames": ["Sunny"]
+      },
+      "忘れてください": {
+        "internationalName": "Wasurete Kudasai",
+        "alternativeNames": ["Forget It"]
+      },
+      "太陽": {
+        "internationalName": "Taiyou",
+        "alternativeNames": ["Sun"]
+      },
+      "嘘月": {
+        "internationalName": "Uso Tsuki",
+        "alternativeNames": ["Liar"]
+      },
+      "靴の花火": {
+        "internationalName": "Kutsu no Hanabi",
+        "alternativeNames": ["Fireworks Beneath My Shoes"]
+      },
+      "雲を抜け風下へ私だけ": {
+        "internationalName": "Kumo wo Nuke Kazeshita e Watashi Dake",
+        "alternativeNames": ["Only Me, Downwind Through the Clouds", "Kumo wo Nuke Kazashimo e Watashi Dake"]
+      },
+      "あぶく": {
+        "internationalName": "Abuku"
+      }
+    }
+  },
+  "Spitz": {
+    "internationalArtist": "Spitz",
+    "tracks": {
+      "ロビンソン": {
+        "internationalName": "Robinson",
+        "alternativeNames": ["Robinson"]
+      },
+      "チェリー": {
+        "internationalName": "Cheri",
+        "alternativeNames": ["Cherry"]
+      }
+    }
+  },
+  "BTS": {
+    "internationalArtist": "BTS",
+    "tracks": {
+      "봄날": {
+        "internationalName": "Bomnal",
+        "alternativeNames": ["Spring Day"]
+      },
+      "피 땀 눈물": {
+        "internationalName": "Pi Ttam Nunmul",
+        "alternativeNames": ["Blood Sweat & Tears"]
+      }
+    }
+  },
+  "IU": {
+    "internationalArtist": "IU",
+    "tracks": {
+      "좋은 날": {
+        "internationalName": "Joeun Nal",
+        "alternativeNames": ["Good Day"]
+      },
+      "밤편지": {
+        "internationalName": "Bampyeonji",
+        "alternativeNames": ["Through the Night"]
+      }
+    }
+  },
+  "Teresa Teng": {
+    "internationalArtist": "Teresa Teng",
+    "tracks": {
+      "月亮代表我的心": {
+        "internationalName": "Yue Liang Dai Biao Wo De Xin",
+        "alternativeNames": ["The Moon Represents My Heart"]
       }
     }
   }
